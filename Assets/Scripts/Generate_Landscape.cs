@@ -23,6 +23,7 @@ public class Generate_Landscape : MonoBehaviour {
 	public static GameObject prefab_Snow;// = GameObject.Find("Snow");
 	public static GameObject prefab_Dirt;// = GameObject.Find("Dirt");
 	public static GameObject prefab_Fern;// = GameObject.Find("Fern");
+	public static GameObject prefab_Rose;
 
 
 	public static int chunkWidth = 16;
@@ -31,8 +32,11 @@ public class Generate_Landscape : MonoBehaviour {
 
 	private Vector3 startPos;
 
-	private int planeSize = 4;
+	// private int planeSize = 6;
+	private int planeSize = 2;
 	private int seed = 0;
+
+	private ArrayList heightMaps;
 
 	Dictionary<Vector2, Tile> tiles = new Dictionary<Vector2, Tile>();
 
@@ -43,12 +47,15 @@ public class Generate_Landscape : MonoBehaviour {
 
 		startPos = Vector3.zero;
 
-		this.seed = (int)Network.time * 10;
+		// seed == 0 的话生成平面
+		// this.seed = (int)Network.time * 10;
 
 		float updateTime = Time.realtimeSinceStartup;
 
 		player.transform.position = new Vector3 (0, 30, 0);
 
+		int playerX = (int)(player.transform.position.x / chunkWidth);
+		int playerZ = (int)(player.transform.position.z / chunkDepth);
 
 		// for debug
 		// GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
@@ -56,8 +63,15 @@ public class Generate_Landscape : MonoBehaviour {
 
 		for (int x = -planeSize / 2; x < planeSize / 2; x++) {
 			for (int z = -planeSize / 2; z < planeSize / 2; z++) {
-				GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, new Vector3 (x * chunkWidth, 0, z * chunkDepth), Quaternion.identity);
-				chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (seed, chunkWidth, chunkDepth, chunkHeight, x, z, player);
+				int chunkX = x + playerX;
+				int chunkZ = z + playerZ;
+
+				HeightMap heightMap = new HeightMap (chunkX, chunkZ, chunkWidth, chunkDepth, seed);
+				heightMap.generateHeightMap ();
+
+				GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, new Vector3 (chunkX * chunkWidth, 0, chunkZ * chunkDepth), Quaternion.identity);
+				chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap, player);
+				chunkClone.name = "chunk_" + new Vector3 (chunkX, 0, chunkZ );
 
 				Tile c = new Tile (chunkClone, updateTime);
 				tiles.Add (new Vector2 (x, z), c);
@@ -71,14 +85,16 @@ public class Generate_Landscape : MonoBehaviour {
 		prefab_Snow = GameObject.Find("Snow");
 		prefab_Dirt = GameObject.Find("Dirt");
 		prefab_Fern = GameObject.Find("Fern");
+		prefab_Rose = GameObject.Find ("Rose");
 	}
 
-	void helper(int chunkX, int chunkZ, float updateTime) {
-		GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, new Vector3 (chunkX*chunkWidth, 0, chunkZ*chunkDepth), Quaternion.identity);
-		chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (seed, chunkWidth, chunkDepth, chunkHeight, chunkX, chunkZ, player);
+	void generateHeightMap(int chunkX, int chunkZ) {
+		HeightMap heightMap = new HeightMap (chunkX, chunkZ, chunkWidth, chunkDepth, seed);
+		heightMap.generateHeightMap ();
 
-		Tile c = new Tile (chunkClone, updateTime);
-		tiles.Add (new Vector2 (chunkX, chunkZ), c);
+		// lock (heightMaps) {
+		heightMaps.Add (heightMap);
+		// }
 	}
 
 	// Update is called once per frame
@@ -89,64 +105,55 @@ public class Generate_Landscape : MonoBehaviour {
 		int xMove = (int)Mathf.Abs(playerX - startPos.x);
 		int zMove = (int)Mathf.Abs(playerZ - startPos.z);
 
-		if (xMove > 0 || zMove > 0) {
+		int cmp = Mathf.Max(0, planeSize / 2 - 2);
+
+		if (xMove > cmp || zMove > cmp) {
+			Debug.Log ("render");
 			// StartCoroutine (updateTerrain ());
 			startPos = new Vector3 (playerX, 0, playerZ);
 
-			float updateTime = Time.realtimeSinceStartup;
-
-			for (int x = -planeSize / 2; x < planeSize / 2; x++) {
-				for (int z = -planeSize / 2; z < planeSize / 2; z++) {
-					Vector2 chunkPos = new Vector2 (x + playerX, z + playerZ);
-					if (!tiles.ContainsKey (chunkPos)) {
-						// Thread thread = new Thread (()=> helper(x + playerX, z + playerZ, updateTime));
-						// thread.Start ();
-						helper(x + playerX, z + playerZ, updateTime);
-					} else {
-						tiles [chunkPos].creationTime = updateTime;
-					}
-
-					// yield return new WaitForEndOfFrame();
-				}
-			}
-
-			Dictionary<Vector2, Tile> newTiles = new Dictionary<Vector2, Tile>();
-
-			foreach (KeyValuePair<Vector2, Tile> entry in tiles) {
-				if (entry.Value.creationTime != updateTime) { // remove old terrain. TODO: save that generated terrain.
-					Destroy (entry.Value.chunkObject);
-				} else {
-					newTiles.Add (entry.Key, entry.Value);
-				}
-			}
-			tiles = newTiles;
+			StartCoroutine (joinThreads ());
+				
 		}
 	}
 
-	IEnumerator updateTerrain() {
+	IEnumerator joinThreads() {
 		int playerX = (int)(player.transform.position.x / chunkWidth);
 		int playerZ = (int)(player.transform.position.z / chunkDepth);
-		startPos = new Vector3 (playerX, 0, playerZ);
 
 		float updateTime = Time.realtimeSinceStartup;
+
+		this.heightMaps = new ArrayList();
 
 		for (int x = -planeSize / 2; x < planeSize / 2; x++) {
 			for (int z = -planeSize / 2; z < planeSize / 2; z++) {
 				Vector2 chunkPos = new Vector2 (x + playerX, z + playerZ);
 				if (!tiles.ContainsKey (chunkPos)) {
-					GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, new Vector3 ((x+playerX)*chunkWidth, 0, (z+playerZ)*chunkDepth), Quaternion.identity);
-					chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (seed, chunkWidth, chunkDepth, chunkHeight, x+playerX, z+playerZ, player);
-
-					Tile c = new Tile (chunkClone, updateTime);
-					tiles.Add (new Vector2 (x+playerX, z+playerZ), c);
+					int chunkX = x + playerX;
+					int chunkZ = z + playerZ;
+					// chunkPosList.Add(new Vector2(chunkX, chunkZ));
+					generateHeightMap(chunkX, chunkZ);
 				} else {
 					tiles [chunkPos].creationTime = updateTime;
 				}
-
-				// yield return new WaitForEndOfFrame();
 			}
 		}
-			
+
+		for (int i = 0; i < this.heightMaps.Count; i++) {
+			HeightMap heightMap = this.heightMaps [i] as HeightMap;
+			int chunkX = heightMap.chunkX;
+			int chunkZ = heightMap.chunkZ;
+
+			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, new Vector3 (chunkX*chunkWidth, 0, chunkZ*chunkDepth), Quaternion.identity);
+			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap, player);
+			chunkClone.name = "chunk_" + new Vector3 (chunkX, 0, chunkZ);
+
+			Tile c = new Tile (chunkClone, updateTime);
+			tiles.Add (new Vector2 (chunkX, chunkZ), c);
+
+			yield return new WaitForEndOfFrame();
+		}
+
 		Dictionary<Vector2, Tile> newTiles = new Dictionary<Vector2, Tile>();
 
 		foreach (KeyValuePair<Vector2, Tile> entry in tiles) {
@@ -157,7 +164,5 @@ public class Generate_Landscape : MonoBehaviour {
 			}
 		}
 		tiles = newTiles;
-
-		yield return new WaitForEndOfFrame();
 	}
 }
