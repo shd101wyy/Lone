@@ -33,7 +33,7 @@ public class Generate_Landscape : MonoBehaviour {
 	private Vector3 startPos;
 
 	// private int planeSize = 6;
-	private int planeSize = 2;
+	private int planeSize = 4;
 	private int seed = 0;
 
 	private ArrayList heightMaps;
@@ -48,7 +48,7 @@ public class Generate_Landscape : MonoBehaviour {
 		startPos = Vector3.zero;
 
 		// seed == 0 的话生成平面
-		// this.seed = (int)Network.time * 10;
+		this.seed = (int)Network.time * 10;
 
 		float updateTime = Time.realtimeSinceStartup;
 
