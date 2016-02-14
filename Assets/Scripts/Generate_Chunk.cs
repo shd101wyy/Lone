@@ -8,12 +8,11 @@ using System.Threading;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
 public class Generate_Chunk : MonoBehaviour {
-	Dictionary<Vector3, Block> chunk;
-	ArrayList visibleBlocks;
-
-	private GameObject player;
-
-	private MeshData meshData;
+	private Dictionary<Vector3, Block> chunk = null;
+	// private ArrayList visibleBlocks = null;
+	private GameObject player = null;
+	private MeshData meshData = null;
+	private HeightMap heightMap = null;
 
 	// Use this for initialization
 	void Start () {
@@ -23,50 +22,24 @@ public class Generate_Chunk : MonoBehaviour {
 		GameObject player) {
 
 		this.player = player;
+		this.heightMap = heightMap;
 
-		meshData = new MeshData ();
 		chunk = heightMap.chunk;
-		visibleBlocks = heightMap.visibleBlocks;
+		// visibleBlocks = heightMap.visibleBlocks;
 
-		int i;
+		renderChunk ();
+	}
 
-		foreach (Vector3 blockPos in visibleBlocks) {
-			Block block = chunk [blockPos];
-			block.visible = true;
+	void drawBlock(Vector3 blockPos) {
+		Block block = chunk [blockPos];
+		block.generateMesh (meshData);
+	}
+
+	void renderChunk() {
+		meshData = new MeshData ();
+
+		foreach (var blockPos in chunk.Keys) {
 			drawBlock (blockPos);
-
-
-			// check blocks below
-			int y = (int)blockPos.y - 1;
-			while (y > 0) {
-				Vector3 pos = new Vector3 (blockPos.x, y, blockPos.z);
-				block = chunk [pos];
-
-				// 下面这个满段豫剧很关键，要不然会重复创建。
-				if (block.visible)
-					break;
-
-				int[,] delta = {{1, 0, 0}, {-1, 0, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
-				bool needToBeVisible = false;
-				for (i = 0; i < 5; i++) {
-					int deltaX = delta [i, 0];
-					int deltaY = delta [i, 1];
-					int deltaZ = delta [i, 2];
-
-					Vector3 p = new Vector3 (pos.x + deltaX, pos.y + deltaY, pos.z + deltaZ);
-					if (!chunk.ContainsKey (p) || !(chunk[p] is CubeBlock)) {
-						needToBeVisible = true;
-						break;
-					}
-				}
-				if (needToBeVisible) {
-					block.visible = true;
-					drawBlock (pos);
-					y--;
-				} else {
-					break;
-				}
-			}
 		}
 
 		MeshFilter filter = transform.GetComponent< MeshFilter >();
@@ -91,114 +64,119 @@ public class Generate_Chunk : MonoBehaviour {
 		coll.sharedMesh = coll_mesh;
 	}
 
-	void drawBlock(Vector3 blockPos) {
-		Block block = chunk [blockPos];
-		block.generateMesh (meshData);
-	}
-
-	void drawInvisibleBlock(Vector3 blockPos) {
-		if (chunk.ContainsKey (blockPos) == false)
-			return;
-
-
-		Block block = chunk[blockPos];
-		if (block.visible) {
-			block.generateMesh (meshData);
-			return;
+	Vector3 getHitObjectPos(Vector3 hit1, Vector3 hit2, Vector3 hit3, Vector3 normal) {
+		float x, y, z;
+		if (normal == new Vector3 (0, 0, 1)) {
+			z = hit1.z - 0.5f;
+			x = Mathf.Min (hit1.x, Mathf.Min(hit2.x, hit3.x)) + 0.5f;
+			y = Mathf.Min (hit1.y, Mathf.Min(hit2.y, hit3.y)) + 0.5f;
+		} else if (normal == new Vector3 (0, 0, -1)) {
+			z = hit1.z + 0.5f;
+			x = Mathf.Min (hit1.x, Mathf.Min(hit2.x, hit3.x)) + 0.5f;
+			y = Mathf.Min (hit1.y, Mathf.Min(hit2.y, hit3.y)) + 0.5f;
+		} else if (normal == new Vector3 (1, 0, 0)) {
+			x = hit1.x - 0.5f;
+			y = Mathf.Min (hit1.y, Mathf.Min(hit2.y, hit3.y)) + 0.5f;
+			z = Mathf.Min (hit1.z, Mathf.Min(hit2.z, hit3.z)) + 0.5f;
+		} else if (normal == new Vector3 (-1, 0, 0)) {
+			x = hit1.x + 0.5f;
+			y = Mathf.Min (hit1.y, Mathf.Min(hit2.y, hit3.y)) + 0.5f;
+			z = Mathf.Min (hit1.z, Mathf.Min(hit2.z, hit3.z)) + 0.5f;
+		} else if (normal == new Vector3 (0, 1, 0)) {
+			y = hit1.y - 0.5f;
+			x = Mathf.Min (hit1.x, Mathf.Min(hit2.x, hit3.x)) + 0.5f;
+			z = Mathf.Min (hit1.z, Mathf.Min(hit2.z, hit3.z)) + 0.5f;
+		} else/* if (normal == new Vector3 (0, -1, 0))*/ {
+			y = hit1.y + 0.5f;
+			x = Mathf.Min (hit1.x, Mathf.Min(hit2.x, hit3.x)) + 0.5f;
+			z = Mathf.Min (hit1.z, Mathf.Min(hit2.z, hit3.z)) + 0.5f;
 		}
-		block.visible = true; 
-		drawBlock (blockPos);
-	}
 
-	void drawAroundInvisibleBlocks(Vector3 blockPos) {
-		int[,] delta = {{1, 0, 0}, {-1, 0, 0}, {0, -1, 0}, {0, 1, 0}, {0, 0, 1}, {0, 0, -1}};
-
-		for (int i = 0; i < 6; i++) {
-			Vector3 neighbour = new Vector3 ((int)blockPos.x + delta[i, 0], (int)blockPos.y + delta[i, 1], (int)blockPos.z + delta[i, 2]);
-			drawInvisibleBlock (neighbour);
-		}
+		return new Vector3 (x, y, z);
 	}
 
 	// Update is called once per frame
 	void Update () {
-
-		// left click
-		/*
-		if (Input.GetMouseButtonDown (0)) {
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay (new Vector3 (Screen.width / 2.0f, Screen.height / 2.0f, 0));
-
-			if (Physics.Raycast (ray, out hit, 16.0f)) {
-
-				GameObject block = hit.transform.parent.gameObject;
-				if (chunk.ContainsKey (block.transform.position) == false) {
-					return;
-				}
-				
-				Vector3 blockPos = block.transform.position;
-				
-				// this is the bottom block, don't delete it 
-				if ((int)blockPos.y == 0) return;
-
-				chunk.Remove(blockPos);
-				Destroy (block);
-
-				drawAroundInvisibleBlocks (blockPos);
-			}
-		}
-
+		if (player == null)
+			return;
+		
 		// right click
 		if (Input.GetMouseButtonDown (1)) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (new Vector3 (Screen.width / 2.0f, Screen.height / 2.0f, 0));
 
-			if (Physics.Raycast (ray, out hit, 16.0f)) {
+			if (Physics.Raycast (ray, out hit, 6.0f)) {
 
-				GameObject block = hit.transform.parent.gameObject;
-				if (!chunk.ContainsKey (block.transform.position) || !(chunk[block.transform.position] is CubeBlock))
-					return;
-				
-				string faceName = hit.transform.gameObject.name;
-				Vector3 delta = new Vector3(0, 0, 0);
+				MeshCollider collider = hit.collider as MeshCollider;
+				if (collider != null) {
+					Mesh mesh = collider.sharedMesh;
 
-				switch (faceName) {
-				case "Top": 
-					delta = new Vector3 (0, 1, 0);
-					break;
-				case "Bottom": 
-					delta = new Vector3 (0, -1, 0);
-					break;
-				case "Left": 
-					delta = new Vector3 (-1, 0, 0);
-					break;
-				case "Right": 
-					delta = new Vector3 (+1, 0, 0);
-					break;
-				case "Front": 
-					delta = new Vector3 (0, 0, -1);
-					break;
-				case "Back": 
-					delta = new Vector3 (0, 0, +1);
-					break;
+					// Debug.DrawRay(player.transform.position, hit.point - player.transform.position);
+					int index = hit.triangleIndex * 3;
+
+					Vector3 hit1 = mesh.vertices[mesh.triangles[index    ]];
+					Vector3 hit2 = mesh.vertices[mesh.triangles[index + 1]];
+					Vector3 hit3 = mesh.vertices[mesh.triangles[index + 2]];
+						
+					Vector3 blockPos =  getHitObjectPos(hit1, hit2, hit3, hit.normal);
+
+					if (!(blockPos.x <= (heightMap.chunkX + 1) * Generate_Landscape.chunkWidth && blockPos.x >= heightMap.chunkX * Generate_Landscape.chunkWidth &&
+						blockPos.z <= (heightMap.chunkZ + 1) * Generate_Landscape.chunkDepth && blockPos.z >= heightMap.chunkZ * Generate_Landscape.chunkDepth)) {
+						return;
+					}
+
+					Vector3 newPos = blockPos + hit.normal;
+
+					if ((player.transform.position.x < newPos.x + 0.5f && player.transform.position.x > newPos.x - 0.5f) &&
+						(player.transform.position.y < newPos.y + 0.5f && player.transform.position.y > newPos.y - 0.5f) &&
+						(player.transform.position.z < newPos.z + 0.5f && player.transform.position.z > newPos.z - 0.5f)) {
+						// Debug.Log ("Inside");
+						return;
+					}
+
+					if (this.chunk.ContainsKey (newPos) == false) {
+						Block newBlock = new Dirt (true, newPos, chunk);
+						this.chunk.Add(newPos, newBlock);
+						// this.visibleBlocks.Add (newPos);
+						renderChunk ();
+					}
 				}
-
-				Vector3 newPos = hit.transform.parent.gameObject.transform.position + delta;
-				if ((player.transform.position.x < newPos.x + 0.5f && player.transform.position.x > newPos.x - 0.5f) &&
-				    (player.transform.position.y < newPos.y + 0.5f && player.transform.position.y > newPos.y - 0.5f) &&
-				    (player.transform.position.z < newPos.z + 0.5f && player.transform.position.z > newPos.z - 0.5f)) {
-					// Debug.Log ("Inside");
-					return;
-				}
-		
-				Block newBlock = new Dirt (true, newPos);
-				chunk [newPos] = newBlock;
-				newBlock.visible = true;
-				drawBlock (newPos);
-
-				drawAroundInvisibleBlocks (newPos);
 
 			}
 		}
-		*/
+
+		// left click
+		if (Input.GetMouseButtonDown (0)) {
+			RaycastHit hit;
+			Ray ray = Camera.main.ScreenPointToRay (new Vector3 (Screen.width / 2.0f, Screen.height / 2.0f, 0));
+
+			if (Physics.Raycast (ray, out hit, 6.0f)) {
+
+				MeshCollider collider = hit.collider as MeshCollider;
+				if (collider != null) {
+					Mesh mesh = collider.sharedMesh;
+
+					// Debug.DrawRay(player.transform.position, hit.point - player.transform.position);
+					int index = hit.triangleIndex * 3;
+
+					Vector3 hit1 = mesh.vertices[mesh.triangles[index    ]];
+					Vector3 hit2 = mesh.vertices[mesh.triangles[index + 1]];
+					Vector3 hit3 = mesh.vertices[mesh.triangles[index + 2]];
+
+					Vector3 blockPos =  getHitObjectPos(hit1, hit2, hit3, hit.normal);
+
+					if (!(blockPos.x <= (heightMap.chunkX + 1) * Generate_Landscape.chunkWidth && blockPos.x >= heightMap.chunkX * Generate_Landscape.chunkWidth &&
+						blockPos.z <= (heightMap.chunkZ + 1) * Generate_Landscape.chunkDepth && blockPos.z >= heightMap.chunkZ * Generate_Landscape.chunkDepth)) {
+						return;
+					}
+
+					if (blockPos.y == 0)
+						return;
+
+					chunk.Remove (blockPos);
+					renderChunk ();
+				}
+			}
+		}
 	}
 }

@@ -29,9 +29,11 @@ public class Game : MonoBehaviour {
 		Debug.Log ("@: " + command);
 		command = command.Trim ();
 		if (command == "start") {
+			/*
 			GameObject landscape = GameObject.Find ("Landscape");
 			Destroy (landscape);
 			landscape.GetComponent<Generate_Landscape> ().startGeneratingLandscape ((int)Network.time * 10);
+			*/
 		}
 
 		input.text = "";

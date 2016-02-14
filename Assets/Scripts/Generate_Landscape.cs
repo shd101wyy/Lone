@@ -18,15 +18,6 @@ public class Generate_Landscape : MonoBehaviour {
 	public GameObject chunkPrefab;
 	public GameObject loadingText;
 
-
-	// blocks 
-	public static GameObject prefab_Grass;// = GameObject.Find("Grass");
-	public static GameObject prefab_Sand;// = GameObject.Find("Sand");
-	public static GameObject prefab_Snow;// = GameObject.Find("Snow");
-	public static GameObject prefab_Dirt;// = GameObject.Find("Dirt");
-	public static GameObject prefab_Fern;// = GameObject.Find("Fern");
-	public static GameObject prefab_Rose;
-
 	public static GameObject commandBox;
 
 
@@ -90,13 +81,6 @@ public class Generate_Landscape : MonoBehaviour {
 	}
 
 	void loadBlockPrefabs() {
-		prefab_Grass = GameObject.Find("Grass");
-		prefab_Sand = GameObject.Find("Sand");
-		prefab_Snow = GameObject.Find("Snow");
-		prefab_Dirt = GameObject.Find("Dirt");
-		prefab_Fern = GameObject.Find("Fern");
-		prefab_Rose = GameObject.Find ("Rose");
-
 		commandBox = GameObject.Find ("CommandBox");
 	}
 
