@@ -16,6 +16,8 @@ public class Tile {
 public class Generate_Landscape : MonoBehaviour {
 	public GameObject player;
 	public GameObject chunkPrefab;
+	public GameObject loadingText;
+
 
 	// blocks 
 	public static GameObject prefab_Grass;// = GameObject.Find("Grass");
@@ -25,6 +27,8 @@ public class Generate_Landscape : MonoBehaviour {
 	public static GameObject prefab_Fern;// = GameObject.Find("Fern");
 	public static GameObject prefab_Rose;
 
+	public static GameObject commandBox;
+
 
 	public static int chunkWidth = 16;
 	public static int chunkDepth = 16;
@@ -33,7 +37,7 @@ public class Generate_Landscape : MonoBehaviour {
 	private Vector3 startPos;
 
 	// private int planeSize = 6;
-	private int planeSize = 4;
+	private int planeSize = 16;
 	private int seed = 0;
 
 	private ArrayList heightMaps;
@@ -42,13 +46,17 @@ public class Generate_Landscape : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+	}
+
+	public void startGeneratingLandscape(int seed) {
+		this.loadingText.SetActive (true);
 		loadBlockPrefabs ();
 
 
 		startPos = Vector3.zero;
 
 		// seed == 0 的话生成平面
-		this.seed = (int)Network.time * 10;
+		this.seed = seed;
 
 		float updateTime = Time.realtimeSinceStartup;
 
@@ -69,7 +77,7 @@ public class Generate_Landscape : MonoBehaviour {
 				HeightMap heightMap = new HeightMap (chunkX, chunkZ, chunkWidth, chunkDepth, seed);
 				heightMap.generateHeightMap ();
 
-				GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, new Vector3 (chunkX * chunkWidth, 0, chunkZ * chunkDepth), Quaternion.identity);
+				GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, /*new Vector3 (chunkX * chunkWidth, 0, chunkZ * chunkDepth)*/ Vector3.zero, Quaternion.identity);
 				chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap, player);
 				chunkClone.name = "chunk_" + new Vector3 (chunkX, 0, chunkZ );
 
@@ -77,6 +85,8 @@ public class Generate_Landscape : MonoBehaviour {
 				tiles.Add (new Vector2 (x, z), c);
 			}
 		}
+
+		this.loadingText.SetActive (false);
 	}
 
 	void loadBlockPrefabs() {
@@ -86,6 +96,8 @@ public class Generate_Landscape : MonoBehaviour {
 		prefab_Dirt = GameObject.Find("Dirt");
 		prefab_Fern = GameObject.Find("Fern");
 		prefab_Rose = GameObject.Find ("Rose");
+
+		commandBox = GameObject.Find ("CommandBox");
 	}
 
 	void generateHeightMap(int chunkX, int chunkZ) {
@@ -105,7 +117,7 @@ public class Generate_Landscape : MonoBehaviour {
 		int xMove = (int)Mathf.Abs(playerX - startPos.x);
 		int zMove = (int)Mathf.Abs(playerZ - startPos.z);
 
-		int cmp = Mathf.Max(0, planeSize / 2 - 2);
+		int cmp = Mathf.Max(0, planeSize / 4);
 
 		if (xMove > cmp || zMove > cmp) {
 			Debug.Log ("render");
@@ -113,7 +125,6 @@ public class Generate_Landscape : MonoBehaviour {
 			startPos = new Vector3 (playerX, 0, playerZ);
 
 			StartCoroutine (joinThreads ());
-				
 		}
 	}
 
@@ -144,7 +155,7 @@ public class Generate_Landscape : MonoBehaviour {
 			int chunkX = heightMap.chunkX;
 			int chunkZ = heightMap.chunkZ;
 
-			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, new Vector3 (chunkX*chunkWidth, 0, chunkZ*chunkDepth), Quaternion.identity);
+			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, /*new Vector3 (chunkX*chunkWidth, 0, chunkZ*chunkDepth)*/Vector3.zero, Quaternion.identity);
 			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap, player);
 			chunkClone.name = "chunk_" + new Vector3 (chunkX, 0, chunkZ);
 

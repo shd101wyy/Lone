@@ -3,11 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
+// render chunk
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshCollider))]
 public class Generate_Chunk : MonoBehaviour {
-	Dictionary<Vector3, Block> worldBlocks;
+	Dictionary<Vector3, Block> chunk;
 	ArrayList visibleBlocks;
 
 	private GameObject player;
+
+	private MeshData meshData;
 
 	// Use this for initialization
 	void Start () {
@@ -18,20 +24,23 @@ public class Generate_Chunk : MonoBehaviour {
 
 		this.player = player;
 
-		worldBlocks = heightMap.worldBlocks;
+		meshData = new MeshData ();
+		chunk = heightMap.chunk;
 		visibleBlocks = heightMap.visibleBlocks;
 
+		int i;
+
 		foreach (Vector3 blockPos in visibleBlocks) {
-			Block block = worldBlocks [blockPos];
+			Block block = chunk [blockPos];
 			block.visible = true;
-			drawBlock (block.type, blockPos);
+			drawBlock (blockPos);
 
 
 			// check blocks below
 			int y = (int)blockPos.y - 1;
 			while (y > 0) {
 				Vector3 pos = new Vector3 (blockPos.x, y, blockPos.z);
-				block = worldBlocks [pos];
+				block = chunk [pos];
 
 				// 下面这个满段豫剧很关键，要不然会重复创建。
 				if (block.visible)
@@ -39,51 +48,66 @@ public class Generate_Chunk : MonoBehaviour {
 
 				int[,] delta = {{1, 0, 0}, {-1, 0, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
 				bool needToBeVisible = false;
-				for (int i = 0; i < 5; i++) {
+				for (i = 0; i < 5; i++) {
 					int deltaX = delta [i, 0];
 					int deltaY = delta [i, 1];
 					int deltaZ = delta [i, 2];
 
 					Vector3 p = new Vector3 (pos.x + deltaX, pos.y + deltaY, pos.z + deltaZ);
-					if (!worldBlocks.ContainsKey (p) || !(worldBlocks[p] is CubeBlock)) {
+					if (!chunk.ContainsKey (p) || !(chunk[p] is CubeBlock)) {
 						needToBeVisible = true;
 						break;
 					}
 				}
 				if (needToBeVisible) {
 					block.visible = true;
-					drawBlock (block.type, pos);
+					drawBlock (pos);
 					y--;
 				} else {
 					break;
 				}
 			}
 		}
+
+		MeshFilter filter = transform.GetComponent< MeshFilter >();
+		Mesh mesh = filter.mesh;
+		mesh.Clear();
+
+		mesh.vertices = meshData.vertices.ToArray();
+		mesh.normals = meshData.normals.ToArray ();
+		mesh.uv = meshData.uvs.ToArray();
+		mesh.triangles = meshData.triangles.ToArray();
+
+		mesh.RecalculateBounds();
+		mesh.Optimize();
+
+		// collision
+		MeshCollider coll = transform.GetComponent<MeshCollider> ();
+		coll.sharedMesh = null; 
+		Mesh coll_mesh = new Mesh(); 
+		coll_mesh.vertices = meshData.colVertices.ToArray();
+		coll_mesh.triangles = meshData.colTriangles.ToArray();
+		coll_mesh.RecalculateNormals();
+		coll.sharedMesh = coll_mesh;
 	}
 
-	void drawBlock(Type type, Vector3 blockPos) {
-		Block block = worldBlocks [blockPos];
-		GameObject clone = (GameObject)Instantiate (block.meshObject, block.pos, Quaternion.identity);
-		clone.transform.parent = this.transform;
-		block.setClone (clone);
-		clone.name = blockPos.ToString ();
-
-		block.disableInvisibleFaces (worldBlocks);
-
+	void drawBlock(Vector3 blockPos) {
+		Block block = chunk [blockPos];
+		block.generateMesh (meshData);
 	}
 
 	void drawInvisibleBlock(Vector3 blockPos) {
-		if (worldBlocks.ContainsKey (blockPos) == false)
+		if (chunk.ContainsKey (blockPos) == false)
 			return;
 
 
-		Block block = worldBlocks[blockPos];
+		Block block = chunk[blockPos];
 		if (block.visible) {
-			block.disableInvisibleFaces (worldBlocks);
+			block.generateMesh (meshData);
 			return;
 		}
 		block.visible = true; 
-		drawBlock (block.type, blockPos);
+		drawBlock (blockPos);
 	}
 
 	void drawAroundInvisibleBlocks(Vector3 blockPos) {
@@ -99,6 +123,7 @@ public class Generate_Chunk : MonoBehaviour {
 	void Update () {
 
 		// left click
+		/*
 		if (Input.GetMouseButtonDown (0)) {
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (new Vector3 (Screen.width / 2.0f, Screen.height / 2.0f, 0));
@@ -106,7 +131,7 @@ public class Generate_Chunk : MonoBehaviour {
 			if (Physics.Raycast (ray, out hit, 16.0f)) {
 
 				GameObject block = hit.transform.parent.gameObject;
-				if (worldBlocks.ContainsKey (block.transform.position) == false) {
+				if (chunk.ContainsKey (block.transform.position) == false) {
 					return;
 				}
 				
@@ -115,7 +140,7 @@ public class Generate_Chunk : MonoBehaviour {
 				// this is the bottom block, don't delete it 
 				if ((int)blockPos.y == 0) return;
 
-				worldBlocks.Remove(blockPos);
+				chunk.Remove(blockPos);
 				Destroy (block);
 
 				drawAroundInvisibleBlocks (blockPos);
@@ -130,7 +155,7 @@ public class Generate_Chunk : MonoBehaviour {
 			if (Physics.Raycast (ray, out hit, 16.0f)) {
 
 				GameObject block = hit.transform.parent.gameObject;
-				if (!worldBlocks.ContainsKey (block.transform.position) || !(worldBlocks[block.transform.position] is CubeBlock))
+				if (!chunk.ContainsKey (block.transform.position) || !(chunk[block.transform.position] is CubeBlock))
 					return;
 				
 				string faceName = hit.transform.gameObject.name;
@@ -166,13 +191,14 @@ public class Generate_Chunk : MonoBehaviour {
 				}
 		
 				Block newBlock = new Dirt (true, newPos);
-				worldBlocks [newPos] = newBlock;
+				chunk [newPos] = newBlock;
 				newBlock.visible = true;
-				drawBlock (newBlock.type, newPos);
+				drawBlock (newPos);
 
 				drawAroundInvisibleBlocks (newPos);
 
 			}
 		}
+		*/
 	}
 }
