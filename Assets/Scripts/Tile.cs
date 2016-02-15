@@ -68,10 +68,10 @@ public class BlockTile {
 		top_10 = new Vector2((top_x + 1) * tile_size / texture_width, 1-((top_y+1) * tile_size) / texture_height);
 		top_11 = new Vector2((top_x + 1) * tile_size / texture_width, 1-(top_y * tile_size) / texture_height);
 
-		bottom_00 = new Vector2(bottom_x * tile_size / texture_width, (bottom_y + 1) * tile_size / texture_height);
-		bottom_01 = new Vector2(bottom_x * tile_size / texture_width, bottom_y * tile_size / texture_height);
-		bottom_10 = new Vector2((bottom_x + 1) * tile_size / texture_width, (bottom_y + 1) * tile_size / texture_height);
-		bottom_11 = new Vector2((bottom_x + 1) * tile_size / texture_width, bottom_y * tile_size / texture_height);
+		bottom_00 = new Vector2(bottom_x * tile_size / texture_width, 1 - (bottom_y + 1) * tile_size / texture_height);
+		bottom_01 = new Vector2(bottom_x * tile_size / texture_width, 1 - bottom_y * tile_size / texture_height);
+		bottom_10 = new Vector2((bottom_x + 1) * tile_size / texture_width, 1 - (bottom_y + 1) * tile_size / texture_height);
+		bottom_11 = new Vector2((bottom_x + 1) * tile_size / texture_width, 1 - bottom_y * tile_size / texture_height);
 
 		front_00 = new Vector2(front_x * tile_size / texture_width, 1-(front_y + 1) * tile_size / texture_height);
 		front_01 = new Vector2(front_x * tile_size / texture_width, 1-front_y * tile_size / texture_height);

@@ -3,50 +3,82 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+public class Chunk {
+	public Dictionary<Vector3, Block> blocks;
+	public bool needRender;
+	public int chunkX;
+	public int chunkZ;
+	public World world;
+
+	public Chunk(int chunkX, int chunkZ, World world) {
+		blocks = new Dictionary<Vector3, Block> ();
+		needRender = false;
+		this.chunkX = chunkX;
+		this.chunkZ = chunkZ;
+		this.world = world;
+	}
+
+	public void addBlock(Vector3 pos, Block block) {
+		blocks.Add (pos, block);
+		block.chunk = this;
+		block.pos = pos;
+		block.world = world;
+	}
+
+	public Block getBlock(Vector3 pos) {
+		if (!blocks.ContainsKey (pos))
+			return null;
+		return blocks [pos];
+	}
+
+	public void removeBlock(Vector3 pos) {
+		blocks.Remove (pos);
+	}
+
+	public bool hasBlockAtPosition(Vector3 pos) {
+		return blocks.ContainsKey (pos);
+	}
+}
+
 public class HeightMap {
 	public int chunkX;
 	public int chunkZ;
-
-	public int width;
-	public int depth;
 
 	// public int heightScale = 20;
 	// public float detailScale = 25.0f;
 
 	// mountain
-	// public int heightScale = 40; // 40+
-	// public float detailScale = 30.0f;
+	public int heightScale = 40; // 40+
+	public float detailScale = 30.0f;
 
 	// plain 1
 	//public int heightScale = 40; // 40+
 	//public float detailScale = 60.0f;
 
 	// plain 2
-	public int heightScale = 20; // 40+
-	public float detailScale = 70.0f;
+	// public int heightScale = 20; // 40+
+	// public float detailScale = 70.0f;
 
-	public Dictionary<Vector3, Block> chunk;
-	public ArrayList visibleBlocks;
+	public Chunk chunk;
 
 	public int seed;
 
 	private System.Random rnd;
 
-	public HeightMap (int chunkX, int chunkZ, int chunkWidth, int chunkDepth, int seed) {
-		this.width = chunkWidth;
-		this.depth = chunkDepth;
+	public HeightMap (int chunkX, int chunkZ, int seed, World world) {
 		this.chunkX = chunkX;
 		this.chunkZ = chunkZ;
 		this.seed = seed;
 
 		rnd = new System.Random ();
 
-		// int seed = (int)Network.time * 10;
-		chunk = new Dictionary<Vector3, Block>();
-		visibleBlocks = new ArrayList ();
+		chunk = new Chunk(chunkX, chunkZ, world);
 	}
 
 	public void generateHeightMap() {
+		int width = Generate_Landscape.chunkWidth; 
+		int depth = Generate_Landscape.chunkDepth;
+
 		int startX = width * chunkX;
 		int startZ = depth * chunkZ;
 
@@ -62,7 +94,6 @@ public class HeightMap {
 					
 				Vector3 blockPos = new Vector3 (x+startX, y, z+startZ);
 
-				visibleBlocks.Add(blockPos);
 				createBlock (blockPos, true);
 				while (y > 0) {
 					y--; 
@@ -77,30 +108,28 @@ public class HeightMap {
 		int y = (int)blockPos.y;
 		Block block;
 
-		if (y > 15) {
-			block = new Snow (false, blockPos, chunk);
+		if (y > 38) {
+			block = new Snow ();
 		} else if (isTop && y > 5) {
-			block = new Grass (false, blockPos, chunk);
+			block = new Grass ();
 			/*		
 			if (this.rnd.Next(0, 10) <= 2) { // FERN
 				Vector3 pos = blockPos + new Vector3 (0, 1, 0);
 				Block fern = new Fern(true, pos);
 				chunk.Add(pos, fern);
-				visibleBlocks.Add (pos);
 			} else if (this.rnd.Next(0, 50) <= 5) {
 				Vector3 pos = blockPos + new Vector3 (0, 1, 0);
 				Block rose = new Rose(true, pos);
 				chunk.Add(pos, rose);
-				visibleBlocks.Add (pos);
 			}
 			*/
 		} else if (y > 5) {
-			block = new Dirt (false, blockPos, chunk);
+			block = new Dirt ();
 		} else {
-			block = new Sand (false, blockPos, chunk);
+			block = new Sand ();
 		}
 
-		chunk.Add(blockPos, block);
+		chunk.addBlock(blockPos, block);
 	}
 }
 

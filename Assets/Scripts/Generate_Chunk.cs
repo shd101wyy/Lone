@@ -8,11 +8,11 @@ using System.Threading;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
 public class Generate_Chunk : MonoBehaviour {
-	private Dictionary<Vector3, Block> chunk = null;
+	private Chunk chunk = null;
 	// private ArrayList visibleBlocks = null;
 	private GameObject player = null;
 	private MeshData meshData = null;
-	private HeightMap heightMap = null;
+	public HeightMap heightMap = null;
 
 	// Use this for initialization
 	void Start () {
@@ -25,20 +25,19 @@ public class Generate_Chunk : MonoBehaviour {
 		this.heightMap = heightMap;
 
 		chunk = heightMap.chunk;
-		// visibleBlocks = heightMap.visibleBlocks;
 
 		renderChunk ();
 	}
 
 	void drawBlock(Vector3 blockPos) {
-		Block block = chunk [blockPos];
+		Block block = chunk.getBlock(blockPos);
 		block.generateMesh (meshData);
 	}
 
-	void renderChunk() {
+	public void renderChunk() {
 		meshData = new MeshData ();
 
-		foreach (var blockPos in chunk.Keys) {
+		foreach (var blockPos in chunk.blocks.Keys) {
 			drawBlock (blockPos);
 		}
 
@@ -97,86 +96,9 @@ public class Generate_Chunk : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (player == null)
-			return;
-		
-		// right click
-		if (Input.GetMouseButtonDown (1)) {
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay (new Vector3 (Screen.width / 2.0f, Screen.height / 2.0f, 0));
-
-			if (Physics.Raycast (ray, out hit, 6.0f)) {
-
-				MeshCollider collider = hit.collider as MeshCollider;
-				if (collider != null) {
-					Mesh mesh = collider.sharedMesh;
-
-					// Debug.DrawRay(player.transform.position, hit.point - player.transform.position);
-					int index = hit.triangleIndex * 3;
-
-					Vector3 hit1 = mesh.vertices[mesh.triangles[index    ]];
-					Vector3 hit2 = mesh.vertices[mesh.triangles[index + 1]];
-					Vector3 hit3 = mesh.vertices[mesh.triangles[index + 2]];
-						
-					Vector3 blockPos =  getHitObjectPos(hit1, hit2, hit3, hit.normal);
-
-					if (!(blockPos.x <= (heightMap.chunkX + 1) * Generate_Landscape.chunkWidth && blockPos.x >= heightMap.chunkX * Generate_Landscape.chunkWidth &&
-						blockPos.z <= (heightMap.chunkZ + 1) * Generate_Landscape.chunkDepth && blockPos.z >= heightMap.chunkZ * Generate_Landscape.chunkDepth)) {
-						return;
-					}
-
-					Vector3 newPos = blockPos + hit.normal;
-
-					if ((player.transform.position.x < newPos.x + 0.5f && player.transform.position.x > newPos.x - 0.5f) &&
-						(player.transform.position.y < newPos.y + 0.5f && player.transform.position.y > newPos.y - 0.5f) &&
-						(player.transform.position.z < newPos.z + 0.5f && player.transform.position.z > newPos.z - 0.5f)) {
-						// Debug.Log ("Inside");
-						return;
-					}
-
-					if (this.chunk.ContainsKey (newPos) == false) {
-						Block newBlock = new Dirt (true, newPos, chunk);
-						this.chunk.Add(newPos, newBlock);
-						// this.visibleBlocks.Add (newPos);
-						renderChunk ();
-					}
-				}
-
-			}
-		}
-
-		// left click
-		if (Input.GetMouseButtonDown (0)) {
-			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay (new Vector3 (Screen.width / 2.0f, Screen.height / 2.0f, 0));
-
-			if (Physics.Raycast (ray, out hit, 6.0f)) {
-
-				MeshCollider collider = hit.collider as MeshCollider;
-				if (collider != null) {
-					Mesh mesh = collider.sharedMesh;
-
-					// Debug.DrawRay(player.transform.position, hit.point - player.transform.position);
-					int index = hit.triangleIndex * 3;
-
-					Vector3 hit1 = mesh.vertices[mesh.triangles[index    ]];
-					Vector3 hit2 = mesh.vertices[mesh.triangles[index + 1]];
-					Vector3 hit3 = mesh.vertices[mesh.triangles[index + 2]];
-
-					Vector3 blockPos =  getHitObjectPos(hit1, hit2, hit3, hit.normal);
-
-					if (!(blockPos.x <= (heightMap.chunkX + 1) * Generate_Landscape.chunkWidth && blockPos.x >= heightMap.chunkX * Generate_Landscape.chunkWidth &&
-						blockPos.z <= (heightMap.chunkZ + 1) * Generate_Landscape.chunkDepth && blockPos.z >= heightMap.chunkZ * Generate_Landscape.chunkDepth)) {
-						return;
-					}
-
-					if (blockPos.y == 0)
-						return;
-
-					chunk.Remove (blockPos);
-					renderChunk ();
-				}
-			}
+		if (chunk != null && chunk.needRender) {
+			renderChunk ();
+			chunk.needRender = false;
 		}
 	}
 }
