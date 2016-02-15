@@ -6,7 +6,7 @@ TextureImporter:
   fileIDToRecycleName: {}
   serializedVersion: 2
   mipmaps:
-    mipMapMode: 1
+    mipMapMode: 0
     enableMipMap: 0
     linearTexture: 1
     correctGamma: 1
@@ -39,7 +39,7 @@ TextureImporter:
   compressionQuality: 50
   allowsAlphaSplitting: 0
   spriteMode: 0
-  spriteExtrude: 1
+  spriteExtrude: 26
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}

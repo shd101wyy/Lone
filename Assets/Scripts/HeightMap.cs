@@ -9,6 +9,7 @@ public class Chunk {
 	public int chunkX;
 	public int chunkZ;
 	public World world;
+	public Water water;
 
 	public Chunk(int chunkX, int chunkZ, World world) {
 		blocks = new Dictionary<Vector3, Block> ();
@@ -23,6 +24,10 @@ public class Chunk {
 		block.chunk = this;
 		block.pos = pos;
 		block.world = world;
+
+		if (block is Water) {
+			this.water = block as Water;
+		}
 	}
 
 	public Block getBlock(Vector3 pos) {

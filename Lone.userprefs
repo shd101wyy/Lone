@@ -1,15 +1,21 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Generate_Chunk.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Block.cs">
     <Files>
-      <File FileName="Assets/Scripts/Generate_Landscape.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/HeightMap.cs" Line="49" Column="35" />
-      <File FileName="Assets/Scripts/Generate_Chunk.cs" Line="135" Column="7" />
-      <File FileName="Assets/Scripts/Block.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Generate_Landscape.cs" Line="275" Column="41" />
+      <File FileName="Assets/Scripts/Block.cs" Line="126" Column="6" />
+      <File FileName="Assets/Scripts/Generate_Chunk.cs" Line="138" Column="37" />
+      <File FileName="Assets/Scripts/HeightMap.cs" Line="29" Column="31" />
+      <File FileName="Assets/Scripts/MeshData.cs" Line="33" Column="39" />
+      <File FileName="Assets/Scripts/Tile.cs" Line="74" Column="75" />
+      <File FileName="Assets/Scripts/Game.cs" Line="10" Column="2" />
+      <File FileName="Assets/Scripts/LoadingScreen.cs" Line="13" Column="37" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <RunToCursorBreakpoint file="/Users/wangyiyi/百度云同步盘/Github/Lone/Assets/Scripts/Block.cs" line="126" column="10" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

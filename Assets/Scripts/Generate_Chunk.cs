@@ -99,6 +99,90 @@ public class Generate_Chunk : MonoBehaviour {
 		if (chunk != null && chunk.needRender) {
 			renderChunk ();
 			chunk.needRender = false;
+
+			if (chunk.water != null) {
+				Water water = chunk.water;
+				chunk.water = null;
+
+				StartCoroutine(spreadWater (water));
+			}
 		}
+	}
+
+	IEnumerator spreadWater(Water water) {
+		World world = this.heightMap.chunk.world;
+		Vector3 pos = water.pos;
+		if (water.energy - 1 == 0 && world.getBlock(pos + new Vector3(0, -1, 0)) != null)
+			yield break;
+		int energy = water.energy;
+
+		Vector3 frontDir = new Vector3 ((int)pos.x, (int)pos.y, (int)pos.z - 1);
+		Vector3 backDir = new Vector3 ((int)pos.x, (int)pos.y, (int)pos.z + 1);
+		Vector3 leftDir = new Vector3 ((int)pos.x - 1, (int)pos.y, (int)pos.z);
+		Vector3 rightDir = new Vector3 ((int)pos.x + 1, (int)pos.y, (int)pos.z);
+		Vector3 bottomDir = new Vector3 ((int)pos.x, (int)pos.y - 1, (int)pos.z);
+
+		Block front = world.getBlock (frontDir);
+		Block back = world.getBlock (backDir);
+		Block left = world.getBlock (leftDir);
+		Block right = world.getBlock (rightDir);
+		Block bottom = world.getBlock (bottomDir);
+
+		float seconds = 1f;
+
+		ArrayList spread = new ArrayList();
+
+		if (energy > 1 && (!(front != null && front is CubeBlock)) && bottom != null) {
+			yield return new WaitForSeconds (seconds);
+
+			Water w = new Water (energy - 1);
+			world.addBlock (frontDir, w, true);
+
+			spread.Add(w);
+		}
+
+		if (energy > 1 && (!(back != null && back is CubeBlock)) && bottom != null) {
+			yield return new WaitForSeconds (seconds);
+
+			Water w = new Water (energy - 1);
+			world.addBlock (backDir, w, true);
+
+			spread.Add(w);
+		}
+
+		if (energy > 1 && (!(left != null && left is CubeBlock)) && bottom != null) {
+			yield return new WaitForSeconds (seconds);
+
+			Water w = new Water (energy - 1);
+			world.addBlock (leftDir, w, true);
+
+			spread.Add(w);
+		}
+
+		if (energy > 1 && (!(right != null && right is CubeBlock)) && bottom != null) {
+			yield return new WaitForSeconds (seconds);
+
+			Water w = new Water (energy - 1);
+			world.addBlock (rightDir, w, true);
+
+			spread.Add(w);
+		}
+
+		if (bottom == null) {
+			Water w = new Water (energy - 1);
+			world.addBlock (bottomDir, w, true);
+
+			spread.Add(w);
+		}
+
+		/*
+		this.chunk.needRender = true;
+		yield return new WaitForSeconds (seconds);
+		this.chunk.needRender = false;
+		for (int i = 0; i < spread.Count; i++) {
+			StartCoroutine(spreadWater (spread[i] as Water));
+		}
+		*/
+		
 	}
 }

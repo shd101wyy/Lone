@@ -272,7 +272,7 @@ public class Generate_Landscape : MonoBehaviour {
 						return;
 					}
 						
-					world.addBlock (newPos, new Water (world, newPos), true);
+					world.addBlock (newPos, new Water (), true);
 				}
 
 			}

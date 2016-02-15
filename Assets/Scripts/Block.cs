@@ -118,49 +118,12 @@ public class Sand: CubeBlock {
 }
 
 public class Water: Block {
-	private int energy;
-	public Water(World world, Vector3 pos, int energy = 3) : base(Type.WATER) {
+	public int energy;
+	public Water(int energy = 5) : base(Type.WATER) {
 		this.blockTile = new BlockTile (10, 18, 10, 18, 10, 18, 10, 18, 10, 18, 10, 18);
 		this.energy = energy;
-		this.world = world;
-		this.pos = pos;
 
-		Debug.Log ("energy : " + energy);
-		// spread water 
-		if (energy - 1 > 0) {
-			Vector3 frontDir = new Vector3 ((int)pos.x, (int)pos.y, (int)pos.z - 1);
-			Vector3 backDir = new Vector3 ((int)pos.x, (int)pos.y, (int)pos.z + 1);
-			Vector3 leftDir = new Vector3 ((int)pos.x - 1, (int)pos.y, (int)pos.z);
-			Vector3 rightDir = new Vector3 ((int)pos.x + 1, (int)pos.y, (int)pos.z);
-			Vector3 bottomDir = new Vector3 ((int)pos.x, (int)pos.y - 1, (int)pos.z);
-
-			Block front = world.getBlock (frontDir);
-			Block back = world.getBlock (backDir);
-			Block left = world.getBlock (leftDir);
-			Block right = world.getBlock (rightDir);
-			Block bottom = world.getBlock (bottomDir);
-
-
-			if ((!(front != null && front is CubeBlock)) && bottom != null) {
-				world.addBlock (frontDir, new Water (world, frontDir, energy - 1), true);
-			}
-
-			if ((!(back != null && back is CubeBlock)) && bottom != null) {
-				world.addBlock (backDir, new Water (world, backDir, energy - 1), true);
-			}
-
-			if ((!(left != null && left is CubeBlock)) && bottom != null) {
-				world.addBlock (leftDir, new Water (world, leftDir, energy - 1), true);
-			}
-
-			if ((!(right != null && right is CubeBlock)) && bottom != null) {
-				world.addBlock (rightDir, new Water (world, rightDir, energy - 1), true);
-			}
-
-			if (bottom == null) {
-				world.addBlock (bottomDir, new Water (world, bottomDir, energy - 1), true);
-			}
-		}
+		// Debug.Log ("energy : " + energy);
 	}
 	public override void generateMesh(MeshData meshData, bool collidable = false) {
 		collidable = false;
