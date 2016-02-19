@@ -5,7 +5,7 @@ using System.Threading;
 using System;
 
 
-public enum Type {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER};
+public enum Type {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE};
 
 [Serializable]
 public abstract class Block {
@@ -95,32 +95,47 @@ public class Rose: Block {
 
 public class Grass: CubeBlock {
 	public Grass() : base(Type.GRASS) {
-		this.blockTile = new BlockTile (3, 0, 3, 0, 0, 0, 2, 0, 3, 0, 3, 0);
+		SpriteData top = Game.textures ["grass_top"];
+		SpriteData side = Game.textures ["grass_side"];
+		SpriteData bottom = Game.textures ["dirt"];
+		this.blockTile = new BlockTile (side, side, top, bottom, side, side); 
 	}
 }
 
 public class Dirt: CubeBlock {
 	public Dirt() : base(Type.DIRT) {
-		this.blockTile = new BlockTile (2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0);
+		SpriteData side = Game.textures ["dirt"];
+		this.blockTile = new BlockTile (side, side, side, side, side, side);
 	}
 }
 
 public class Snow: CubeBlock {
 	public Snow() : base(Type.SNOW) {
-		this.blockTile = new BlockTile (2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4);
+		SpriteData side = Game.textures ["snow"];
+		this.blockTile = new BlockTile (side, side, side, side, side, side);
 	}
 }
 
 public class Sand: CubeBlock {
 	public Sand() : base(Type.SAND) {
-		this.blockTile = new BlockTile (2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1);
+		SpriteData side = Game.textures ["sand"];
+		this.blockTile = new BlockTile (side, side, side, side, side, side);
+	}
+}
+
+public class LogJungle: CubeBlock {
+	public LogJungle() : base(Type.LOG_JUNGLE) {
+		SpriteData side = Game.textures ["log_jungle"];
+		SpriteData top = Game.textures ["log_jungle_top"];
+		this.blockTile = new BlockTile (side, side, top, top, side, side);
 	}
 }
 
 public class Water: Block {
 	public int energy;
 	public Water(int energy = 5) : base(Type.WATER) {
-		this.blockTile = new BlockTile (10, 18, 10, 18, 10, 18, 10, 18, 10, 18, 10, 18);
+		SpriteData side = Game.textures ["dirt"]; // TODO: change later
+		this.blockTile = new BlockTile (side, side, side, side, side, side);
 		this.energy = energy;
 
 		// Debug.Log ("energy : " + energy);

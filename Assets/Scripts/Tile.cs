@@ -43,45 +43,36 @@ public class BlockTile {
 	public Vector2 back_10;
 	public Vector2 back_11;
 
-	public BlockTile(int left_x, int left_y,
-		int right_x, int right_y,
-		int top_x, int top_y, 
-		int bottom_x, int bottom_y,
-		int front_x, int front_y, 
-		int back_x, int back_y){
-		float texture_width = 384f;
-		float texture_height = 512f;
-		float tile_size = 16f;
+	public BlockTile(SpriteData left, SpriteData right, SpriteData top, SpriteData bottom, SpriteData front, SpriteData back){
+		left_00 = left._00;
+		left_01 = left._01;
+		left_10 = left._10;
+		left_11 = left._11;
 
-		left_00 = new Vector2(left_x * tile_size / texture_width, 1-(left_y + 1) * tile_size / texture_height);
-		left_01 = new Vector2(left_x * tile_size / texture_width, 1-left_y * tile_size / texture_height);
-		left_10 = new Vector2((left_x + 1) * tile_size / texture_width, 1-(left_y + 1) * tile_size / texture_height);
-		left_11 = new Vector2((left_x + 1) * tile_size / texture_width, 1-left_y * tile_size / texture_height);
+		right_00 = right._00;
+		right_01 = right._01;
+		right_10 = right._10;
+		right_11 = right._11;
 
-		right_00 = new Vector2(right_x * tile_size / texture_width, 1-(right_y + 1) * tile_size / texture_height);
-		right_01 = new Vector2(right_x * tile_size / texture_width, 1-right_y * tile_size / texture_height);
-		right_10 = new Vector2((right_x + 1) * tile_size / texture_width, 1-(right_y + 1) * tile_size / texture_height);
-		right_11 = new Vector2((right_x + 1) * tile_size / texture_width, 1-right_y * tile_size / texture_height);
+		top_00 = top._00;
+		top_01 = top._01;
+		top_10 = top._10;
+		top_11 = top._11;
 
-		top_00 = new Vector2(top_x * tile_size / texture_width, 1-((top_y+1) * tile_size) / texture_height);
-		top_01 = new Vector2(top_x * tile_size / texture_width, 1-(top_y * tile_size) / texture_height);
-		top_10 = new Vector2((top_x + 1) * tile_size / texture_width, 1-((top_y+1) * tile_size) / texture_height);
-		top_11 = new Vector2((top_x + 1) * tile_size / texture_width, 1-(top_y * tile_size) / texture_height);
+		bottom_00 = bottom._00;
+		bottom_01 = bottom._01;
+		bottom_10 = bottom._10;
+		bottom_11 = bottom._11;
 
-		bottom_00 = new Vector2(bottom_x * tile_size / texture_width, 1 - (bottom_y + 1) * tile_size / texture_height);
-		bottom_01 = new Vector2(bottom_x * tile_size / texture_width, 1 - bottom_y * tile_size / texture_height);
-		bottom_10 = new Vector2((bottom_x + 1) * tile_size / texture_width, 1 - (bottom_y + 1) * tile_size / texture_height);
-		bottom_11 = new Vector2((bottom_x + 1) * tile_size / texture_width, 1 - bottom_y * tile_size / texture_height);
-
-		front_00 = new Vector2(front_x * tile_size / texture_width, 1-(front_y + 1) * tile_size / texture_height);
-		front_01 = new Vector2(front_x * tile_size / texture_width, 1-front_y * tile_size / texture_height);
-		front_10 = new Vector2((front_x + 1) * tile_size / texture_width, 1-(front_y + 1) * tile_size / texture_height);
-		front_11 = new Vector2((front_x + 1) * tile_size / texture_width, 1-front_y * tile_size / texture_height);
+		front_00 = front._00;
+		front_01 = front._01;
+		front_10 = front._10;
+		front_11 = front._11;
 			
-		back_00 = new Vector2(back_x * tile_size / texture_width, 1-(back_y + 1) * tile_size / texture_height);
-		back_01 = new Vector2(back_x * tile_size / texture_width, 1-back_y * tile_size / texture_height);
-		back_10 = new Vector2((back_x + 1) * tile_size / texture_width, 1-(back_y + 1) * tile_size / texture_height);
-		back_11 = new Vector2((back_x + 1) * tile_size / texture_width, 1-back_y * tile_size / texture_height);
+		back_00 = back._00;
+		back_01 = back._01;
+		back_10 = back._10;
+		back_11 = back._11;
 	}
 
 

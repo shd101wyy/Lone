@@ -126,12 +126,14 @@ public class Generate_Landscape : MonoBehaviour {
 	private Vector3 startPos;
 
 	// private int planeSize = 6;
-	private int planeSize = 6;// 20;
+	private int planeSize = 20; // 4; /*6;*/ /*20;*/
 	private int seed = 0;
 
 	private ArrayList heightMaps;
 
 	private World world = new World();
+
+	public int selectedBlock = 1;
 
 	// Use this for initialization
 	void Start () {
@@ -271,8 +273,21 @@ public class Generate_Landscape : MonoBehaviour {
 						// Debug.Log ("Inside");
 						return;
 					}
-						
-					world.addBlock (newPos, new Water (), true);
+
+					Block block;
+					switch (selectedBlock) {
+					case 1:
+						block = new Dirt ();
+						break;
+					case 2:
+						block = new LogJungle ();
+						break;
+					default:
+						block = new Dirt ();
+						break;
+					}
+
+					world.addBlock (newPos, block, true);
 				}
 
 			}
@@ -303,6 +318,27 @@ public class Generate_Landscape : MonoBehaviour {
 					world.removeBlock (blockPos, true);
 				}
 			}
+		}
+
+		// TODO: change the code below in the future
+		if (Input.GetKeyDown (KeyCode.Alpha1)) { // 点击了数字键盘 数字 1
+			selectedBlock = 1;
+		} else if (Input.GetKeyDown (KeyCode.Alpha2)) {
+			selectedBlock = 2;
+		} else if (Input.GetKeyDown (KeyCode.Alpha3)) {
+			selectedBlock = 3;
+		} else if (Input.GetKeyDown (KeyCode.Alpha4)) {
+			selectedBlock = 4;
+		} else if (Input.GetKeyDown (KeyCode.Alpha5)) {
+			selectedBlock = 5;
+		} else if (Input.GetKeyDown (KeyCode.Alpha6)) {
+			selectedBlock = 6;
+		} else if (Input.GetKeyDown (KeyCode.Alpha7)) {
+			selectedBlock = 7;
+		} else if (Input.GetKeyDown (KeyCode.Alpha8)) {
+			selectedBlock = 8;
+		} else if (Input.GetKeyDown (KeyCode.Alpha9)) {
+			selectedBlock = 9;
 		}
 	}
 

@@ -53,16 +53,16 @@ public class HeightMap {
 	// public float detailScale = 25.0f;
 
 	// mountain
-	public int heightScale = 40; // 40+
-	public float detailScale = 30.0f;
+	// public int heightScale = 40; // 40+
+	// public float detailScale = 30.0f;
 
 	// plain 1
 	//public int heightScale = 40; // 40+
 	//public float detailScale = 60.0f;
 
 	// plain 2
-	// public int heightScale = 20; // 40+
-	// public float detailScale = 70.0f;
+	public int heightScale = 20; // 40+
+	public float detailScale = 70.0f;
 
 	public Chunk chunk;
 
