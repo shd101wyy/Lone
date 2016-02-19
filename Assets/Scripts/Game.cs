@@ -90,7 +90,7 @@ public class Game : MonoBehaviour {
 		loadTextures ("/items.json", "/items.png");
 			
 		input = commandBox.GetComponent<InputField> ();
-		GameObject.Find ("Landscape").GetComponent<Generate_Landscape> ().startGeneratingLandscape (/*0*/ (int)Network.time * 10);
+		GameObject.Find ("Landscape").GetComponent<Generate_Landscape> ().startGeneratingLandscape (/*0*/ /*(int)Network.time * 10*/ (int)System.DateTime.Now.Millisecond * 1000);
 
 
 		GameObject rightHand = GameObject.Find ("RightHandItem");

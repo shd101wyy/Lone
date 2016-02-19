@@ -53,6 +53,7 @@
      <Compile Include="Assets\Scripts\HeightMap.cs" />
      <Compile Include="Assets\Scripts\LoadingScreen.cs" />
      <Compile Include="Assets\Scripts\MeshData.cs" />
+     <Compile Include="Assets\Scripts\Sun_Move.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />
      <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
      <None Include="Assets\Standard Assets\Environment\Water (Basic)\Shaders\FXWaterBasic.shader" />

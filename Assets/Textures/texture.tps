@@ -207,6 +207,16 @@
             <filename>PIXIE_1/assets/minecraft/textures/blocks/log_jungle.png</filename>
             <filename>PIXIE_1/assets/minecraft/textures/blocks/log_jungle_top.png</filename>
             <filename>PIXIE_1/assets/minecraft/textures/blocks/leaves_jungle.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_acacia_top.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_acacia.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_big_oak_top.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_big_oak.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_birch_top.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_birch.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_oak_top.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_oak.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_spruce_top.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_spruce.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
