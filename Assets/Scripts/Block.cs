@@ -13,22 +13,24 @@ public abstract class Block {
 	public Vector3 pos;
 	public Chunk chunk;
 	public World world;
+	public Texture2D texture_2d;
 
 
 	public float blockSize = 1f;
 	public BlockTile blockTile;
 
-	public Block(Type type) {
+	public Block(Type type, Texture2D texture_2d) {
 		this.type = type;
 		this.pos = Vector3.zero;
 		this.chunk = null;
+		this.texture_2d = texture_2d;
 	}
 
 	public abstract void generateMesh (MeshData meshData, bool collidable = true);
 }
 
 public class CubeBlock: Block {
-	public CubeBlock(Type type) : base(type) {
+	public CubeBlock(Type type, Texture2D texture_2d) : base(type, texture_2d) {
 	}
 		
 	public override void generateMesh(MeshData meshData, bool collidable = true) {
@@ -73,6 +75,7 @@ public class CubeBlock: Block {
 	}
 }
 
+/*
 public class Fern: Block {
 	public Fern() : base(Type.PLANT_FERN) {
 	}
@@ -92,9 +95,10 @@ public class Rose: Block {
 		return;
 	}
 }
+*/
 
 public class Grass: CubeBlock {
-	public Grass() : base(Type.GRASS) {
+	public Grass() : base(Type.GRASS, Game.textures["dirt"].texture_2d) {
 		SpriteData top = Game.textures ["grass_top"];
 		SpriteData side = Game.textures ["grass_side"];
 		SpriteData bottom = Game.textures ["dirt"];
@@ -103,37 +107,38 @@ public class Grass: CubeBlock {
 }
 
 public class Dirt: CubeBlock {
-	public Dirt() : base(Type.DIRT) {
+	public Dirt() : base(Type.DIRT, Game.textures["dirt"].texture_2d) {
 		SpriteData side = Game.textures ["dirt"];
 		this.blockTile = new BlockTile (side, side, side, side, side, side);
 	}
 }
 
 public class Snow: CubeBlock {
-	public Snow() : base(Type.SNOW) {
+	public Snow() : base(Type.SNOW, Game.textures["snow"].texture_2d) {
 		SpriteData side = Game.textures ["snow"];
 		this.blockTile = new BlockTile (side, side, side, side, side, side);
 	}
 }
 
 public class Sand: CubeBlock {
-	public Sand() : base(Type.SAND) {
+	public Sand() : base(Type.SAND, Game.textures["sand"].texture_2d) {
 		SpriteData side = Game.textures ["sand"];
 		this.blockTile = new BlockTile (side, side, side, side, side, side);
 	}
 }
 
 public class LogJungle: CubeBlock {
-	public LogJungle() : base(Type.LOG_JUNGLE) {
+	public LogJungle() : base(Type.LOG_JUNGLE, Game.textures["log_jungle"].texture_2d) {
 		SpriteData side = Game.textures ["log_jungle"];
 		SpriteData top = Game.textures ["log_jungle_top"];
 		this.blockTile = new BlockTile (side, side, top, top, side, side);
 	}
 }
 
+// TODO: the water below is super bad
 public class Water: Block {
 	public int energy;
-	public Water(int energy = 5) : base(Type.WATER) {
+	public Water(int energy = 5) : base(Type.WATER, Game.textures["dirt"].texture_2d) {
 		SpriteData side = Game.textures ["dirt"]; // TODO: change later
 		this.blockTile = new BlockTile (side, side, side, side, side, side);
 		this.energy = energy;

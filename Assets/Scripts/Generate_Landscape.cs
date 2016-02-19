@@ -314,7 +314,12 @@ public class Generate_Landscape : MonoBehaviour {
 					Vector3 blockPos =  getHitObjectPos(hit1, hit2, hit3, hit.normal);
 					if (blockPos.y == 0)
 						return;
-					
+
+					Block block = world.getBlock (blockPos);
+					if (block != null) { // draw small one 
+						DropItem dropItem = (new GameObject ()).AddComponent<DropItem> () as DropItem;
+						dropItem.generate3DMesh (block);
+					}
 					world.removeBlock (blockPos, true);
 				}
 			}

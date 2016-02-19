@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Block.cs" />
+     <Compile Include="Assets\Scripts\DropItem.cs" />
      <Compile Include="Assets\Scripts\ExtrudeSprite.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\Generate_Chunk.cs" />

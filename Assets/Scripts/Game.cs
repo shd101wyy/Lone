@@ -96,8 +96,8 @@ public class Game : MonoBehaviour {
 		GameObject rightHand = GameObject.Find ("RightHandItem");
 		generate3DMeshFrom2D (rightHand, textures ["iron_pickaxe"]);
 
-		GameObject leftHand = GameObject.Find ("LeftHandItem");
-		generate3DMeshFrom2D (leftHand, textures ["iron_sword"]);
+		// GameObject leftHand = GameObject.Find ("LeftHandItem");
+		// generate3DMeshFrom2D (leftHand, textures ["iron_sword"]);
 	}
 	
 	// Update is called once per frame
@@ -125,10 +125,18 @@ public class Game : MonoBehaviour {
 		input.text = "";
 	}
 
-	public static void generate3DMeshFrom2D(GameObject gameObject, SpriteData sprite, float depth = 0.0625f) {
-		gameObject.AddComponent<ExtrudeSprite> ();
+	public static void generate3DMeshFrom2D(GameObject g, SpriteData sprite, float depth = 0.0625f) {
+		
+		g.AddComponent<ExtrudeSprite> ();
 		// gameObject.AddComponent<MeshFilter> ();
 		// gameObject.AddComponent<MeshRenderer> ();
-		gameObject.GetComponent<ExtrudeSprite> ().GenerateMesh (sprite.texture_2d);
+		g.GetComponent<ExtrudeSprite> ().GenerateMesh (sprite.texture_2d, depth);
+	}
+
+	public static void generate3DMeshFrom2DTexture(GameObject g, Texture2D texture_2d, float depth = 0.0625f) {
+
+		g.AddComponent<ExtrudeSprite> ();
+
+		g.GetComponent<ExtrudeSprite> ().GenerateMesh (texture_2d, depth);
 	}
 }

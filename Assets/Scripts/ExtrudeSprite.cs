@@ -81,38 +81,14 @@ public class ExtrudeSprite : MonoBehaviour
 		AddQuad(P, P2, Vector3.forward*depth, normal, uv,uv,false);
 	}
 
-	public void GenerateMesh(Texture2D tex) {
+	public void GenerateMesh(Texture2D tex, float depth=0.0625f) {
+		this.depth = depth;
 		int x, y;
-
-		/*
-		tex = new Texture2D (2, 2, TextureFormat.ARGB32, false);// Resources.Load(Application.dataPath + "/Textures/PIXIE_1/assets/minecraft/textures/items/iron_sword.png") as Texture2D;
-		byte[] data = File.ReadAllBytes(Application.dataPath + "/Textures/items.png");
-		tex.LoadImage (data);
-		tex.filterMode = FilterMode.Point;
-		tex.wrapMode = TextureWrapMode.Clamp;
-
-		// 妈了个屯，这个 crop 的左下角是 (0, 0), 而不是左上角
-		Color[] colors = tex.GetPixels (0, 512 - 16, 16, 16);
-		Texture2D itemTex = new Texture2D (16, 16, TextureFormat.RGBA32, false);
-		itemTex.SetPixels (colors);
-		itemTex.Apply ();
-		itemTex.filterMode = FilterMode.Point;
-		itemTex.wrapMode = TextureWrapMode.Clamp;
-		tex = itemTex;
-		*/
 
 		m_Colors = tex.GetPixels32();
 		m_Width = tex.width;
 		m_Height = tex.height;
 
-		/*
-		Texture2D test = new Texture2D (2, 2, TextureFormat.ARGB32, false);// Resources.Load(Application.dataPath + "/Textures/PIXIE_1/assets/minecraft/textures/items/iron_sword.png") as Texture2D;
-		byte[] data = File.ReadAllBytes(Application.dataPath + "/Textures/PIXIE_1/assets/minecraft/textures/items/iron_sword.png");
-		test.LoadImage (data);
-		test.filterMode = FilterMode.Point;
-		drawTexture = true;
-		finish = test;
-		*/
 
 		// GetComponent<Renderer> ().sharedMaterial.mainTexture = itemTexture;
 		Material material = GetComponent<Renderer>().material as Material;

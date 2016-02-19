@@ -1,13 +1,16 @@
 fileFormatVersion: 2
 guid: fa82e71b281ee4b09b1ffe86ed8065fd
-timeCreated: 1455665285
+timeCreated: 1455875925
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: inventory_bar
+    21300002: widgets_0
+    21300004: select_box
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     linearTexture: 0
     correctGamma: 0
     fadeOut: 0
@@ -29,27 +32,60 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
-    filterMode: -1
-    aniso: -1
+    filterMode: 0
+    aniso: 1
     mipBias: -1
-    wrapMode: -1
-  nPOTScale: 1
+    wrapMode: 1
+  nPOTScale: 0
   lightmap: 0
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 0
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
-  alphaIsTransparency: 0
-  textureType: -1
+  alphaIsTransparency: 1
+  textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: inventory_bar
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 234
+        width: 182
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: widgets_0
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 234
+        width: 43
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: select_box
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 210
+        width: 26
+        height: 24
+      alignment: 9
+      pivot: {x: 0.5209028, y: 0.41638818}
+      border: {x: 0, y: 0, z: 2, w: 1}
+      outline: []
     outline: []
   spritePackingTag: 
   userData: 
