@@ -54,14 +54,13 @@ public class Game : MonoBehaviour {
 
 	// load textures made by Texture Packer
 	void loadTextures(string jsonPath, string imagePath) {
-		string textureJson = File.ReadAllText (Application.streamingAssetsPath + jsonPath);
+        // Attention: Resources.Load couldn't have file extension
+        string textureJson = (Resources.Load(jsonPath) as TextAsset).text; // File.ReadAllText (Application.streamingAssetsPath + jsonPath);
 		JsonData textureJsonData = JsonMapper.ToObject (textureJson);
 		textureWidth = (int)textureJsonData ["meta"] ["size"] ["w"];
 		textureHeight = (int)textureJsonData ["meta"] ["size"] ["h"];
 
-		Texture2D tex = new Texture2D (2, 2, TextureFormat.ARGB32, false);// Resources.Load(Application.dataPath + "/Textures/PIXIE_1/assets/minecraft/textures/items/iron_sword.png") as Texture2D;
-		byte[] data = File.ReadAllBytes(Application.streamingAssetsPath + imagePath);
-		tex.LoadImage (data);
+		Texture2D tex = Resources.Load(imagePath) as Texture2D;
 		tex.filterMode = FilterMode.Point;
 		tex.wrapMode = TextureWrapMode.Clamp;
 
@@ -87,8 +86,8 @@ public class Game : MonoBehaviour {
 		textures = new Dictionary<string, SpriteData> ();
 
 		// load texture data from StreamingAssets folder
-		loadTextures("/texture.json", "/texture.png");
-		loadTextures ("/items.json", "/items.png");
+		loadTextures("texture_json", "texture");
+		loadTextures ("items_json", "items");
 			
 		input = commandBox.GetComponent<InputField> ();
 		GameObject.Find ("Landscape").GetComponent<Generate_Landscape> ().startGeneratingLandscape (/*0*/ /*(int)Network.time * 10*/ (int)System.DateTime.Now.Millisecond * 1000);
@@ -99,8 +98,8 @@ public class Game : MonoBehaviour {
 		GameObject rightHand = GameObject.Find ("RightHandItem");
 		generate3DMeshFrom2D (rightHand, textures ["iron_pickaxe"]);
 
-		// GameObject leftHand = GameObject.Find ("LeftHandItem");
-		// generate3DMeshFrom2D (leftHand, textures ["iron_sword"]);
+		GameObject leftHand = GameObject.Find ("LeftHandItem");
+		generate3DMeshFrom2D (leftHand, textures ["iron_sword"]);
 
 		// set inventory bar items
 		inventoryBar.GetComponent<InventoryBar>().setItem(textures["dirt"].texture_2d, 0);

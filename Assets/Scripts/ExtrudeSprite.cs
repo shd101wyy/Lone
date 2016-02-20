@@ -106,7 +106,7 @@ public class ExtrudeSprite : MonoBehaviour
 		material.EnableKeyword("_ALPHATEST_ON");
 		material.DisableKeyword("_ALPHABLEND_ON");
 		material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-		material.renderQueue = 2450;
+		material.renderQueue = 2000;
 		 
 		//      first point                     , second point                    , relative 3. P, normal,          lower UV,     Upper UV,    flipUV
 		AddQuad(new Vector3(-0.5f, -0.5f, 0    ), new Vector3(-0.5f,  0.5f, 0    ), Vector3.right, Vector3.back,    Vector2.zero, Vector2.one, false);
