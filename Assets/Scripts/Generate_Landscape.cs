@@ -126,7 +126,7 @@ public class Generate_Landscape : MonoBehaviour {
 	private Vector3 startPos;
 
 	// private int planeSize = 6;
-	private int planeSize = 2; // 4; /*6;*/ /*20;*/
+	private int planeSize = 20; // 4; /*6;*/ /*20;*/
 	private int seed = 0;
 
 	private ArrayList heightMaps;
@@ -381,7 +381,7 @@ public class Generate_Landscape : MonoBehaviour {
 			}
 		}
 
-		for (int i = 0; i < this.heightMaps.Count; i++) {
+		for (int i = this.heightMaps.Count - 1; i >= 0; i--) {
 			HeightMap heightMap = this.heightMaps [i] as HeightMap;
 			int chunkX = heightMap.chunkX;
 			int chunkZ = heightMap.chunkZ;

@@ -10,7 +10,7 @@ public class LoadingScreen : MonoBehaviour {
 	}
 	
 	private IEnumerator Countdown() {
-		yield return new WaitForSeconds (8);
+		yield return new WaitForSeconds (4);
 		SceneManager.LoadSceneAsync("Main");
 	}
 }

@@ -90,9 +90,12 @@ public class ExtrudeSprite : MonoBehaviour
 		m_Height = tex.height;
 
 
-		// GetComponent<Renderer> ().sharedMaterial.mainTexture = itemTexture;
 		Material material = GetComponent<Renderer>().material as Material;
 		material.mainTexture = tex; 
+
+		// 下面的 Shader.Find ("Standard") 可能会找不到，如果没有用到 Standard 的 shader 在 GameObject 上
+		// 所以我 Attach 了 Extrude3D 的 shader 到 Game 这个 GameObject 上面了。
+		// 这样，系统会自动 Load 并且 保存 Standard shader。这样就找的到了。
 		Shader shader = Shader.Find ("Standard");
 		material.shader = shader;
 		material.SetFloat ("_Mode", 1); // set Rendering Mode to cutout
@@ -106,7 +109,7 @@ public class ExtrudeSprite : MonoBehaviour
 		material.EnableKeyword("_ALPHATEST_ON");
 		material.DisableKeyword("_ALPHABLEND_ON");
 		material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-		material.renderQueue = 2000;
+		material.renderQueue = 2450;
 		 
 		//      first point                     , second point                    , relative 3. P, normal,          lower UV,     Upper UV,    flipUV
 		AddQuad(new Vector3(-0.5f, -0.5f, 0    ), new Vector3(-0.5f,  0.5f, 0    ), Vector3.right, Vector3.back,    Vector2.zero, Vector2.one, false);
