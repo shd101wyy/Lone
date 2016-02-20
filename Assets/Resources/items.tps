@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>4.0.2</string>
         <key>fileName</key>
-        <string>/Users/wangyiyi/百度云同步盘/Github/Lone/Assets/Textures/texture.tps</string>
+        <string>/Users/wangyiyi/百度云同步盘/Github/Lone/Assets/Resources/items.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json-array</string>
         <key>textureFileName</key>
-        <filename>texture.png</filename>
+        <filename>items.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -88,9 +88,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>64</int>
+            <int>512</int>
             <key>height</key>
-            <int>64</int>
+            <int>512</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -108,7 +108,7 @@
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
-            <enum type="AlgorithmSettings::SizeConstraints">AnySize</enum>
+            <enum type="AlgorithmSettings::SizeConstraints">POT</enum>
             <key>forceSquared</key>
             <false/>
             <key>forceWordAligned</key>
@@ -147,12 +147,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>texture.json</filename>
-            </struct>
-            <key>datafile</key>
-            <struct type="DataFile">
-                <key>name</key>
-                <filename></filename>
+                <filename>items_json.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -197,32 +192,22 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/snow.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/snow_side.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/dirt.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/grass_side.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/grass_top.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/sand.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/fern.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_jungle.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_jungle_top.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/leaves_jungle.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_acacia_top.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_acacia.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_big_oak_top.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_big_oak.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_birch_top.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_birch.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_oak_top.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_oak.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_spruce_top.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/log_spruce.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_acacia.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_big_oak.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_birch.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_jungle.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_oak.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_spruce.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/stick.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/stone_axe.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/stone_hoe.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/stone_pickaxe.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/stone_shovel.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/stone_sword.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/wood_axe.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/wood_hoe.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/wood_pickaxe.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/wood_shovel.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/wood_sword.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/iron_axe.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/iron_hoe.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/iron_pickaxe.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/iron_shovel.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/items/iron_sword.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -98,7 +98,6 @@ public class HeightMap {
 				}
 					
 				Vector3 blockPos = new Vector3 (x+startX, y, z+startZ);
-
 				createBlock (blockPos, true);
 				while (y > 0) {
 					y--; 

@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>4.0.2</string>
         <key>fileName</key>
-        <string>/Users/wangyiyi/百度云同步盘/Github/Lone/Assets/Textures/items.tps</string>
+        <string>/Users/wangyiyi/百度云同步盘/Github/Lone/Assets/Resources/texture.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json-array</string>
         <key>textureFileName</key>
-        <filename>items.png</filename>
+        <filename>texture.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -88,9 +88,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>512</int>
+            <int>64</int>
             <key>height</key>
-            <int>512</int>
+            <int>64</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -106,11 +106,11 @@
             <key>algorithm</key>
             <enum type="AlgorithmSettings::AlgorithmId">Basic</enum>
             <key>freeSizeMode</key>
-            <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Good</enum>
+            <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
-            <enum type="AlgorithmSettings::SizeConstraints">POT</enum>
+            <enum type="AlgorithmSettings::SizeConstraints">AnySize</enum>
             <key>forceSquared</key>
-            <true/>
+            <false/>
             <key>forceWordAligned</key>
             <false/>
             <key>maxRects</key>
@@ -147,7 +147,12 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>items.json</filename>
+                <filename>texture_json.json</filename>
+            </struct>
+            <key>datafile</key>
+            <struct type="DataFile">
+                <key>name</key>
+                <filename></filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -192,8 +197,30 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>PIXIE_1/assets/minecraft/textures/items/iron_pickaxe.png</filename>
-            <filename>PIXIE_1/assets/minecraft/textures/items/iron_sword.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/brick.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/dirt.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/grass_side.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_jungle_top.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_acacia_top.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_acacia.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_big_oak_top.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_birch_top.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_birch.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_big_oak.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_jungle.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_oak_top.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_oak.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_spruce_top.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/log_spruce.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/planks_acacia.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/planks_birch.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/planks_spruce.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/planks_oak.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/planks_jungle.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/sand.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/snow.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/snow_side.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/grass_top.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

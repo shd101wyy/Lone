@@ -8,3 +8,5 @@ extrude sprite to 3d model http://answers.unity3d.com/questions/814993/generatin
 useful unity animation tutorial https://www.youtube.com/watch?v=wdOk5QXYC6Y
 
 inventory gui https://www.youtube.com/watch?v=zaIoPQFwvmo
+
+Biomes http://minecraft.wikia.com/wiki/Biomes

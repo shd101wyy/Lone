@@ -1,2 +1,32 @@
 Base path: /Applications/Unity/Unity.app/Contents
 Cmd: getPlatforms
+Cmd: disassembleShader
+  api=6 insize=8333 outsize=8333 ok=1
+Cmd: disassembleShader
+  api=1 insize=3053 outsize=3053 ok=1
+Cmd: disassembleShader
+  api=1 insize=3318 outsize=3318 ok=1
+Cmd: disassembleShader
+  api=23 insize=3562 outsize=3562 ok=1
+Cmd: disassembleShader
+  api=1 insize=3088 outsize=3088 ok=1
+Cmd: compileSnippet
+  api=14 type=0 insize=3083 outsize=1747 kw= pd=UNITY_ENABLE_REFLECTION_BUFFERS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING SHADER_API_DESKTOP ok=1
+Cmd: disassembleShader
+  api=23 insize=1747 outsize=1747 ok=1
+Cmd: disassembleShader
+  api=6 insize=4612 outsize=4612 ok=1
+Cmd: disassembleShader
+  api=1 insize=2377 outsize=2377 ok=1
+Cmd: disassembleShader
+  api=23 insize=2753 outsize=2753 ok=1
+Cmd: disassembleShader
+  api=6 insize=8380 outsize=8380 ok=1
+Cmd: disassembleShader
+  api=23 insize=1230 outsize=1230 ok=1
+Cmd: disassembleShader
+  api=6 insize=7077 outsize=7077 ok=1
+Cmd: disassembleShader
+  api=1 insize=1516 outsize=1516 ok=1
+Cmd: disassembleShader
+  api=6 insize=4871 outsize=4871 ok=1
