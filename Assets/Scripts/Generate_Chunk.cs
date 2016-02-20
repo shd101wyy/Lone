@@ -10,7 +10,6 @@ using System.Threading;
 public class Generate_Chunk : MonoBehaviour {
 	private Chunk chunk = null;
 	// private ArrayList visibleBlocks = null;
-	private GameObject player = null;
 	private MeshData meshData = null;
 	public HeightMap heightMap = null;
 
@@ -18,10 +17,8 @@ public class Generate_Chunk : MonoBehaviour {
 	void Start () {
 	}
 
-	public void startGeneratingChunk(HeightMap heightMap,
-		GameObject player) {
+	public void startGeneratingChunk(HeightMap heightMap) {
 
-		this.player = player;
 		this.heightMap = heightMap;
 
 		chunk = heightMap.chunk;

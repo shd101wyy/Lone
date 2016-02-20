@@ -43,6 +43,7 @@ public class SpriteData {
 public class Game : MonoBehaviour {
 	public GameObject commandBox;
 	public GameObject player;
+	public GameObject inventoryBar;
 
 	private InputField input;
 
@@ -93,11 +94,21 @@ public class Game : MonoBehaviour {
 		GameObject.Find ("Landscape").GetComponent<Generate_Landscape> ().startGeneratingLandscape (/*0*/ /*(int)Network.time * 10*/ (int)System.DateTime.Now.Millisecond * 1000);
 
 
+
+		// set left hand and right hand
 		GameObject rightHand = GameObject.Find ("RightHandItem");
 		generate3DMeshFrom2D (rightHand, textures ["iron_pickaxe"]);
 
 		// GameObject leftHand = GameObject.Find ("LeftHandItem");
 		// generate3DMeshFrom2D (leftHand, textures ["iron_sword"]);
+
+		// set inventory bar items
+		inventoryBar.GetComponent<InventoryBar>().setItem(textures["dirt"].texture_2d, 0);
+		inventoryBar.GetComponent<InventoryBar>().setItem(textures["sand"].texture_2d, 1);
+		inventoryBar.GetComponent<InventoryBar>().setItem(textures["log_jungle"].texture_2d, 2);
+		inventoryBar.GetComponent<InventoryBar>().setItem(textures["planks_jungle"].texture_2d, 3);
+		inventoryBar.GetComponent<InventoryBar>().setItem(textures["log_oak"].texture_2d, 4);
+		inventoryBar.GetComponent<InventoryBar>().setItem(textures["planks_oak"].texture_2d, 5);
 	}
 	
 	// Update is called once per frame

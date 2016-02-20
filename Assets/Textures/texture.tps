@@ -217,6 +217,12 @@
             <filename>PIXIE_1/assets/minecraft/textures/blocks/log_oak.png</filename>
             <filename>PIXIE_1/assets/minecraft/textures/blocks/log_spruce_top.png</filename>
             <filename>PIXIE_1/assets/minecraft/textures/blocks/log_spruce.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_acacia.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_big_oak.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_birch.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_jungle.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_oak.png</filename>
+            <filename>PIXIE_1/assets/minecraft/textures/blocks/planks_spruce.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

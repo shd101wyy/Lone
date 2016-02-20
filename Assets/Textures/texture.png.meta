@@ -6,12 +6,12 @@ TextureImporter:
   fileIDToRecycleName: {}
   serializedVersion: 2
   mipmaps:
-    mipMapMode: 0
+    mipMapMode: 1
     enableMipMap: 0
     linearTexture: 0
     correctGamma: 0
-    fadeOut: 0
-    borderMipMap: 0
+    fadeOut: 1
+    borderMipMap: 1
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:

@@ -176,7 +176,7 @@ public class Generate_Landscape : MonoBehaviour {
 
 			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, /*new Vector3 (chunkX*chunkWidth, 0, chunkZ*chunkDepth)*/Vector3.zero, Quaternion.identity);
 			Vector2 chunkPos = new Vector2 (chunkX, chunkZ);
-			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap, player);
+			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap);
 			chunkClone.name = "chunk_" + chunkPos;
 			world.addChunkGameObject (chunkPos, chunkClone, updateTime);
 		}
@@ -280,7 +280,19 @@ public class Generate_Landscape : MonoBehaviour {
 						block = new Dirt ();
 						break;
 					case 2:
+						block = new Sand ();
+						break;
+					case 3:
 						block = new LogJungle ();
+						break;
+					case 4:
+						block = new PlanksJungle ();
+						break;
+					case 5:
+						block = new LogOak ();
+						break;
+					case 6:
+						block = new PlanksOak ();
 						break;
 					default:
 						block = new Dirt ();
@@ -376,7 +388,7 @@ public class Generate_Landscape : MonoBehaviour {
 
 			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, /*new Vector3 (chunkX*chunkWidth, 0, chunkZ*chunkDepth)*/Vector3.zero, Quaternion.identity);
 			Vector2 chunkPos = new Vector2 (chunkX, chunkZ);
-			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap, player);
+			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap);
 			chunkClone.name = "chunk_" + chunkPos;
 			world.addChunkGameObject (chunkPos, chunkClone, updateTime);
 

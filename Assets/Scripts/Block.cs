@@ -5,7 +5,7 @@ using System.Threading;
 using System;
 
 
-public enum Type {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE};
+public enum Type {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE, PLANKS_JUNGLE, LOG_OAK, PLANKS_OAK};
 
 [Serializable]
 public abstract class Block {
@@ -32,7 +32,7 @@ public abstract class Block {
 public class CubeBlock: Block {
 	public CubeBlock(Type type, Texture2D texture_2d) : base(type, texture_2d) {
 	}
-		
+
 	public override void generateMesh(MeshData meshData, bool collidable = true) {
 
 		bool col = meshData.useRenderDataForCollision;
@@ -79,7 +79,7 @@ public class CubeBlock: Block {
 public class Fern: Block {
 	public Fern() : base(Type.PLANT_FERN) {
 	}
-		
+
 	public override void generateMesh (MeshData meshData, bool collidable = false) {
 		// nothing happened
 		return;
@@ -132,6 +132,28 @@ public class LogJungle: CubeBlock {
 		SpriteData side = Game.textures ["log_jungle"];
 		SpriteData top = Game.textures ["log_jungle_top"];
 		this.blockTile = new BlockTile (side, side, top, top, side, side);
+	}
+}
+
+public class PlanksJungle: CubeBlock {
+	public PlanksJungle() : base(Type.PLANKS_JUNGLE, Game.textures["planks_jungle"].texture_2d) {
+		SpriteData side = Game.textures ["planks_jungle"];
+		this.blockTile = new BlockTile (side, side, side, side, side, side);
+	}
+}
+
+public class LogOak: CubeBlock {
+	public LogOak() : base(Type.LOG_OAK, Game.textures["log_oak"].texture_2d) {
+		SpriteData side = Game.textures ["log_oak"];
+		SpriteData top = Game.textures ["log_oak_top"];
+		this.blockTile = new BlockTile (side, side, top, top, side, side);
+	}
+}
+
+public class PlanksOak: CubeBlock {
+	public PlanksOak() : base(Type.PLANKS_OAK, Game.textures["planks_oak"].texture_2d) {
+		SpriteData side = Game.textures ["planks_oak"];
+		this.blockTile = new BlockTile (side, side, side, side, side, side);
 	}
 }
 
