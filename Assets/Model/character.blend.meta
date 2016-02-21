@@ -1,15 +1,62 @@
 fileFormatVersion: 2
-guid: dc047f6263f9a4c1fbadc6138dd2d4e9
-timeCreated: 1456021862
+guid: 74d5af29176e3426ba93af4615165e6b
+timeCreated: 1456043312
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Character
+    100000: Armature
+    100002: Body
+    100004: Body_Lower
+    100006: Body_Upper
+    100008: //RootNode
+    100010: Head
+    100012: Head_Bone
+    100014: LeftArm
+    100016: LeftArm_Lower
+    100018: LeftArm_Upper
+    100020: LeftLeg
+    100022: LeftLeg_Lower
+    100024: LeftLeg_Upper
+    100026: RightArm
+    100028: RightArm_Lower
+    100030: RightArm_Upper
+    100032: RightLeg
+    100034: RightLeg_Lower
+    100036: RightLeg_Upper
+    400000: Armature
+    400002: Body
+    400004: Body_Lower
+    400006: Body_Upper
+    400008: //RootNode
+    400010: Head
+    400012: Head_Bone
+    400014: LeftArm
+    400016: LeftArm_Lower
+    400018: LeftArm_Upper
+    400020: LeftLeg
+    400022: LeftLeg_Lower
+    400024: LeftLeg_Upper
+    400026: RightArm
+    400028: RightArm_Lower
+    400030: RightArm_Upper
+    400032: RightLeg
+    400034: RightLeg_Lower
+    400036: RightLeg_Upper
+    4300000: Head
+    4300002: LeftArm
+    4300004: RightArm
+    4300006: Body
+    4300008: LeftLeg
+    4300010: RightLeg
+    7400000: Default Take
+    9500000: //RootNode
+    13700000: Body
+    13700002: Head
+    13700004: LeftArm
+    13700006: LeftLeg
+    13700008: RightArm
+    13700010: RightLeg
   materials:
     importMaterials: 1
     materialName: 0
@@ -68,7 +115,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

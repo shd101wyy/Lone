@@ -10,3 +10,5 @@ useful unity animation tutorial https://www.youtube.com/watch?v=wdOk5QXYC6Y
 inventory gui https://www.youtube.com/watch?v=zaIoPQFwvmo
 
 Biomes http://minecraft.wikia.com/wiki/Biomes
+
+Blender Bone Tutorial https://www.youtube.com/watch?v=lkF6WV7tMDU#t=20.645964
