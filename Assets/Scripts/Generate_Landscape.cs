@@ -126,7 +126,7 @@ public class Generate_Landscape : MonoBehaviour {
 	private Vector3 startPos;
 
 	// private int planeSize = 6;
-	private int planeSize = 20; // 4; /*6;*/ /*20;*/
+	private int planeSize = 2; // 4; /*6;*/ /*20;*/
 	private int seed = 0;
 
 	private ArrayList heightMaps;
