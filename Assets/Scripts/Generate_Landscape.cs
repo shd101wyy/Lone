@@ -13,111 +13,9 @@ public class Tile {
 	}
 }
 
-public class World {
-	public Dictionary<Vector2, Tile> tiles;
-	public Dictionary<Vector2, HeightMap> heightMaps;
-
-	public World() {
-		tiles = new Dictionary<Vector2, Tile> ();
-		heightMaps = new Dictionary<Vector2, HeightMap> ();
-	}
-
-	public void addHeightMap(Vector2 chunkPos, HeightMap heightMap) {
-		heightMaps.Add (chunkPos, heightMap);
-	}
-
-	public void addChunkGameObject(Vector2 chunkPos, GameObject chunkObject, float creationTime) {
-		Tile tile = new Tile (chunkObject, creationTime);
-		tiles.Add(chunkPos, tile);
-	}
-
-	// chunkPos like (0, 0), (0, 1), (1, 1)...
-	public Chunk getChunk(Vector2 chunkPos) {
-		return tiles [chunkPos].chunkObject.GetComponent<Generate_Chunk>().heightMap.chunk;
-	}
-
-	public bool hasChunkAtPosition(Vector2 chunkPos) {
-		return tiles.ContainsKey (chunkPos);
-	}
-
-	public void setCreationTime(Vector2 chunkPos, float creationTime) {
-		tiles [chunkPos].creationTime = creationTime;
-	}
-
-	// get block
-	public Block getBlock(Vector3 blockPos) {
-		Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / Generate_Landscape.chunkWidth),
-										Mathf.Floor (blockPos.z / Generate_Landscape.chunkDepth));
-		if (!heightMaps.ContainsKey (chunkPos))
-			return null;
-		Chunk chunk = heightMaps [chunkPos].chunk;
-		return chunk.getBlock (blockPos);
-	}
-
-	// add/set block
-	public void addBlock(Vector3 blockPos, Block block, bool needRender = false) {
-		Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / Generate_Landscape.chunkWidth),
-			Mathf.Floor (blockPos.z / Generate_Landscape.chunkDepth));
-		
-		Chunk chunk = heightMaps [chunkPos].chunk;
-		if (chunk.blocks.ContainsKey (blockPos))
-			return;
-		chunk.addBlock (blockPos, block);
-		chunk.needRender = needRender;
-	}
-
-	// remove block
-	public void removeBlock(Vector3 blockPos, bool needRender = false) {
-		Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / Generate_Landscape.chunkWidth),
-			Mathf.Floor (blockPos.z / Generate_Landscape.chunkDepth));
-		Chunk chunk = heightMaps [chunkPos].chunk;
-		chunk.removeBlock (blockPos);
-		chunk.needRender = needRender;
-
-		int chunkWidth = Generate_Landscape.chunkWidth;
-		int chunkDepth = Generate_Landscape.chunkDepth;
-
-		//Debug.Log (blockPos);
-		//Debug.Log (chunkPos);
-		// render left chunk
-		if (Mathf.Floor((blockPos.x-1)/chunkWidth) != chunkPos.x  && 
-			heightMaps.ContainsKey(chunkPos + new Vector2(-1, 0)) && 
-			this.getBlock(blockPos + new Vector3(-1, 0, 0)) != null) {
-
-			//Debug.Log ("left");
-			heightMaps [chunkPos + new Vector2 (-1, 0)].chunk.needRender = true;
-		
-		} else if (Mathf.Floor((blockPos.x+1)/chunkWidth) != chunkPos.x && 
-			heightMaps.ContainsKey(chunkPos + new Vector2(1, 0)) && 
-			this.getBlock(blockPos + new Vector3(1, 0, 0)) != null) {
-
-			//Debug.Log ("right");
-			heightMaps [chunkPos + new Vector2 (1, 0)].chunk.needRender = true;
-		}
-
-		if (Mathf.Floor((blockPos.z-1)/chunkDepth) != chunkPos.y && 
-			heightMaps.ContainsKey(chunkPos + new Vector2(0, -1)) && 
-			this.getBlock(blockPos + new Vector3(0, 0, -1)) != null) {
-
-			//Debug.Log ("front");
-			heightMaps [chunkPos + new Vector2 (0, -1)].chunk.needRender = true;
-		
-		} else if (Mathf.Floor((blockPos.z+1)/chunkDepth) != chunkPos.y && 
-			heightMaps.ContainsKey(chunkPos + new Vector2(0, 1)) && 
-			this.getBlock(blockPos + new Vector3(0, 0, 1)) != null) {
-
-			//Debug.Log ("back");
-			heightMaps [chunkPos + new Vector2 (0, 1)].chunk.needRender = true;
-		}
-	}
-}
-
 public class Generate_Landscape : MonoBehaviour {
 	public GameObject player;
 	public GameObject chunkPrefab;
-
-	public static GameObject commandBox;
-
 
 	public static int chunkWidth = 16;
 	public static int chunkDepth = 16;
@@ -126,12 +24,13 @@ public class Generate_Landscape : MonoBehaviour {
 	private Vector3 startPos;
 
 	// private int planeSize = 6;
-	private int planeSize = 2; // 4; /*6;*/ /*20;*/
+	private int planeSize = 10; // 2; // 4; /*6;*/ /*20;*/
 	private int seed = 0;
 
 	private ArrayList heightMaps;
 
-	private World world = new World();
+	public World world;
+	private Dictionary<Vector2, Tile> tiles = new Dictionary<Vector2, Tile> (); 
 
 	public int selectedBlock = 1;
 
@@ -139,52 +38,25 @@ public class Generate_Landscape : MonoBehaviour {
 	void Start () {
 	}
 
-	public void startGeneratingLandscape(int seed) {
-		loadBlockPrefabs ();
-
-
-		startPos = Vector3.zero;
-
+	public void startGeneratingLandscape(World world) {
+		this.world = world;
 		// seed == 0 的话生成平面
-		this.seed = seed;
+		this.seed = world.worldData.seed;
 
-		float updateTime = Time.realtimeSinceStartup;
+		startPos = Vector3.zero; 
+		player.transform.position = new Vector3 (world.worldData.playerX, world.worldData.playerY, world.worldData.playerZ);
+		player.transform.localEulerAngles = new Vector3 (world.worldData.playerRX, world.worldData.playerRY, world.worldData.playerRZ);
 
-		player.transform.position = new Vector3 (0, 30, 0);
-
-		int playerX = (int)(player.transform.position.x / chunkWidth);
-		int playerZ = (int)(player.transform.position.z / chunkDepth);
-
-		// for debug
-		// GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
-		// chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (seed, chunkWidth, chunkDepth, chunkHeight, 0, 0, player);
-
-		this.heightMaps = new ArrayList();
-
-		for (int x = -planeSize / 2; x < planeSize / 2; x++) {
-			for (int z = -planeSize / 2; z < planeSize / 2; z++) {
-				int chunkX = x + playerX;
-				int chunkZ = z + playerZ;
-				generateHeightMap(chunkX, chunkZ);
-			}
-		}
-
-		for (int i = 0; i < this.heightMaps.Count; i++) {
-			HeightMap heightMap = this.heightMaps [i] as HeightMap;
-			int chunkX = heightMap.chunkX;
-			int chunkZ = heightMap.chunkZ;
-
-			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, /*new Vector3 (chunkX*chunkWidth, 0, chunkZ*chunkDepth)*/Vector3.zero, Quaternion.identity);
-			Vector2 chunkPos = new Vector2 (chunkX, chunkZ);
-			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap);
-			chunkClone.name = "chunk_" + chunkPos;
-			world.addChunkGameObject (chunkPos, chunkClone, updateTime);
-		}
-
+		StartCoroutine (joinThreads (false));
 	}
 
-	void loadBlockPrefabs() {
-		commandBox = GameObject.Find ("CommandBox");
+	void addChunkGameObject(Vector2 chunkPos, GameObject chunkObject, float creationTime) {
+		Tile tile = new Tile (chunkObject, creationTime);
+		tiles.Add(chunkPos, tile);
+	}
+
+	void setCreationTime(Vector2 chunkPos, float creationTime) {
+		tiles [chunkPos].creationTime = creationTime;
 	}
 
 	void generateHeightMap(int chunkX, int chunkZ) {
@@ -238,6 +110,8 @@ public class Generate_Landscape : MonoBehaviour {
 		int zMove = (int)Mathf.Abs(playerZ - startPos.z);
 
 		int cmp = Mathf.Max(0, planeSize / 4);
+
+		world.worldData.updatePlayerTransformationData (player);
 
 		if (xMove > cmp || zMove > cmp) {
 			// StartCoroutine (updateTerrain ());
@@ -330,9 +204,10 @@ public class Generate_Landscape : MonoBehaviour {
 					Block block = world.getBlock (blockPos);
 					if (block != null) { // draw small one 
 						DropItem dropItem = (new GameObject ()).AddComponent<DropItem> () as DropItem;
-						dropItem.generate3DMesh (block);
+						dropItem.generate3DMesh (block, blockPos);
+
+						world.removeBlock (blockPos, true);
 					}
-					world.removeBlock (blockPos, true);
 				}
 			}
 		}
@@ -359,7 +234,7 @@ public class Generate_Landscape : MonoBehaviour {
 		}
 	}
 
-	IEnumerator joinThreads() {
+	IEnumerator joinThreads(bool asyncFlag = true) {
 		int playerX = (int)(player.transform.position.x / chunkWidth);
 		int playerZ = (int)(player.transform.position.z / chunkDepth);
 
@@ -369,14 +244,26 @@ public class Generate_Landscape : MonoBehaviour {
 
 		for (int x = -planeSize / 2; x < planeSize / 2; x++) {
 			for (int z = -planeSize / 2; z < planeSize / 2; z++) {
-				Vector2 chunkPos = new Vector2 (x + playerX, z + playerZ);
+
+				int chunkX = x + playerX;
+				int chunkZ = z + playerZ;
+				Vector2 chunkPos = new Vector2 (chunkX, chunkZ);
+
 				if (!world.hasChunkAtPosition (chunkPos)) {
-					int chunkX = x + playerX;
-					int chunkZ = z + playerZ;
-					// chunkPosList.Add(new Vector2(chunkX, chunkZ));
-					generateHeightMap(chunkX, chunkZ);
+					Chunk chunk = Serialization.LoadChunk (chunkPos, world);
+					if (chunk != null) { // loaded chunk from disk 
+						chunk.changed = false; 
+						HeightMap heightMap = new HeightMap (chunkX, chunkZ, chunk);
+
+						// lock (heightMaps) {
+						heightMaps.Add (heightMap);
+
+						world.addHeightMap (chunkPos, heightMap);
+					} else {
+						generateHeightMap(chunkX, chunkZ);
+					}
 				} else {
-					world.setCreationTime (chunkPos, updateTime);
+					setCreationTime (chunkPos, updateTime);
 				}
 			}
 		}
@@ -388,22 +275,26 @@ public class Generate_Landscape : MonoBehaviour {
 
 			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, /*new Vector3 (chunkX*chunkWidth, 0, chunkZ*chunkDepth)*/Vector3.zero, Quaternion.identity);
 			Vector2 chunkPos = new Vector2 (chunkX, chunkZ);
-			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap);
+			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap, world);
 			chunkClone.name = "chunk_" + chunkPos;
-			world.addChunkGameObject (chunkPos, chunkClone, updateTime);
+			addChunkGameObject (chunkPos, chunkClone, updateTime);
 
-			yield return new WaitForEndOfFrame();
+			if (asyncFlag)
+				yield return new WaitForEndOfFrame();
 		}
 			
 		Dictionary<Vector2, Tile> newTiles = new Dictionary<Vector2, Tile>();
 
-		foreach (KeyValuePair<Vector2, Tile> entry in world.tiles) {
+		foreach (KeyValuePair<Vector2, Tile> entry in tiles) {
 			if (entry.Value.creationTime != updateTime) { // remove old terrain. TODO: save that generated terrain.
 				Destroy (entry.Value.chunkObject);
 			} else {
 				newTiles.Add (entry.Key, entry.Value);
 			}
 		}
-		world.tiles = newTiles;
+		tiles = newTiles;
+
+		if (!asyncFlag)
+			yield return new WaitForEndOfFrame();
 	}
 }

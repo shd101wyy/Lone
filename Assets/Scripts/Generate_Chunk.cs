@@ -9,17 +9,17 @@ using System.Threading;
 [RequireComponent(typeof(MeshCollider))]
 public class Generate_Chunk : MonoBehaviour {
 	private Chunk chunk = null;
-	// private ArrayList visibleBlocks = null;
 	private MeshData meshData = null;
 	public HeightMap heightMap = null;
+	private World world = null;
 
 	// Use this for initialization
 	void Start () {
 	}
 
-	public void startGeneratingChunk(HeightMap heightMap) {
-
+	public void startGeneratingChunk(HeightMap heightMap, World world) {
 		this.heightMap = heightMap;
+		this.world = world;
 
 		chunk = heightMap.chunk;
 
@@ -28,14 +28,14 @@ public class Generate_Chunk : MonoBehaviour {
 
 	void drawBlock(Vector3 blockPos) {
 		Block block = chunk.getBlock(blockPos);
-		block.generateMesh (meshData);
+		block.generateMesh (meshData, blockPos, world);
 	}
 
 	public void renderChunk() {
 		meshData = new MeshData ();
 
 		foreach (var blockPos in chunk.blocks.Keys) {
-			drawBlock (blockPos);
+			drawBlock (blockPos.ToVector3());
 		}
 
 		MeshFilter filter = transform.GetComponent< MeshFilter >();
@@ -97,15 +97,17 @@ public class Generate_Chunk : MonoBehaviour {
 			renderChunk ();
 			chunk.needRender = false;
 
+			/*
 			if (chunk.water != null) {
 				Water water = chunk.water;
 				chunk.water = null;
 
-				StartCoroutine(spreadWater (water));
+				// StartCoroutine(spreadWater (water));
 			}
+			*/
 		}
 	}
-
+	/*
 	IEnumerator spreadWater(Water water) {
 		World world = this.heightMap.chunk.world;
 		Vector3 pos = water.pos;
@@ -172,14 +174,7 @@ public class Generate_Chunk : MonoBehaviour {
 			spread.Add(w);
 		}
 
-		/*
-		this.chunk.needRender = true;
-		yield return new WaitForSeconds (seconds);
-		this.chunk.needRender = false;
-		for (int i = 0; i < spread.Count; i++) {
-			StartCoroutine(spreadWater (spread[i] as Water));
-		}
-		*/
 		
 	}
+*/
 }

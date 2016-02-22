@@ -44,6 +44,7 @@ public class Game : MonoBehaviour {
 	public GameObject commandBox;
 	public GameObject player;
 	public GameObject inventoryBar;
+	public GameObject landscape;
 
 	private InputField input;
 
@@ -52,10 +53,12 @@ public class Game : MonoBehaviour {
 	public static int textureTileSize = 16;
 	public static Dictionary<string, SpriteData> textures;
 
+	World world;
+
 	// load textures made by Texture Packer
 	void loadTextures(string jsonPath, string imagePath) {
-        // Attention: Resources.Load couldn't have file extension
-        string textureJson = (Resources.Load(jsonPath) as TextAsset).text; // File.ReadAllText (Application.streamingAssetsPath + jsonPath);
+		// Attention: Resources.Load couldn't have file extension
+		string textureJson = (Resources.Load(jsonPath) as TextAsset).text; // File.ReadAllText (Application.streamingAssetsPath + jsonPath);
 		JsonData textureJsonData = JsonMapper.ToObject (textureJson);
 		textureWidth = (int)textureJsonData ["meta"] ["size"] ["w"];
 		textureHeight = (int)textureJsonData ["meta"] ["size"] ["h"];
@@ -88,9 +91,12 @@ public class Game : MonoBehaviour {
 		// load texture data from StreamingAssets folder
 		loadTextures("texture_json", "texture");
 		loadTextures ("items_json", "items");
-			
+
 		input = commandBox.GetComponent<InputField> ();
-		GameObject.Find ("Landscape").GetComponent<Generate_Landscape> ().startGeneratingLandscape (/*0*/ /*(int)Network.time * 10*/ (int)System.DateTime.Now.Millisecond * 1000);
+
+		// TODO: load Town world 
+		world = new World("test");
+		GameObject.Find ("Landscape").GetComponent<Generate_Landscape> ().startGeneratingLandscape (world);
 
 
 
@@ -109,7 +115,7 @@ public class Game : MonoBehaviour {
 		inventoryBar.GetComponent<InventoryBar>().setItem(textures["log_oak"].texture_2d, 4);
 		inventoryBar.GetComponent<InventoryBar>().setItem(textures["planks_oak"].texture_2d, 5);
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.T)) {
@@ -124,19 +130,18 @@ public class Game : MonoBehaviour {
 	public void GetCommandBoxInput(string command) {
 		Debug.Log ("@: " + command);
 		command = command.Trim ();
-		if (command == "start") {
-			/*
-			GameObject landscape = GameObject.Find ("Landscape");
-			Destroy (landscape);
-			landscape.GetComponent<Generate_Landscape> ().startGeneratingLandscape ((int)Network.time * 10);
-			*/
+		char[] delimiter = { ' ' };
+		string[] commands = command.Split (delimiter, 10);
+
+		if (commands[0] == "save") {
+			world.saveWorld ();
 		}
 
 		input.text = "";
 	}
 
 	public static void generate3DMeshFrom2D(GameObject g, SpriteData sprite, float depth = 0.0625f) {
-		
+
 		g.AddComponent<ExtrudeSprite> ();
 		// gameObject.AddComponent<MeshFilter> ();
 		// gameObject.AddComponent<MeshRenderer> ();

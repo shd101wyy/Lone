@@ -12,3 +12,7 @@ inventory gui https://www.youtube.com/watch?v=zaIoPQFwvmo
 Biomes http://minecraft.wikia.com/wiki/Biomes
 
 Blender Bone Tutorial https://www.youtube.com/watch?v=lkF6WV7tMDU#t=20.645964
+
+Blend animation: https://www.youtube.com/watch?v=cGvalWG8HBU
+
+Someone's question: http://answers.unity3d.com/questions/516520/how-do-you-save-voxel-terrain.html

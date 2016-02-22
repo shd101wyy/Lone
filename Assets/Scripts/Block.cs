@@ -10,30 +10,28 @@ public enum Type {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE, PLANKS
 [Serializable]
 public abstract class Block {
 	public Type type;
-	public Vector3 pos;
 	public Chunk chunk;
-	public World world;
-	public Texture2D texture_2d;
-
 
 	public float blockSize = 1f;
-	public BlockTile blockTile;
 
-	public Block(Type type, Texture2D texture_2d) {
+	public Block(Type type) {
 		this.type = type;
-		this.pos = Vector3.zero;
 		this.chunk = null;
-		this.texture_2d = texture_2d;
 	}
 
-	public abstract void generateMesh (MeshData meshData, bool collidable = true);
+	public abstract void generateMesh (MeshData meshData, Vector3 pos, World world, bool collidable = true);
+
+	public abstract Texture2D getTexture ();
+
+	public abstract BlockTile getBlockTile ();
 }
 
+[Serializable]
 public class CubeBlock: Block {
-	public CubeBlock(Type type, Texture2D texture_2d) : base(type, texture_2d) {
+	public CubeBlock(Type type) : base(type) {
 	}
 
-	public override void generateMesh(MeshData meshData, bool collidable = true) {
+	public override void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = true) {
 
 		bool col = meshData.useRenderDataForCollision;
 		meshData.useRenderDataForCollision = collidable;
@@ -53,25 +51,33 @@ public class CubeBlock: Block {
 		Block bottom = world.getBlock (bottomDir);
 
 		if (!(front != null && front is CubeBlock)) {
-			meshData.FaceDataZPositive (this);
+			meshData.FaceDataZPositive (this, pos);
 		}
 		if (!(back != null && back is CubeBlock)) {
-			meshData.FaceDataZNegative (this);
+			meshData.FaceDataZNegative (this, pos);
 		}
 		if (!(right != null && right is CubeBlock)) {
-			meshData.FaceDataXPositive (this);
+			meshData.FaceDataXPositive (this, pos);
 		}
 		if (!(left != null && left is CubeBlock)) {
-			meshData.FaceDataXNegative (this);
+			meshData.FaceDataXNegative (this, pos);
 		}
 		if (!(bottom != null && bottom is CubeBlock)) {
-			meshData.FaceDataYNegative (this);
+			meshData.FaceDataYNegative (this, pos);
 		}
 		if (!(top != null && top is CubeBlock)) {
-			meshData.FaceDataYPositive (this);
+			meshData.FaceDataYPositive (this, pos);
 		}
 
 		meshData.useRenderDataForCollision = col;
+	}
+
+	public override Texture2D getTexture () {
+		throw new NotImplementedException ();
+	}
+
+	public override BlockTile getBlockTile () {
+		throw new NotImplementedException ();
 	}
 }
 
@@ -97,77 +103,139 @@ public class Rose: Block {
 }
 */
 
+[Serializable]
 public class Grass: CubeBlock {
-	public Grass() : base(Type.GRASS, Game.textures["dirt"].texture_2d) {
+	public Grass() : base(Type.GRASS) {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["dirt"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile (){
 		SpriteData top = Game.textures ["grass_top"];
 		SpriteData side = Game.textures ["grass_side"];
 		SpriteData bottom = Game.textures ["dirt"];
-		this.blockTile = new BlockTile (side, side, top, bottom, side, side); 
+		return new BlockTile (side, side, top, bottom, side, side);
 	}
 }
 
+[Serializable]
 public class Dirt: CubeBlock {
-	public Dirt() : base(Type.DIRT, Game.textures["dirt"].texture_2d) {
+	public Dirt() : base(Type.DIRT) {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["dirt"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile (){
 		SpriteData side = Game.textures ["dirt"];
-		this.blockTile = new BlockTile (side, side, side, side, side, side);
+		return new BlockTile (side, side, side, side, side, side);
 	}
 }
 
+[Serializable]
 public class Snow: CubeBlock {
-	public Snow() : base(Type.SNOW, Game.textures["snow"].texture_2d) {
+	public Snow() : base(Type.SNOW) {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures["snow"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile () {
 		SpriteData side = Game.textures ["snow"];
-		this.blockTile = new BlockTile (side, side, side, side, side, side);
+		return new BlockTile (side, side, side, side, side, side);
 	}
 }
 
+[Serializable]
 public class Sand: CubeBlock {
-	public Sand() : base(Type.SAND, Game.textures["sand"].texture_2d) {
+	public Sand() : base(Type.SAND) {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["sand"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile () {
 		SpriteData side = Game.textures ["sand"];
-		this.blockTile = new BlockTile (side, side, side, side, side, side);
+		return new BlockTile (side, side, side, side, side, side);
 	}
 }
 
+[Serializable]
 public class LogJungle: CubeBlock {
-	public LogJungle() : base(Type.LOG_JUNGLE, Game.textures["log_jungle"].texture_2d) {
+	public LogJungle() : base(Type.LOG_JUNGLE) {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["log_jungle"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile () {
 		SpriteData side = Game.textures ["log_jungle"];
 		SpriteData top = Game.textures ["log_jungle_top"];
-		this.blockTile = new BlockTile (side, side, top, top, side, side);
+		return new BlockTile (side, side, top, top, side, side);
 	}
 }
 
+[Serializable]
 public class PlanksJungle: CubeBlock {
-	public PlanksJungle() : base(Type.PLANKS_JUNGLE, Game.textures["planks_jungle"].texture_2d) {
+	public PlanksJungle() : base(Type.PLANKS_JUNGLE) {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["planks_jungle"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile () {
 		SpriteData side = Game.textures ["planks_jungle"];
-		this.blockTile = new BlockTile (side, side, side, side, side, side);
+		return new BlockTile (side, side, side, side, side, side);
 	}
 }
 
+[Serializable]
 public class LogOak: CubeBlock {
-	public LogOak() : base(Type.LOG_OAK, Game.textures["log_oak"].texture_2d) {
+	public LogOak() : base(Type.LOG_OAK) {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["log_oak"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile () {
 		SpriteData side = Game.textures ["log_oak"];
 		SpriteData top = Game.textures ["log_oak_top"];
-		this.blockTile = new BlockTile (side, side, top, top, side, side);
+		return new BlockTile (side, side, top, top, side, side);
 	}
 }
 
+[Serializable]
 public class PlanksOak: CubeBlock {
-	public PlanksOak() : base(Type.PLANKS_OAK, Game.textures["planks_oak"].texture_2d) {
+	public PlanksOak() : base(Type.PLANKS_OAK) {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["planks_oak"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile () {
 		SpriteData side = Game.textures ["planks_oak"];
-		this.blockTile = new BlockTile (side, side, side, side, side, side);
+		return new BlockTile (side, side, side, side, side, side);
 	}
 }
 
 // TODO: the water below is super bad
 public class Water: Block {
 	public int energy;
-	public Water(int energy = 5) : base(Type.WATER, Game.textures["dirt"].texture_2d) {
-		SpriteData side = Game.textures ["dirt"]; // TODO: change later
-		this.blockTile = new BlockTile (side, side, side, side, side, side);
+	public Water(int energy = 5) : base(Type.WATER) {
 		this.energy = energy;
 
 		// Debug.Log ("energy : " + energy);
 	}
-	public override void generateMesh(MeshData meshData, bool collidable = false) {
+	public override void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = false) {
 		collidable = false;
 		bool col = meshData.useRenderDataForCollision;
 		meshData.useRenderDataForCollision = collidable;
@@ -187,24 +255,34 @@ public class Water: Block {
 		Block bottom = world.getBlock (bottomDir);
 
 		if (!(front != null && front is CubeBlock)) {
-			meshData.FaceDataZPositive (this);
+			meshData.FaceDataZPositive (this, pos);
 		}
 		if (!(back != null && back is CubeBlock)) {
-			meshData.FaceDataZNegative (this);
+			meshData.FaceDataZNegative (this, pos);
 		}
 		if (!(right != null && right is CubeBlock)) {
-			meshData.FaceDataXPositive (this);
+			meshData.FaceDataXPositive (this, pos);
 		}
 		if (!(left != null && left is CubeBlock)) {
-			meshData.FaceDataXNegative (this);
+			meshData.FaceDataXNegative (this, pos);
 		}
 		if (!(bottom != null && bottom is CubeBlock)) {
-			meshData.FaceDataYNegative (this);
+			meshData.FaceDataYNegative (this, pos);
 		}
 		if (!(top != null && top is CubeBlock)) {
-			meshData.FaceDataYPositive (this);
+			meshData.FaceDataYPositive (this, pos);
 		}
 
 		meshData.useRenderDataForCollision = col;
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["dirt"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile ()
+	{
+		SpriteData side = Game.textures ["dirt"]; // TODO: change later
+		return new BlockTile (side, side, side, side, side, side);
 	}
 }

@@ -3,48 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Chunk {
-	public Dictionary<Vector3, Block> blocks;
-	public bool needRender;
-	public int chunkX;
-	public int chunkZ;
-	public World world;
-	public Water water;
-
-	public Chunk(int chunkX, int chunkZ, World world) {
-		blocks = new Dictionary<Vector3, Block> ();
-		needRender = false;
-		this.chunkX = chunkX;
-		this.chunkZ = chunkZ;
-		this.world = world;
-	}
-
-	public void addBlock(Vector3 pos, Block block) {
-		blocks.Add (pos, block);
-		block.chunk = this;
-		block.pos = pos;
-		block.world = world;
-
-		if (block is Water) {
-			this.water = block as Water;
-		}
-	}
-
-	public Block getBlock(Vector3 pos) {
-		if (!blocks.ContainsKey (pos))
-			return null;
-		return blocks [pos];
-	}
-
-	public void removeBlock(Vector3 pos) {
-		blocks.Remove (pos);
-	}
-
-	public bool hasBlockAtPosition(Vector3 pos) {
-		return blocks.ContainsKey (pos);
-	}
-}
-
 public class HeightMap {
 	public int chunkX;
 	public int chunkZ;
@@ -78,6 +36,14 @@ public class HeightMap {
 		rnd = new System.Random ();
 
 		chunk = new Chunk(chunkX, chunkZ, world);
+	}
+
+	public HeightMap(int chunkX, int chunkZ, Chunk chunk) {
+		this.chunkX = chunkX;
+		this.chunkZ = chunkZ;
+		this.chunk = chunk;
+
+		rnd = new System.Random ();
 	}
 
 	public void generateHeightMap() {

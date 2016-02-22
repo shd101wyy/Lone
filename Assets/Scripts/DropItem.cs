@@ -27,6 +27,7 @@ public class DropItem : MonoBehaviour {
 				count = 0;
 			}
 			transform.position = transform.position + new Vector3 (0, speed * Time.deltaTime, 0);
+			transform.Rotate (new Vector3 (0, 30f * Time.deltaTime, 0));
 
 			checkNearbyPlayer ();
 		} else {
@@ -40,9 +41,8 @@ public class DropItem : MonoBehaviour {
 	
 	}
 
-	public void generate3DMesh(Block block) {
-		Vector3 blockPos = block.pos;
-		Texture2D texture_2d = block.texture_2d;
+	public void generate3DMesh(Block block, Vector3 blockPos) {
+		Texture2D texture_2d = block.getTexture();
 
 		transform.position = blockPos;
 		name = "drop " + blockPos;

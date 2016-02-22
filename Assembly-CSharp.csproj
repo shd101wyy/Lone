@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Block.cs" />
+     <Compile Include="Assets\Scripts\Chunk.cs" />
      <Compile Include="Assets\Scripts\DropItem.cs" />
      <Compile Include="Assets\Scripts\ExtrudeSprite.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
@@ -56,9 +57,14 @@
      <Compile Include="Assets\Scripts\Item.cs" />
      <Compile Include="Assets\Scripts\LoadingScreen.cs" />
      <Compile Include="Assets\Scripts\MeshData.cs" />
+     <Compile Include="Assets\Scripts\Position.cs" />
      <Compile Include="Assets\Scripts\RightHandAnimation.cs" />
+     <Compile Include="Assets\Scripts\Save.cs" />
+     <Compile Include="Assets\Scripts\Serialization.cs" />
      <Compile Include="Assets\Scripts\Sun_Move.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />
+     <Compile Include="Assets\Scripts\World.cs" />
+     <Compile Include="Assets\Scripts\WorldData.cs" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\Standard Assets\Characters\ThirdPersonCharacter\ThirdPersonCharacterGuidelines.txt" />
      <None Include="Assets\Standard Assets\Characters\FirstPersonCharacter\FirstPersonCharacterGuidelines.txt" />
