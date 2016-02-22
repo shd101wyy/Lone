@@ -72,6 +72,8 @@ public class HeightMap {
 				}
 			}
 		}
+
+		chunk.changed = false; // this chunk hasn't been changed by player...
 	}
 
 	void createBlock(Vector3 blockPos, bool isTop) {

@@ -252,7 +252,7 @@ public class Generate_Landscape : MonoBehaviour {
 				if (!world.hasChunkAtPosition (chunkPos)) {
 					Chunk chunk = Serialization.LoadChunk (chunkPos, world);
 					if (chunk != null) { // loaded chunk from disk 
-						chunk.changed = false; 
+						// chunk.changed = false; // 存的时候应该就是 false
 						HeightMap heightMap = new HeightMap (chunkX, chunkZ, chunk);
 
 						// lock (heightMaps) {
