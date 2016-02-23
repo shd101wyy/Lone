@@ -72,6 +72,17 @@ public class World {
 		}
 	}
 
+	public World(string worldName, int seed) {
+		this.name = worldName;
+		chunks = new Dictionary<Vector2, Chunk> ();
+
+		// load WorldData
+		worldData = Serialization.LoadWorldData(this);
+		if (worldData == null) {
+			worldData = new WorldData (seed);
+		}
+	}
+
 	public void addChunk(Vector2 chunkPos, Chunk chunk) {
 		chunks.Add (chunkPos, chunk);
 	}

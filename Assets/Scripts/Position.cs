@@ -31,7 +31,17 @@ public class BlockPos: System.Object {
 
 	public override int GetHashCode ()
 	{
-		return x ^ y ^ z;
+		unchecked
+		{
+			int hash = 47;
+
+			hash = hash * 227 + x.GetHashCode();
+			hash = hash * 227 + y.GetHashCode();
+			hash = hash * 227 + z.GetHashCode();
+
+			return hash;
+		}
+		// return x^y^z 这个 hash 极大地拖慢了游戏的 render 速度。所以 hash 还是很重要的。。。
 	}
 
 	public Vector3 ToVector3() {

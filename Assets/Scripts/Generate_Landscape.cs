@@ -238,8 +238,8 @@ public class Generate_Landscape : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		world.worldData.updatePlayerTransformationData (player);
-
+		if (player != null)
+			world.worldData.updatePlayerTransformationData (player);
 
 		CheckLeftClick ();
 		CheckRightClick ();
