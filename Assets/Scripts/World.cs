@@ -7,6 +7,7 @@ using System.Collections.Generic;
  * 
  * WorldData is used to store player coordinate
  * player items
+ * Sun/Moon quaternion
  * etc
  */ 
 [Serializable]
@@ -178,6 +179,16 @@ public class World {
 			}
 		}
 		Debug.Log ("Done");
+	}
+
+	public void saveChunk(Vector2 chunkPos) {
+		Chunk chunk = chunks [chunkPos];
+		if (chunk.changed) {
+			Debug.Log ("Save chunk");
+			chunk.changed = false;
+			Serialization.SaveChunk (chunk, this);
+			Debug.Log ("Done");
+		}
 	}
 
 	//  load world from disk

@@ -105,7 +105,7 @@ public class Game : MonoBehaviour {
 		generate3DMeshFrom2D (rightHand, textures ["iron_pickaxe"]);
 
 		GameObject leftHand = GameObject.Find ("LeftHandItem");
-		generate3DMeshFrom2D (leftHand, textures ["iron_sword"]);
+		generate3DMeshFrom2D (leftHand, textures ["crystalys"]);
 
 		// set inventory bar items
 		inventoryBar.GetComponent<InventoryBar>().setItem(textures["dirt"].texture_2d, 0);

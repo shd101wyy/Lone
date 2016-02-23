@@ -34,6 +34,9 @@ public class Generate_Landscape : MonoBehaviour {
 	public static int halfPlaneSize = 4;
 	int timer = 0;
 
+	int autoSaveTimer = 0;
+	bool chunkChanged = false;
+
 	static  Vector3[] chunkPositions= {   new Vector3( 0, 0,  0), new Vector3(-1, 0,  0), new Vector3( 0, 0, -1), new Vector3( 0, 0,  1), new Vector3( 1, 0,  0),
 		new Vector3(-1, 0, -1), new Vector3(-1, 0,  1), new Vector3( 1, 0, -1), new Vector3( 1, 0,  1), new Vector3(-2, 0,  0),
 		new Vector3( 0, 0, -2), new Vector3( 0, 0,  2), new Vector3( 2, 0,  0), new Vector3(-2, 0, -1), new Vector3(-2, 0,  1),
@@ -148,6 +151,12 @@ public class Generate_Landscape : MonoBehaviour {
 						dropItem.generate3DMesh (block, blockPos);
 
 						world.removeBlock (blockPos, true);
+						/*
+						Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / chunkWidth),
+							Mathf.Floor (blockPos.z / chunkDepth));
+						world.saveChunk (chunkPos);
+						*/
+						chunkChanged = true;
 					}
 				}
 			}
@@ -208,6 +217,12 @@ public class Generate_Landscape : MonoBehaviour {
 					}
 
 					world.addBlock (newPos, block, true);
+					/*
+					Vector2 chunkPos = new Vector2 (Mathf.Floor (newPos.x / chunkWidth),
+						Mathf.Floor (newPos.z / chunkDepth));
+					world.saveChunk (chunkPos);
+					*/
+					chunkChanged = true;
 				}
 			}
 		}
@@ -236,6 +251,21 @@ public class Generate_Landscape : MonoBehaviour {
 		}
 	}
 
+	// AutoSave the world every 120 frames
+	void AutoSave() {
+		if (autoSaveTimer == 120) {
+			autoSaveTimer = 0;
+
+			if (chunkChanged == true) {
+				world.saveWorld ();
+
+				chunkChanged = false;
+			}
+		}
+
+		autoSaveTimer += 1;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if (player != null)
@@ -244,6 +274,8 @@ public class Generate_Landscape : MonoBehaviour {
 		CheckLeftClick ();
 		CheckRightClick ();
 		CheckKeyboard ();	
+
+		AutoSave ();
 
 
 		DeleteChunks ();
