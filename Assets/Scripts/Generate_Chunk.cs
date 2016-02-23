@@ -16,11 +16,10 @@ public class Generate_Chunk : MonoBehaviour {
 	void Start () {
 	}
 
-	public void startGeneratingChunk(Chunk chunk, World world) {
+	public void bindChunk(Chunk chunk, World world) {
 		this.world = world;
 		this.chunk = chunk;
-
-		renderChunk ();
+		// renderChunk ();
 	}
 
 	void drawBlock(Vector3 blockPos) {

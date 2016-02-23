@@ -173,4 +173,25 @@ public class World {
 	// public void loadWorld() {
 	//
 	// }
+
+	public Chunk CreateChunk(Vector2 chunkPos) {
+		if (hasChunkAtPosition (chunkPos) == false) {
+			Chunk chunk = Serialization.LoadChunk (chunkPos, this);
+			if (chunk != null) { // loaded chunk from disk 
+				// chunk.changed = false; // 存的时候应该就是 false
+				// do nothing
+			} else {
+				chunk = new Chunk ((int)chunkPos.x, (int)chunkPos.y);
+				chunk.generateHeightMap (this);
+			}
+			addChunk (chunkPos, chunk);
+			return chunk; 
+		} else {
+			return chunks [chunkPos];
+		}
+	}
+
+	public void RemoveChunk(Vector2 chunkPos) {
+		chunks.Remove (chunkPos);
+	}
 }

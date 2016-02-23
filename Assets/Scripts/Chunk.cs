@@ -121,4 +121,8 @@ public class Chunk {
 
 		addBlock(blockPos, block);
 	}
+
+	public Vector3 ToWorldCoordinate() {
+		return new Vector3 (chunkX * Generate_Landscape.chunkWidth, 0, chunkZ * Generate_Landscape.chunkDepth);
+	}
 }
