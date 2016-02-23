@@ -51,7 +51,7 @@ public static class Serialization {
 		IFormatter formatter = new BinaryFormatter ();
 		FileStream stream = new FileStream (saveFile, FileMode.Open);
 
-		Chunk chunk = new Chunk ((int)chunkPos.x, (int)chunkPos.y, world);
+		Chunk chunk = new Chunk ((int)chunkPos.x, (int)chunkPos.y);
 		chunk.blocks = formatter.Deserialize (stream) as Dictionary<BlockPos, Block>;
 		chunk.needRender = true;
 		stream.Close ();

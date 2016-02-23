@@ -57,13 +57,13 @@ public class WorldData {
 }
 
 public class World {
-	public Dictionary<Vector2, HeightMap> heightMaps;
+	public Dictionary<Vector2, Chunk> chunks;
 	public string name;
 	public WorldData worldData;
 
 	public World(string worldName) {
 		this.name = worldName;
-		heightMaps = new Dictionary<Vector2, HeightMap> ();
+		chunks = new Dictionary<Vector2, Chunk> ();
 
 		// load WorldData
 		worldData = Serialization.LoadWorldData(this);
@@ -72,27 +72,29 @@ public class World {
 		}
 	}
 
-	public void addHeightMap(Vector2 chunkPos, HeightMap heightMap) {
-		heightMaps.Add (chunkPos, heightMap);
+	public void addChunk(Vector2 chunkPos, Chunk chunk) {
+		chunks.Add (chunkPos, chunk);
 	}
 
 	// chunkPos like (0, 0), (0, 1), (1, 1)...
 	public Chunk getChunk(Vector2 chunkPos) {
-		return heightMaps [chunkPos].chunk;
+		if (chunks.ContainsKey (chunkPos))
+			return chunks [chunkPos];
+		else
+			return null;
 	}
 
 	public bool hasChunkAtPosition(Vector2 chunkPos) {
-		return heightMaps.ContainsKey (chunkPos);
+		return chunks.ContainsKey (chunkPos);
 	}
 
 	// get block
 	public Block getBlock(Vector3 blockPos) {
 		Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / Generate_Landscape.chunkWidth),
 			Mathf.Floor (blockPos.z / Generate_Landscape.chunkDepth));
-		if (!heightMaps.ContainsKey (chunkPos))
+		if (!chunks.ContainsKey (chunkPos))
 			return null;
-		Chunk chunk = heightMaps [chunkPos].chunk;
-		return chunk.getBlock (blockPos);
+		return chunks[chunkPos].getBlock (blockPos);
 	}
 
 	// add/set block
@@ -100,7 +102,7 @@ public class World {
 		Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / Generate_Landscape.chunkWidth),
 			Mathf.Floor (blockPos.z / Generate_Landscape.chunkDepth));
 
-		Chunk chunk = heightMaps [chunkPos].chunk;
+		Chunk chunk = chunks [chunkPos];
 		if (chunk.hasBlockAtPosition (blockPos))
 			return;
 		chunk.addBlock (blockPos, block);
@@ -111,7 +113,7 @@ public class World {
 	public void removeBlock(Vector3 blockPos, bool needRender = false) {
 		Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / Generate_Landscape.chunkWidth),
 			Mathf.Floor (blockPos.z / Generate_Landscape.chunkDepth));
-		Chunk chunk = heightMaps [chunkPos].chunk;
+		Chunk chunk = chunks [chunkPos];
 		chunk.removeBlock (blockPos);
 		chunk.needRender = needRender;
 
@@ -122,33 +124,33 @@ public class World {
 		//Debug.Log (chunkPos);
 		// render left chunk
 		if (Mathf.Floor((blockPos.x-1)/chunkWidth) != chunkPos.x  && 
-			heightMaps.ContainsKey(chunkPos + new Vector2(-1, 0)) && 
+			chunks.ContainsKey(chunkPos + new Vector2(-1, 0)) && 
 			this.getBlock(blockPos + new Vector3(-1, 0, 0)) != null) {
 
 			//Debug.Log ("left");
-			heightMaps [chunkPos + new Vector2 (-1, 0)].chunk.needRender = true;
+			chunks [chunkPos + new Vector2 (-1, 0)].needRender = true;
 
 		} else if (Mathf.Floor((blockPos.x+1)/chunkWidth) != chunkPos.x && 
-			heightMaps.ContainsKey(chunkPos + new Vector2(1, 0)) && 
+			chunks.ContainsKey(chunkPos + new Vector2(1, 0)) && 
 			this.getBlock(blockPos + new Vector3(1, 0, 0)) != null) {
 
 			//Debug.Log ("right");
-			heightMaps [chunkPos + new Vector2 (1, 0)].chunk.needRender = true;
+			chunks [chunkPos + new Vector2 (1, 0)].needRender = true;
 		}
 
 		if (Mathf.Floor((blockPos.z-1)/chunkDepth) != chunkPos.y && 
-			heightMaps.ContainsKey(chunkPos + new Vector2(0, -1)) && 
+			chunks.ContainsKey(chunkPos + new Vector2(0, -1)) && 
 			this.getBlock(blockPos + new Vector3(0, 0, -1)) != null) {
 
 			//Debug.Log ("front");
-			heightMaps [chunkPos + new Vector2 (0, -1)].chunk.needRender = true;
+			chunks [chunkPos + new Vector2 (0, -1)].needRender = true;
 
 		} else if (Mathf.Floor((blockPos.z+1)/chunkDepth) != chunkPos.y && 
-			heightMaps.ContainsKey(chunkPos + new Vector2(0, 1)) && 
+			chunks.ContainsKey(chunkPos + new Vector2(0, 1)) && 
 			this.getBlock(blockPos + new Vector3(0, 0, 1)) != null) {
 
 			//Debug.Log ("back");
-			heightMaps [chunkPos + new Vector2 (0, 1)].chunk.needRender = true;
+			chunks [chunkPos + new Vector2 (0, 1)].needRender = true;
 		}
 	}
 
@@ -157,9 +159,8 @@ public class World {
 		Debug.Log ("Save");
 		Serialization.SaveWorldData (this);
 
-		foreach (var item in heightMaps) {
-			HeightMap heightMap = item.Value;	
-			Chunk chunk = heightMap.chunk;
+		foreach (var item in chunks) {
+			Chunk chunk = item.Value;	
 			if (chunk.changed) {
 				chunk.changed = false;
 				Serialization.SaveChunk (chunk, this);

@@ -55,6 +55,7 @@
      <Compile Include="Assets\Scripts\HeightMap.cs" />
      <Compile Include="Assets\Scripts\InventoryBar.cs" />
      <Compile Include="Assets\Scripts\Item.cs" />
+     <Compile Include="Assets\Scripts\LoadChunks.cs" />
      <Compile Include="Assets\Scripts\LoadingScreen.cs" />
      <Compile Include="Assets\Scripts\MeshData.cs" />
      <Compile Include="Assets\Scripts\Position.cs" />

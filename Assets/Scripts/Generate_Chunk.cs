@@ -10,18 +10,15 @@ using System.Threading;
 public class Generate_Chunk : MonoBehaviour {
 	private Chunk chunk = null;
 	private MeshData meshData = null;
-	public HeightMap heightMap = null;
 	private World world = null;
 
 	// Use this for initialization
 	void Start () {
 	}
 
-	public void startGeneratingChunk(HeightMap heightMap, World world) {
-		this.heightMap = heightMap;
+	public void startGeneratingChunk(Chunk chunk, World world) {
 		this.world = world;
-
-		chunk = heightMap.chunk;
+		this.chunk = chunk;
 
 		renderChunk ();
 	}
@@ -58,6 +55,9 @@ public class Generate_Chunk : MonoBehaviour {
 		coll_mesh.triangles = meshData.colTriangles.ToArray();
 		coll_mesh.RecalculateNormals();
 		coll.sharedMesh = coll_mesh;
+
+		// set chunk as rendered
+		chunk.rendered = true;
 	}
 
 	Vector3 getHitObjectPos(Vector3 hit1, Vector3 hit2, Vector3 hit3, Vector3 normal) {

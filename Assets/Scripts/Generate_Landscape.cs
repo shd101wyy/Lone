@@ -24,10 +24,8 @@ public class Generate_Landscape : MonoBehaviour {
 	private Vector3 startPos;
 
 	// private int planeSize = 6;
-	private int planeSize = 10; // 2; // 4; /*6;*/ /*20;*/
+	private int planeSize = 6; // 2; // 4; /*6;*/ /*20;*/
 	private int seed = 0;
-
-	private ArrayList heightMaps;
 
 	public World world;
 	private Dictionary<Vector2, Tile> tiles = new Dictionary<Vector2, Tile> (); 
@@ -40,12 +38,10 @@ public class Generate_Landscape : MonoBehaviour {
 
 	public void startGeneratingLandscape(World world) {
 		this.world = world;
-		// seed == 0 的话生成平面
-		this.seed = world.worldData.seed;
 
-		startPos = Vector3.zero; 
 		player.transform.position = new Vector3 (world.worldData.playerX, world.worldData.playerY, world.worldData.playerZ);
 		player.transform.localEulerAngles = new Vector3 (world.worldData.playerRX, world.worldData.playerRY, world.worldData.playerRZ);
+		startPos = player.transform.position; 
 
 		StartCoroutine (joinThreads (false));
 	}
@@ -59,6 +55,7 @@ public class Generate_Landscape : MonoBehaviour {
 		tiles [chunkPos].creationTime = creationTime;
 	}
 
+	/*
 	void generateHeightMap(int chunkX, int chunkZ) {
 		HeightMap heightMap = new HeightMap (chunkX, chunkZ, seed, world);
 		heightMap.generateHeightMap ();
@@ -69,6 +66,7 @@ public class Generate_Landscape : MonoBehaviour {
 		world.addHeightMap (new Vector2 (chunkX, chunkZ), heightMap);
 		// }
 	}
+	*/
 
 	Vector3 getHitObjectPos(Vector3 hit1, Vector3 hit2, Vector3 hit3, Vector3 normal) {
 		float x, y, z;
@@ -240,7 +238,7 @@ public class Generate_Landscape : MonoBehaviour {
 
 		float updateTime = Time.realtimeSinceStartup;
 
-		this.heightMaps = new ArrayList();
+		ArrayList chunks = new ArrayList();
 
 		for (int x = -planeSize / 2; x < planeSize / 2; x++) {
 			for (int z = -planeSize / 2; z < planeSize / 2; z++) {
@@ -253,29 +251,28 @@ public class Generate_Landscape : MonoBehaviour {
 					Chunk chunk = Serialization.LoadChunk (chunkPos, world);
 					if (chunk != null) { // loaded chunk from disk 
 						// chunk.changed = false; // 存的时候应该就是 false
-						HeightMap heightMap = new HeightMap (chunkX, chunkZ, chunk);
-
-						// lock (heightMaps) {
-						heightMaps.Add (heightMap);
-
-						world.addHeightMap (chunkPos, heightMap);
+						chunks.Add (chunk);
 					} else {
-						generateHeightMap(chunkX, chunkZ);
+						chunk = new Chunk (chunkX, chunkZ);
+						chunk.generateHeightMap (world);
+
+						chunks.Add (chunk);
 					}
+					world.addChunk (chunkPos, chunk);
 				} else {
 					setCreationTime (chunkPos, updateTime);
 				}
 			}
 		}
 
-		for (int i = this.heightMaps.Count - 1; i >= 0; i--) {
-			HeightMap heightMap = this.heightMaps [i] as HeightMap;
-			int chunkX = heightMap.chunkX;
-			int chunkZ = heightMap.chunkZ;
+		for (int i = chunks.Count - 1; i >= 0; i--) {
+			Chunk chunk = chunks [i] as Chunk;
+			int chunkX = chunk.chunkX;
+			int chunkZ = chunk.chunkZ;
 
-			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, /*new Vector3 (chunkX*chunkWidth, 0, chunkZ*chunkDepth)*/Vector3.zero, Quaternion.identity);
+			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, Vector3.zero, Quaternion.identity);
 			Vector2 chunkPos = new Vector2 (chunkX, chunkZ);
-			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (heightMap, world);
+			chunkClone.GetComponent<Generate_Chunk> ().startGeneratingChunk (chunk, world);
 			chunkClone.name = "chunk_" + chunkPos;
 			addChunkGameObject (chunkPos, chunkClone, updateTime);
 
