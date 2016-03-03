@@ -30,7 +30,7 @@ public class MeshData{
 		useRenderDataForCollision = true; // use collision
 	}
 
-	public void FaceDataYPositive(Block block, Vector3 pos){
+	public void FaceDataYPositive(Block block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z + half_block_size));
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z + half_block_size));
@@ -50,7 +50,7 @@ public class MeshData{
 
 
 		// add textures
-		BlockTile blockTile = block.getBlockTile();
+		BlockTile blockTile = dropItem ? block.getDropBlockTile() : block.getBlockTile();
 		Vector2 _00 = blockTile.top_00;
 		Vector2 _10 = blockTile.top_10;
 		Vector2 _01 = blockTile.top_01;
@@ -61,7 +61,7 @@ public class MeshData{
 		this.uvs.Add (_10);
 	}
 
-	public void FaceDataYNegative(Block block, Vector3 pos){
+	public void FaceDataYNegative(Block block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z - half_block_size));
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z - half_block_size));
@@ -79,7 +79,7 @@ public class MeshData{
 		this.AddQuadTriangles();
 
 		// add textures
-		BlockTile blockTile = block.getBlockTile();
+		BlockTile blockTile = dropItem ? block.getDropBlockTile() : block.getBlockTile();
 		Vector2 _00 = blockTile.bottom_00;
 		Vector2 _10 = blockTile.bottom_10;
 		Vector2 _01 = blockTile.bottom_01;
@@ -90,7 +90,7 @@ public class MeshData{
 		this.uvs.Add (_10);
 	}
 
-	public void FaceDataXPositive(Block block, Vector3 pos){
+	public void FaceDataXPositive(Block block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z - half_block_size));
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z - half_block_size));
@@ -108,7 +108,7 @@ public class MeshData{
 		this.AddQuadTriangles();
 
 		// add textures
-		BlockTile blockTile = block.getBlockTile();
+		BlockTile blockTile = dropItem ? block.getDropBlockTile() : block.getBlockTile();
 		Vector2 _00 = blockTile.right_00;
 		Vector2 _10 = blockTile.right_10;
 		Vector2 _01 = blockTile.right_01;
@@ -119,7 +119,7 @@ public class MeshData{
 		this.uvs.Add (_00);
 	}
 
-	public void FaceDataXNegative(Block block, Vector3 pos){
+	public void FaceDataXNegative(Block block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z + half_block_size));
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z + half_block_size));
@@ -138,7 +138,7 @@ public class MeshData{
 		this.AddQuadTriangles();
 
 		// add textures
-		BlockTile blockTile = block.getBlockTile();
+		BlockTile blockTile = dropItem ? block.getDropBlockTile() : block.getBlockTile();
 		Vector2 _00 = blockTile.left_00;
 		Vector2 _10 = blockTile.left_10;
 		Vector2 _01 = blockTile.left_01;
@@ -149,7 +149,7 @@ public class MeshData{
 		this.uvs.Add (_00);
 	}
 
-	public void FaceDataZPositive(Block block, Vector3 pos){
+	public void FaceDataZPositive(Block block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z - half_block_size));
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z - half_block_size));
@@ -167,7 +167,7 @@ public class MeshData{
 		this.AddQuadTriangles();
 
 		// add textures
-		BlockTile blockTile = block.getBlockTile();
+		BlockTile blockTile = dropItem ? block.getDropBlockTile() : block.getBlockTile();
 		Vector2 _00 = blockTile.front_00;
 		Vector2 _10 = blockTile.front_10;
 		Vector2 _01 = blockTile.front_01;
@@ -178,7 +178,7 @@ public class MeshData{
 		this.uvs.Add (_00);
 	}
 
-	public void FaceDataZNegative(Block block, Vector3 pos){
+	public void FaceDataZNegative(Block block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z + half_block_size));
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z + half_block_size));
@@ -196,7 +196,7 @@ public class MeshData{
 		this.AddQuadTriangles();
 
 		// add textures
-		BlockTile blockTile = block.getBlockTile();
+		BlockTile blockTile = dropItem ? block.getDropBlockTile() : block.getBlockTile();
 		Vector2 _00 = blockTile.back_00;
 		Vector2 _10 = blockTile.back_10;
 		Vector2 _01 = blockTile.back_01;

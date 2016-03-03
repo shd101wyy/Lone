@@ -19,9 +19,11 @@ public abstract class Block {
 		this.chunk = null;
 	}
 
-	public abstract void generateMesh (MeshData meshData, Vector3 pos, World world, bool collidable = true);
+	public abstract void generateMesh (MeshData meshData, Vector3 pos, World world, bool collidable = true, bool dropItem = false);
 
 	public abstract Texture2D getTexture ();
+
+	public abstract BlockTile getDropBlockTile(); // DropItem BlockTile
 
 	public abstract BlockTile getBlockTile ();
 }
@@ -31,7 +33,7 @@ public class CubeBlock: Block {
 	public CubeBlock(Type type) : base(type) {
 	}
 
-	public override void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = true) {
+	public override void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = true, bool dropItem = false) {
 
 		bool col = meshData.useRenderDataForCollision;
 		meshData.useRenderDataForCollision = collidable;
@@ -43,30 +45,30 @@ public class CubeBlock: Block {
 		Vector3 topDir = new Vector3 ((int)pos.x, (int)pos.y + 1, (int)pos.z);
 		Vector3 bottomDir = new Vector3 ((int)pos.x, (int)pos.y - 1, (int)pos.z);
 
-		Block front = world.getBlock (frontDir);
-		Block back = world.getBlock (backDir);
-		Block left = world.getBlock (leftDir);
-		Block right = world.getBlock (rightDir);
-		Block top = world.getBlock (topDir);
-		Block bottom = world.getBlock (bottomDir);
+		Block front = world == null ? null : world.getBlock (frontDir);
+		Block back = world == null ? null :  world.getBlock (backDir);
+		Block left = world == null ? null :  world.getBlock (leftDir);
+		Block right = world == null ? null :  world.getBlock (rightDir);
+		Block top = world == null ? null :  world.getBlock (topDir);
+		Block bottom = world == null ? null :  world.getBlock (bottomDir);
 
 		if (!(front != null && front is CubeBlock)) {
-			meshData.FaceDataZPositive (this, pos);
+			meshData.FaceDataZPositive (this, pos, dropItem);
 		}
 		if (!(back != null && back is CubeBlock)) {
-			meshData.FaceDataZNegative (this, pos);
+			meshData.FaceDataZNegative (this, pos, dropItem);
 		}
 		if (!(right != null && right is CubeBlock)) {
-			meshData.FaceDataXPositive (this, pos);
+			meshData.FaceDataXPositive (this, pos, dropItem);
 		}
 		if (!(left != null && left is CubeBlock)) {
-			meshData.FaceDataXNegative (this, pos);
+			meshData.FaceDataXNegative (this, pos, dropItem);
 		}
 		if (!(bottom != null && bottom is CubeBlock)) {
-			meshData.FaceDataYNegative (this, pos);
+			meshData.FaceDataYNegative (this, pos, dropItem);
 		}
 		if (!(top != null && top is CubeBlock)) {
-			meshData.FaceDataYPositive (this, pos);
+			meshData.FaceDataYPositive (this, pos, dropItem);
 		}
 
 		meshData.useRenderDataForCollision = col;
@@ -78,6 +80,11 @@ public class CubeBlock: Block {
 
 	public override BlockTile getBlockTile () {
 		throw new NotImplementedException ();
+	}
+
+	public override BlockTile getDropBlockTile ()
+	{
+		return getBlockTile ();
 	}
 }
 
@@ -112,11 +119,16 @@ public class Grass: CubeBlock {
 		return Game.textures ["dirt"].texture_2d;
 	}
 
-	public override BlockTile getBlockTile (){
+	public override BlockTile getBlockTile () {
 		SpriteData top = Game.textures ["grass_top"];
 		SpriteData side = Game.textures ["grass_side"];
 		SpriteData bottom = Game.textures ["dirt"];
 		return new BlockTile (side, side, top, bottom, side, side);
+	}
+
+	public override BlockTile getDropBlockTile () {
+		SpriteData side = Game.textures ["dirt"];
+		return new BlockTile (side, side, side, side, side, side);
 	}
 }
 
@@ -235,7 +247,7 @@ public class Water: Block {
 
 		// Debug.Log ("energy : " + energy);
 	}
-	public override void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = false) {
+	public override void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = false, bool dropItem = false) {
 		collidable = false;
 		bool col = meshData.useRenderDataForCollision;
 		meshData.useRenderDataForCollision = collidable;
@@ -284,5 +296,10 @@ public class Water: Block {
 	{
 		SpriteData side = Game.textures ["dirt"]; // TODO: change later
 		return new BlockTile (side, side, side, side, side, side);
+	}
+
+	public override BlockTile getDropBlockTile ()
+	{
+		throw new NotImplementedException ();
 	}
 }
