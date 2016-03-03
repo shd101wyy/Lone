@@ -5,6 +5,8 @@ public class PlayerController : MonoBehaviour {
 
 	public GameObject leftHand;
 	public GameObject rightHand;
+	public HoldItem leftHandHoldItem;
+	public HoldItem rightHandHoldItem;
 	InventoryBarController inventoryBarController;
 
 	// Use this for initialization
@@ -24,16 +26,17 @@ public class PlayerController : MonoBehaviour {
 			Input.GetKeyDown (KeyCode.Alpha9)) {
 
 			Item item = inventoryBarController.getSelectedItem ();
-			if (item != null && item.itemType == ItemType.BLOCK) {
-				Game.generate3DMeshFromBlock (rightHand, (Block)item);
-			}
+			rightHandHoldItem.generate3DMesh (item);
 
 		}
 	}
 
 	public void initializePlayer() {
 		inventoryBarController = GameObject.Find ("InventoryBar").GetComponent<InventoryBarController>() as InventoryBarController;
-		Debug.Log(inventoryBarController.getItem(0));
-		Game.generate3DMeshFromBlock (rightHand, (Block)(inventoryBarController.getItem(0)));
+
+		leftHandHoldItem = leftHand.GetComponent<HoldItem> () as HoldItem;
+		rightHandHoldItem = rightHand.GetComponent<HoldItem> () as HoldItem;
+
+		rightHandHoldItem.generate3DMesh (inventoryBarController.getItem (0));
 	}
 }

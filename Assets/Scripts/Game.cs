@@ -105,6 +105,8 @@ public class Game : MonoBehaviour {
 		inventoryBarController.setItem (new PlanksJungle(), 3);
 		inventoryBarController.setItem (new LogOak(), 4);
 		inventoryBarController.setItem (new PlanksOak(), 5);
+		inventoryBarController.setItem (new StoneAxe (), 6);
+		inventoryBarController.setItem (new StoneSword (), 7);
 
 		// TODO: load Town world 
 		world = new World("test");
@@ -142,13 +144,12 @@ public class Game : MonoBehaviour {
 	public static void generate3DMeshFromBlock(GameObject g, Block block) {
 		HoldItem holdItem = g.AddComponent<HoldItem> () as HoldItem;
 		holdItem.generate3DMesh (block);
-
 	}
 
 	public static void generate3DMeshFrom2D(GameObject g, SpriteData sprite, float depth = 0.0625f) {
 
-		g.AddComponent<ExtrudeSprite> ();
-		g.GetComponent<ExtrudeSprite> ().GenerateMesh (sprite.texture_2d, depth);
+		ExtrudeSprite extrudeSprite =  g.AddComponent<ExtrudeSprite> () as ExtrudeSprite;
+		extrudeSprite.GenerateMesh (sprite.texture_2d, depth);
 	}
 
 	public static void generate3DMeshFrom2DTexture(GameObject g, Texture2D texture_2d, float depth = 0.0625f) {

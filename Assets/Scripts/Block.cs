@@ -21,11 +21,13 @@ public abstract class Block : Item {
 
 	public abstract void generateMesh (MeshData meshData, Vector3 pos, World world, bool collidable = true, bool dropItem = false);
 
-	public abstract Texture2D getTexture ();
-
 	public abstract BlockTile getDropBlockTile(); // DropItem BlockTile
 
 	public abstract BlockTile getBlockTile ();
+
+	public override Texture2D getTexture () {
+		throw new NotImplementedException ();
+	}
 }
 
 [Serializable]

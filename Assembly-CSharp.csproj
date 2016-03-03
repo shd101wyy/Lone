@@ -64,6 +64,7 @@
      <Compile Include="Assets\Scripts\Serialization.cs" />
      <Compile Include="Assets\Scripts\Sun_Move.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />
+     <Compile Include="Assets\Scripts\Tool.cs" />
      <Compile Include="Assets\Scripts\World.cs" />
      <Compile Include="Assets\Scripts\WorldData.cs" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />

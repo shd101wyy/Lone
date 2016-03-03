@@ -65,6 +65,17 @@ public class InventoryBarController : MonoBehaviour {
 			slots [slotIndex].color = color;
 
 			items [slotIndex] = item;
+		} else {
+			Texture2D tex = item.getTexture ();
+			Sprite s = Sprite.Create (tex, new Rect (0f, 0f, tex.width, tex.height), new Vector2 (0.5f, 0.5f));
+			this.slots [slotIndex].sprite = s;
+
+
+			Color color = slots [slotIndex].color;
+			color.a = 1f;
+			slots [slotIndex].color = color;
+
+			items [slotIndex] = item;
 		}
 	}
 

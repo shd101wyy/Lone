@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum ItemType {BLOCK, ITEM};
+public enum ItemType {BLOCK, TOOL};
 
 [System.Serializable]
-public class Item {
+public abstract class Item {
 	public string name;
 	public int maxStack;
 	public ItemType itemType;
@@ -28,4 +28,6 @@ public class Item {
 	public void setStack(int s) {
 		stack = s;
 	}
+
+	public abstract Texture2D getTexture ();
 }
