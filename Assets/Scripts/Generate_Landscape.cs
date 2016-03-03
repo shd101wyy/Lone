@@ -16,6 +16,7 @@ public class Tile {
 public class Generate_Landscape : MonoBehaviour {
 	public GameObject player;
 	public GameObject chunkPrefab;
+	public GameObject inventoryBar;
 
 	public static int chunkWidth = 16;
 	public static int chunkDepth = 16;
@@ -36,6 +37,8 @@ public class Generate_Landscape : MonoBehaviour {
 
 	int autoSaveTimer = 0;
 	bool chunkChanged = false;
+
+	InventoryBarController inventoryBarController;
 
 	static  Vector3[] chunkPositions= {   new Vector3( 0, 0,  0), new Vector3(-1, 0,  0), new Vector3( 0, 0, -1), new Vector3( 0, 0,  1), new Vector3( 1, 0,  0),
 		new Vector3(-1, 0, -1), new Vector3(-1, 0,  1), new Vector3( 1, 0, -1), new Vector3( 1, 0,  1), new Vector3(-2, 0,  0),
@@ -89,6 +92,8 @@ public class Generate_Landscape : MonoBehaviour {
 
 		// generate 4 blocks around player
 		InitiateWorld();
+
+		inventoryBarController = inventoryBar.GetComponent<InventoryBarController> () as InventoryBarController;
 	}
 
 	Vector3 getHitObjectPos(Vector3 hit1, Vector3 hit2, Vector3 hit3, Vector3 normal) {
@@ -191,38 +196,14 @@ public class Generate_Landscape : MonoBehaviour {
 						return;
 					}
 
-					Block block;
-					switch (selectedBlock) {
-					case 1:
-						block = new Dirt ();
-						break;
-					case 2:
-						block = new Sand ();
-						break;
-					case 3:
-						block = new LogJungle ();
-						break;
-					case 4:
-						block = new PlanksJungle ();
-						break;
-					case 5:
-						block = new LogOak ();
-						break;
-					case 6:
-						block = new PlanksOak ();
-						break;
-					default:
-						block = new Dirt ();
-						break;
-					}
+					Item item = inventoryBarController.getSelectedItem ();
+					if (item != null && item.itemType == ItemType.BLOCK) {
+						Block block = (Block)item;
+						world.addBlock (newPos, block, true);
 
-					world.addBlock (newPos, block, true);
-					/*
-					Vector2 chunkPos = new Vector2 (Mathf.Floor (newPos.x / chunkWidth),
-						Mathf.Floor (newPos.z / chunkDepth));
-					world.saveChunk (chunkPos);
-					*/
-					chunkChanged = true;
+						chunkChanged = true;
+
+					}
 				}
 			}
 		}
@@ -230,25 +211,6 @@ public class Generate_Landscape : MonoBehaviour {
 
 	void CheckKeyboard() {
 		// TODO: change the code below in the future
-		if (Input.GetKeyDown (KeyCode.Alpha1)) { // 点击了数字键盘 数字 1
-			selectedBlock = 1;
-		} else if (Input.GetKeyDown (KeyCode.Alpha2)) {
-			selectedBlock = 2;
-		} else if (Input.GetKeyDown (KeyCode.Alpha3)) {
-			selectedBlock = 3;
-		} else if (Input.GetKeyDown (KeyCode.Alpha4)) {
-			selectedBlock = 4;
-		} else if (Input.GetKeyDown (KeyCode.Alpha5)) {
-			selectedBlock = 5;
-		} else if (Input.GetKeyDown (KeyCode.Alpha6)) {
-			selectedBlock = 6;
-		} else if (Input.GetKeyDown (KeyCode.Alpha7)) {
-			selectedBlock = 7;
-		} else if (Input.GetKeyDown (KeyCode.Alpha8)) {
-			selectedBlock = 8;
-		} else if (Input.GetKeyDown (KeyCode.Alpha9)) {
-			selectedBlock = 9;
-		}
 	}
 
 	// AutoSave the world every 120 frames
@@ -268,8 +230,9 @@ public class Generate_Landscape : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (player != null)
+		if (player != null) {
 			world.worldData.updatePlayerTransformationData (player);
+		}
 
 		CheckLeftClick ();
 		CheckRightClick ();

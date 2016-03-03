@@ -2,16 +2,24 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class InventoryBar : MonoBehaviour {
+public class InventoryBarController : MonoBehaviour {
 
 	public Image selectBox;
 	public Image[] slots;
+	public Item[] items;
+	int slotIndex;
 
 	// Use this for initialization
 	void Start () {
 		Color color = slots [0].color;
 		color.a = 1f;
 		slots [0].color = color;
+
+		items = new Item[slots.Length];
+		for (int i = 0; i < slots.Length; i++) {
+			items [i] = null;
+		}
+
 	}
 	
 	// Update is called once per frame
@@ -45,15 +53,19 @@ public class InventoryBar : MonoBehaviour {
 		}
 	}
 
-	public void setItem(Texture2D tex, int slotIndex) {
-		Sprite s = Sprite.Create (tex, new Rect (0f, 0f, tex.width, tex.height), new Vector2 (0.5f, 0.5f));
-		this.slots [slotIndex].sprite = s;
+	public void setItem(Item item, int slotIndex) {
+		if (item.itemType == ItemType.BLOCK) {
+			Texture2D tex = ((Block)item).getTexture ();
+			Sprite s = Sprite.Create (tex, new Rect (0f, 0f, tex.width, tex.height), new Vector2 (0.5f, 0.5f));
+			this.slots [slotIndex].sprite = s;
 
 
-		Color color = slots [slotIndex].color;
-		color.a = 1f;
-		slots [slotIndex].color = color;
+			Color color = slots [slotIndex].color;
+			color.a = 1f;
+			slots [slotIndex].color = color;
 
+			items [slotIndex] = item;
+		}
 	}
 
 	void setSelectedSlot(int slotIndex) {
@@ -61,6 +73,16 @@ public class InventoryBar : MonoBehaviour {
 		RectTransform selectBoxRT = selectBox.GetComponent<RectTransform> () as RectTransform;
 
 		selectBoxRT.position = slotRT.position;
+
+		this.slotIndex = slotIndex;
+	}
+
+	public Item getSelectedItem() {
+		return items [slotIndex];	
+	}
+
+	public Item getItem(int slotIndex) {
+		return items [slotIndex];
 	}
 
 

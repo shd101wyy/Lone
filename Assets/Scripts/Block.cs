@@ -5,17 +5,17 @@ using System.Threading;
 using System;
 
 
-public enum Type {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE, PLANKS_JUNGLE, LOG_OAK, PLANKS_OAK};
+public enum BlockType {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE, PLANKS_JUNGLE, LOG_OAK, PLANKS_OAK};
 
 [Serializable]
-public abstract class Block {
-	public Type type;
+public abstract class Block : Item {
+	public BlockType blockType;
 	public Chunk chunk;
 
 	public float blockSize = 1f;
 
-	public Block(Type type) {
-		this.type = type;
+	public Block(BlockType blockType, string blockName) : base(blockName, ItemType.BLOCK, 64) {
+		this.blockType = blockType;
 		this.chunk = null;
 	}
 
@@ -30,7 +30,7 @@ public abstract class Block {
 
 [Serializable]
 public class CubeBlock: Block {
-	public CubeBlock(Type type) : base(type) {
+	public CubeBlock(BlockType blockType, string blockName) : base(blockType, blockName) {
 	}
 
 	public override void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = true, bool dropItem = false) {
@@ -82,15 +82,14 @@ public class CubeBlock: Block {
 		throw new NotImplementedException ();
 	}
 
-	public override BlockTile getDropBlockTile ()
-	{
+	public override BlockTile getDropBlockTile () {
 		return getBlockTile ();
 	}
 }
 
 /*
 public class Fern: Block {
-	public Fern() : base(Type.PLANT_FERN) {
+	public Fern() : base(BlockType.PLANT_FERN) {
 	}
 
 	public override void generateMesh (MeshData meshData, bool collidable = false) {
@@ -100,7 +99,7 @@ public class Fern: Block {
 }
 
 public class Rose: Block {
-	public Rose() : base(Type.PLANT_FERN) {
+	public Rose() : base(BlockType.PLANT_FERN) {
 	}
 
 	public override void generateMesh (MeshData meshData, bool collidable = false) {
@@ -112,7 +111,7 @@ public class Rose: Block {
 
 [Serializable]
 public class Grass: CubeBlock {
-	public Grass() : base(Type.GRASS) {
+	public Grass() : base(BlockType.GRASS, "grass") {
 	}
 
 	public override Texture2D getTexture () {
@@ -134,7 +133,7 @@ public class Grass: CubeBlock {
 
 [Serializable]
 public class Dirt: CubeBlock {
-	public Dirt() : base(Type.DIRT) {
+	public Dirt() : base(BlockType.DIRT,  "dirt") {
 	}
 
 	public override Texture2D getTexture () {
@@ -149,7 +148,7 @@ public class Dirt: CubeBlock {
 
 [Serializable]
 public class Snow: CubeBlock {
-	public Snow() : base(Type.SNOW) {
+	public Snow() : base(BlockType.SNOW, "snow") {
 	}
 
 	public override Texture2D getTexture () {
@@ -164,7 +163,7 @@ public class Snow: CubeBlock {
 
 [Serializable]
 public class Sand: CubeBlock {
-	public Sand() : base(Type.SAND) {
+	public Sand() : base(BlockType.SAND, "sand") {
 	}
 
 	public override Texture2D getTexture () {
@@ -179,7 +178,7 @@ public class Sand: CubeBlock {
 
 [Serializable]
 public class LogJungle: CubeBlock {
-	public LogJungle() : base(Type.LOG_JUNGLE) {
+	public LogJungle() : base(BlockType.LOG_JUNGLE, "log_jungle") {
 	}
 
 	public override Texture2D getTexture () {
@@ -195,7 +194,7 @@ public class LogJungle: CubeBlock {
 
 [Serializable]
 public class PlanksJungle: CubeBlock {
-	public PlanksJungle() : base(Type.PLANKS_JUNGLE) {
+	public PlanksJungle() : base(BlockType.PLANKS_JUNGLE, "planks_jungle") {
 	}
 
 	public override Texture2D getTexture () {
@@ -210,7 +209,7 @@ public class PlanksJungle: CubeBlock {
 
 [Serializable]
 public class LogOak: CubeBlock {
-	public LogOak() : base(Type.LOG_OAK) {
+	public LogOak() : base(BlockType.LOG_OAK, "log_oak") {
 	}
 
 	public override Texture2D getTexture () {
@@ -226,7 +225,7 @@ public class LogOak: CubeBlock {
 
 [Serializable]
 public class PlanksOak: CubeBlock {
-	public PlanksOak() : base(Type.PLANKS_OAK) {
+	public PlanksOak() : base(BlockType.PLANKS_OAK, "planks_oak") {
 	}
 
 	public override Texture2D getTexture () {
@@ -242,7 +241,7 @@ public class PlanksOak: CubeBlock {
 // TODO: the water below is super bad
 public class Water: Block {
 	public int energy;
-	public Water(int energy = 5) : base(Type.WATER) {
+	public Water(int energy = 5) : base(BlockType.WATER, "water") {
 		this.energy = energy;
 
 		// Debug.Log ("energy : " + energy);

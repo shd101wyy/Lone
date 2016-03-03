@@ -54,6 +54,7 @@ public class Game : MonoBehaviour {
 	public static Dictionary<string, SpriteData> textures;
 
 	World world;
+	PlayerController playerController;
 
 	// load textures made by Texture Packer
 	void loadTextures(string jsonPath, string imagePath) {
@@ -94,26 +95,24 @@ public class Game : MonoBehaviour {
 
 		input = commandBox.GetComponent<InputField> ();
 
+		// 下面 initialization 的顺序不能变
+
+		// set inventory bar items
+		InventoryBarController inventoryBarController = inventoryBar.GetComponent<InventoryBarController>() as InventoryBarController;
+		inventoryBarController.setItem (new Dirt(), 0);
+		inventoryBarController.setItem (new Sand(), 1);
+		inventoryBarController.setItem (new LogJungle(), 2);
+		inventoryBarController.setItem (new PlanksJungle(), 3);
+		inventoryBarController.setItem (new LogOak(), 4);
+		inventoryBarController.setItem (new PlanksOak(), 5);
+
 		// TODO: load Town world 
 		world = new World("test");
 		GameObject.Find ("Landscape").GetComponent<Generate_Landscape> ().startGeneratingLandscape (world);
 
-
-
-		// set left hand and right hand
-		GameObject rightHand = GameObject.Find ("RightHandItem");
-		generate3DMeshFrom2D (rightHand, textures ["iron_pickaxe"]);
-
-		GameObject leftHand = GameObject.Find ("LeftHandItem");
-		generate3DMeshFrom2D (leftHand, textures ["crystalys"]);
-
-		// set inventory bar items
-		inventoryBar.GetComponent<InventoryBar>().setItem(textures["dirt"].texture_2d, 0);
-		inventoryBar.GetComponent<InventoryBar>().setItem(textures["sand"].texture_2d, 1);
-		inventoryBar.GetComponent<InventoryBar>().setItem(textures["log_jungle"].texture_2d, 2);
-		inventoryBar.GetComponent<InventoryBar>().setItem(textures["planks_jungle"].texture_2d, 3);
-		inventoryBar.GetComponent<InventoryBar>().setItem(textures["log_oak"].texture_2d, 4);
-		inventoryBar.GetComponent<InventoryBar>().setItem(textures["planks_oak"].texture_2d, 5);
+		// initialize player
+		playerController = player.GetComponent<PlayerController> () as PlayerController;
+		playerController.initializePlayer ();
 	}
 
 	// Update is called once per frame
@@ -140,18 +139,21 @@ public class Game : MonoBehaviour {
 		input.text = "";
 	}
 
+	public static void generate3DMeshFromBlock(GameObject g, Block block) {
+		HoldItem holdItem = g.AddComponent<HoldItem> () as HoldItem;
+		holdItem.generate3DMesh (block);
+
+	}
+
 	public static void generate3DMeshFrom2D(GameObject g, SpriteData sprite, float depth = 0.0625f) {
 
 		g.AddComponent<ExtrudeSprite> ();
-		// gameObject.AddComponent<MeshFilter> ();
-		// gameObject.AddComponent<MeshRenderer> ();
 		g.GetComponent<ExtrudeSprite> ().GenerateMesh (sprite.texture_2d, depth);
 	}
 
 	public static void generate3DMeshFrom2DTexture(GameObject g, Texture2D texture_2d, float depth = 0.0625f) {
 
 		g.AddComponent<ExtrudeSprite> ();
-
 		g.GetComponent<ExtrudeSprite> ().GenerateMesh (texture_2d, depth);
 	}
 }
