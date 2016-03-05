@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json-array</string>
         <key>textureFileName</key>
-        <filename></filename>
+        <filename>plants.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>

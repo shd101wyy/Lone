@@ -58,40 +58,49 @@ public class DropItem : MonoBehaviour {
 		*/
 		name = "drop " + blockPos;
 
-		meshData = new MeshData ();
-
 		if (block is CubeBlock) {
-			((CubeBlock)block).generateMesh (meshData, Vector3.zero, null, false, true);
+
+			meshData = new MeshData ();
+
+			if (block is CubeBlock) {
+				((CubeBlock)block).generateMesh (meshData, Vector3.zero, null, false, true);
+			}
+
+			MeshFilter filter = GetComponent<MeshFilter> (); // transform.gameObject.AddComponent< MeshFilter >() as MeshFilter;
+			Mesh mesh = filter.mesh;
+			mesh.Clear ();
+
+			mesh.vertices = meshData.vertices.ToArray ();
+			mesh.triangles = meshData.triangles.ToArray ();
+
+			// mesh.normals = meshData.normals.ToArray ();
+			mesh.uv = meshData.uvs.ToArray ();
+
+			mesh.RecalculateBounds ();
+			mesh.Optimize ();
+
+			Material material = GetComponent<Renderer> ().material as Material;
+			material.mainTexture = GameObject.Find ("Chunk").GetComponent<Renderer> ().material.mainTexture; 
+
+			/*
+			// collision
+			MeshCollider coll = GetComponent<MeshCollider>();// transform.gameObject.AddComponent< MeshCollider >() as MeshCollider;
+			coll.sharedMesh = null; 
+			Mesh coll_mesh = new Mesh(); 
+			coll_mesh.vertices = meshData.colVertices.ToArray();
+			coll_mesh.triangles = meshData.colTriangles.ToArray();
+			coll_mesh.RecalculateNormals();
+			coll.sharedMesh = coll_mesh;
+			*/
+
+			transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+		} else {
+			Texture2D texture_2d = block.getTexture();
+			Game.generate3DMeshFrom2DTexture (this.transform.gameObject, texture_2d, 0.065f);
+
+			transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+
 		}
-
-		MeshFilter filter = GetComponent<MeshFilter> (); // transform.gameObject.AddComponent< MeshFilter >() as MeshFilter;
-		Mesh mesh = filter.mesh;
-		mesh.Clear();
-
-		mesh.vertices = meshData.vertices.ToArray();
-		mesh.triangles = meshData.triangles.ToArray();
-
-		// mesh.normals = meshData.normals.ToArray ();
-		mesh.uv = meshData.uvs.ToArray();
-
-		mesh.RecalculateBounds();
-		mesh.Optimize();
-
-		Material material = GetComponent<Renderer>().material as Material;
-		material.mainTexture = GameObject.Find ("Chunk").GetComponent<Renderer> ().material.mainTexture; 
-
-		/*
-		// collision
-		MeshCollider coll = GetComponent<MeshCollider>();// transform.gameObject.AddComponent< MeshCollider >() as MeshCollider;
-		coll.sharedMesh = null; 
-		Mesh coll_mesh = new Mesh(); 
-		coll_mesh.vertices = meshData.colVertices.ToArray();
-		coll_mesh.triangles = meshData.colTriangles.ToArray();
-		coll_mesh.RecalculateNormals();
-		coll.sharedMesh = coll_mesh;
-		*/
-
-		transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
 		transform.position = blockPos;
 		startMoving = true;
 	}

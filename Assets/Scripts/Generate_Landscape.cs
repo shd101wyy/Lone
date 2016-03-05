@@ -100,28 +100,33 @@ public class Generate_Landscape : MonoBehaviour {
 		float x, y, z;
 		if (normal == new Vector3 (0, 0, 1)) {
 			z = hit1.z - 0.5f;
-			x = Mathf.Min (hit1.x, Mathf.Min(hit2.x, hit3.x)) + 0.5f;
-			y = Mathf.Min (hit1.y, Mathf.Min(hit2.y, hit3.y)) + 0.5f;
+			x = Mathf.Min (hit1.x, Mathf.Min (hit2.x, hit3.x)) + 0.5f;
+			y = Mathf.Min (hit1.y, Mathf.Min (hit2.y, hit3.y)) + 0.5f;
 		} else if (normal == new Vector3 (0, 0, -1)) {
 			z = hit1.z + 0.5f;
-			x = Mathf.Min (hit1.x, Mathf.Min(hit2.x, hit3.x)) + 0.5f;
-			y = Mathf.Min (hit1.y, Mathf.Min(hit2.y, hit3.y)) + 0.5f;
+			x = Mathf.Min (hit1.x, Mathf.Min (hit2.x, hit3.x)) + 0.5f;
+			y = Mathf.Min (hit1.y, Mathf.Min (hit2.y, hit3.y)) + 0.5f;
 		} else if (normal == new Vector3 (1, 0, 0)) {
 			x = hit1.x - 0.5f;
-			y = Mathf.Min (hit1.y, Mathf.Min(hit2.y, hit3.y)) + 0.5f;
-			z = Mathf.Min (hit1.z, Mathf.Min(hit2.z, hit3.z)) + 0.5f;
+			y = Mathf.Min (hit1.y, Mathf.Min (hit2.y, hit3.y)) + 0.5f;
+			z = Mathf.Min (hit1.z, Mathf.Min (hit2.z, hit3.z)) + 0.5f;
 		} else if (normal == new Vector3 (-1, 0, 0)) {
 			x = hit1.x + 0.5f;
-			y = Mathf.Min (hit1.y, Mathf.Min(hit2.y, hit3.y)) + 0.5f;
-			z = Mathf.Min (hit1.z, Mathf.Min(hit2.z, hit3.z)) + 0.5f;
+			y = Mathf.Min (hit1.y, Mathf.Min (hit2.y, hit3.y)) + 0.5f;
+			z = Mathf.Min (hit1.z, Mathf.Min (hit2.z, hit3.z)) + 0.5f;
 		} else if (normal == new Vector3 (0, 1, 0)) {
 			y = hit1.y - 0.5f;
-			x = Mathf.Min (hit1.x, Mathf.Min(hit2.x, hit3.x)) + 0.5f;
-			z = Mathf.Min (hit1.z, Mathf.Min(hit2.z, hit3.z)) + 0.5f;
-		} else/* if (normal == new Vector3 (0, -1, 0))*/ {
+			x = Mathf.Min (hit1.x, Mathf.Min (hit2.x, hit3.x)) + 0.5f;
+			z = Mathf.Min (hit1.z, Mathf.Min (hit2.z, hit3.z)) + 0.5f;
+		} else if (normal == new Vector3 (0, -1, 0)) {
 			y = hit1.y + 0.5f;
-			x = Mathf.Min (hit1.x, Mathf.Min(hit2.x, hit3.x)) + 0.5f;
-			z = Mathf.Min (hit1.z, Mathf.Min(hit2.z, hit3.z)) + 0.5f;
+			x = Mathf.Min (hit1.x, Mathf.Min (hit2.x, hit3.x)) + 0.5f;
+			z = Mathf.Min (hit1.z, Mathf.Min (hit2.z, hit3.z)) + 0.5f;
+		} else {
+			x = Mathf.Min (hit1.x, Mathf.Min (hit2.x, hit3.x)) + 0.5f;
+			y = Mathf.Min (hit1.y, Mathf.Min (hit2.y, hit3.y)) + 0.5f;
+			z = Mathf.Min (hit1.z, Mathf.Min (hit2.z, hit3.z)) + 0.5f;
+
 		}
 
 		return new Vector3 (x, y, z);
@@ -151,16 +156,12 @@ public class Generate_Landscape : MonoBehaviour {
 						return;
 
 					Block block = world.getBlock (blockPos);
+					Debug.Log (block);
 					if (block != null) { // draw small one 
 						DropItem dropItem = (new GameObject ()).AddComponent<DropItem> () as DropItem;
 						dropItem.generate3DMesh (block, blockPos);
 
 						world.removeBlock (blockPos, true);
-						/*
-						Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / chunkWidth),
-							Mathf.Floor (blockPos.z / chunkDepth));
-						world.saveChunk (chunkPos);
-						*/
 						chunkChanged = true;
 					}
 				}

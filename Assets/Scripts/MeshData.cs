@@ -211,9 +211,6 @@ public class MeshData{
 	 *      /
 	 */ 
 	public void FaceDataDiag1(Block block, Vector3 pos) {
-		bool useCollision = this.useRenderDataForCollision; 
-		this.useRenderDataForCollision = false; 
-		
 		float half_block_size = 0.5f;
 		
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z + half_block_size));
@@ -259,17 +256,12 @@ public class MeshData{
 		this.uvs.Add (_01);
 		this.uvs.Add (_00);
 		this.uvs.Add (_10);
-
-		this.useRenderDataForCollision = useCollision;
 	}
 
 	/*
 	 *      \
 	*/ 
 	public void FaceDataDiag2(Block block, Vector3 pos) {
-		bool useCollision = this.useRenderDataForCollision; 
-		this.useRenderDataForCollision = false; 
-
 		float half_block_size = 0.5f;
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z + half_block_size));
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z - half_block_size));
@@ -312,8 +304,6 @@ public class MeshData{
 		this.uvs.Add (_01);
 		this.uvs.Add (_00);
 		this.uvs.Add (_10);
-
-		this.useRenderDataForCollision = useCollision;
 	}
 
 	public void AddVertex(Vector3 vertex){

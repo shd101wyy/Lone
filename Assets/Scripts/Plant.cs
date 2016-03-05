@@ -47,7 +47,7 @@ public class Fern : Plant {
 	public Fern(): base("fern") {
 	}
 	public override Texture2D getTexture () {
-		return obj.GetComponent<Renderer> ().material.mainTexture as Texture2D;	
+		return Game.textures ["fern"].texture_2d;
 	}
 	public override SpriteData getSpriteDate () {
 		return Game.textures ["fern"];

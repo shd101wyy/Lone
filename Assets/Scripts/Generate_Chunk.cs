@@ -8,8 +8,10 @@ using System.Threading;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
 public class Generate_Chunk : MonoBehaviour {
+	public GameObject player;
 	private Chunk chunk = null;
-	private MeshData meshData = null;
+	private MeshData cubeBlockMeshData = null;
+	private MeshData plantsMeshData = null;
 	private World world = null;
 
 	// Use this for initialization
@@ -26,31 +28,33 @@ public class Generate_Chunk : MonoBehaviour {
 		Block block = chunk.getBlock(blockPos);
 
 		if (block is CubeBlock) {
-			((CubeBlock)block).generateMesh (meshData, blockPos, world);
+			((CubeBlock)block).generateMesh (cubeBlockMeshData, blockPos, world);
 		} else if (block is Plant) {
 			// GameObject clone = (GameObject)Instantiate (((Plant)block).getGameObject(), blockPos, Quaternion.identity);
-			((Plant)block).generateMesh(meshData, blockPos, world);
+			((Plant)block).generateMesh(plantsMeshData, blockPos, world);
 		} else {
 			Debug.Log ("Error drawBlock");
 		}
 	}
 
 	public void renderChunk() {
-		meshData = new MeshData ();
+		cubeBlockMeshData = new MeshData ();
+		plantsMeshData = new MeshData ();
 
 		foreach (var blockPos in chunk.blocks.Keys) {
 			drawBlock (blockPos.ToVector3());
 		}
 
+		// Cubeblock
 		MeshFilter filter = transform.GetComponent< MeshFilter >();
 		Mesh mesh = filter.mesh;
 		mesh.Clear();
 
-		mesh.vertices = meshData.vertices.ToArray();
-		mesh.triangles = meshData.triangles.ToArray();
+		mesh.vertices = cubeBlockMeshData.vertices.ToArray();
+		mesh.triangles = cubeBlockMeshData.triangles.ToArray();
 
-		mesh.normals = meshData.normals.ToArray ();
-		mesh.uv = meshData.uvs.ToArray();
+		mesh.normals = cubeBlockMeshData.normals.ToArray ();
+		mesh.uv = cubeBlockMeshData.uvs.ToArray();
 
 		mesh.RecalculateBounds();
 		mesh.Optimize();
@@ -59,10 +63,37 @@ public class Generate_Chunk : MonoBehaviour {
 		MeshCollider coll = transform.GetComponent<MeshCollider> ();
 		coll.sharedMesh = null; 
 		Mesh coll_mesh = new Mesh(); 
-		coll_mesh.vertices = meshData.colVertices.ToArray();
-		coll_mesh.triangles = meshData.colTriangles.ToArray();
+		coll_mesh.vertices = cubeBlockMeshData.colVertices.ToArray();
+		coll_mesh.triangles = cubeBlockMeshData.colTriangles.ToArray();
 		coll_mesh.RecalculateNormals();
 		coll.sharedMesh = coll_mesh;
+
+		// plants mesh
+		MeshFilter plantsMesh = transform.FindChild ("Plants").GetComponent<MeshFilter> ();
+		mesh = plantsMesh.mesh;
+		mesh.Clear();
+
+		mesh.vertices = plantsMeshData.vertices.ToArray();
+		mesh.triangles = plantsMeshData.triangles.ToArray();
+
+		mesh.normals = plantsMeshData.normals.ToArray ();
+		mesh.uv = plantsMeshData.uvs.ToArray();
+
+		mesh.RecalculateBounds();
+		mesh.Optimize();
+
+
+		// collision
+		coll = transform.FindChild ("Plants").GetComponent<MeshCollider> ();
+		coll.sharedMesh = null; 
+		coll_mesh = new Mesh(); 
+		coll_mesh.vertices = plantsMeshData.colVertices.ToArray();
+		coll_mesh.triangles = plantsMeshData.colTriangles.ToArray();
+		coll_mesh.RecalculateNormals();
+		coll.sharedMesh = coll_mesh;
+
+		// ignore the collider between player and plants
+		Physics.IgnoreCollision(transform.FindChild ("Plants").GetComponent<Collider>(), player.GetComponent<Collider>());
 
 		// set chunk as rendered
 		chunk.rendered = true;

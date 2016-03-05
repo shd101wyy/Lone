@@ -221,17 +221,6 @@
             <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/snow.png</filename>
             <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/snow_side.png</filename>
             <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/grass_top.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_allium.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_blue_orchid.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_dandelion.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_houstonia.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_oxeye_daisy.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_paeonia.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_rose.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_tulip_orange.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_tulip_pink.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_tulip_red.png</filename>
-            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/flower_tulip_white.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

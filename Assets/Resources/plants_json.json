@@ -111,10 +111,10 @@
 "meta": {
 	"app": "http://www.codeandweb.com/texturepacker",
 	"version": "1.0",
-	"image": "plants_json.png",
+	"image": "plants.png",
 	"format": "RGBA8888",
 	"size": {"w":512,"h":512},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:ed1a56a6a2db0bbe618a6a87e86226cb:39b0e7832e318588e47c415b21cd67c5:d396601bf52667cb01fb630c9ac18852$"
+	"smartupdate": "$TexturePacker:SmartUpdate:7b6e1b1701015ae738e44e13290eb0a3:39b0e7832e318588e47c415b21cd67c5:0b9a69e28db39f3b3d25512e56be82ec$"
 }
 }

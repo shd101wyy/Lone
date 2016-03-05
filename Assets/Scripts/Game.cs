@@ -92,6 +92,7 @@ public class Game : MonoBehaviour {
 		// load texture data from StreamingAssets folder
 		loadTextures("texture_json", "texture");
 		loadTextures ("items_json", "items");
+		loadTextures ("plants_json", "plants");
 
 		input = commandBox.GetComponent<InputField> ();
 
