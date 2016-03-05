@@ -197,7 +197,7 @@ public class Generate_Landscape : MonoBehaviour {
 					}
 
 					Item item = inventoryBarController.getSelectedItem ();
-					if (item != null && item.itemType == ItemType.BLOCK) {
+					if (item != null && item.itemType == ItemType.CUBE_BLOCK) {
 						Block block = (Block)item;
 						world.addBlock (newPos, block, true);
 

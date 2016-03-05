@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\Item.cs" />
      <Compile Include="Assets\Scripts\LoadingScreen.cs" />
      <Compile Include="Assets\Scripts\MeshData.cs" />
+     <Compile Include="Assets\Scripts\Plant.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\Position.cs" />
      <Compile Include="Assets\Scripts\RightHandAnimation.cs" />

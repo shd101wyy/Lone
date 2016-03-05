@@ -60,7 +60,9 @@ public class DropItem : MonoBehaviour {
 
 		meshData = new MeshData ();
 
-		block.generateMesh (meshData, Vector3.zero, null, false, true);
+		if (block is CubeBlock) {
+			((CubeBlock)block).generateMesh (meshData, Vector3.zero, null, false, true);
+		}
 
 		MeshFilter filter = GetComponent<MeshFilter> (); // transform.gameObject.AddComponent< MeshFilter >() as MeshFilter;
 		Mesh mesh = filter.mesh;

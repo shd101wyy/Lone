@@ -102,7 +102,12 @@ public class Chunk {
 			block = new Snow ();
 		} else if (isTop && y > 5) {
 			block = new Grass ();
-			/*		
+			if (UnityEngine.Random.Range (0, 10) <= 2) {
+				addBlock (blockPos + new Vector3 (0, 1, 0), new Fern ());
+			} else if (UnityEngine.Random.Range (0, 50) <= 2) {
+				addBlock (blockPos + new Vector3 (0, 1, 0), new Rose ());
+			}
+			/*		 
 			if (this.rnd.Next(0, 10) <= 2) { // FERN
 				Vector3 pos = blockPos + new Vector3 (0, 1, 0);
 				Block fern = new Fern(true, pos);

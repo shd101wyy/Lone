@@ -30,7 +30,7 @@ public class MeshData{
 		useRenderDataForCollision = true; // use collision
 	}
 
-	public void FaceDataYPositive(Block block, Vector3 pos, bool dropItem = false){
+	public void FaceDataYPositive(CubeBlock block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z + half_block_size));
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z + half_block_size));
@@ -61,7 +61,7 @@ public class MeshData{
 		this.uvs.Add (_10);
 	}
 
-	public void FaceDataYNegative(Block block, Vector3 pos, bool dropItem = false){
+	public void FaceDataYNegative(CubeBlock block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z - half_block_size));
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z - half_block_size));
@@ -90,7 +90,7 @@ public class MeshData{
 		this.uvs.Add (_10);
 	}
 
-	public void FaceDataXPositive(Block block, Vector3 pos, bool dropItem = false){
+	public void FaceDataXPositive(CubeBlock block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z - half_block_size));
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z - half_block_size));
@@ -119,7 +119,7 @@ public class MeshData{
 		this.uvs.Add (_00);
 	}
 
-	public void FaceDataXNegative(Block block, Vector3 pos, bool dropItem = false){
+	public void FaceDataXNegative(CubeBlock block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z + half_block_size));
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z + half_block_size));
@@ -149,7 +149,7 @@ public class MeshData{
 		this.uvs.Add (_00);
 	}
 
-	public void FaceDataZPositive(Block block, Vector3 pos, bool dropItem = false){
+	public void FaceDataZPositive(CubeBlock block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z - half_block_size));
 		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z - half_block_size));
@@ -178,7 +178,7 @@ public class MeshData{
 		this.uvs.Add (_00);
 	}
 
-	public void FaceDataZNegative(Block block, Vector3 pos, bool dropItem = false){
+	public void FaceDataZNegative(CubeBlock block, Vector3 pos, bool dropItem = false){
 		float half_block_size = block.blockSize / 2.0f;
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z + half_block_size));
 		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z + half_block_size));
@@ -205,6 +205,115 @@ public class MeshData{
 		this.uvs.Add (_11);
 		this.uvs.Add (_01);
 		this.uvs.Add (_00);
+	}
+
+	/*
+	 *      /
+	 */ 
+	public void FaceDataDiag1(Block block, Vector3 pos) {
+		bool useCollision = this.useRenderDataForCollision; 
+		this.useRenderDataForCollision = false; 
+		
+		float half_block_size = 0.5f;
+		
+		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z + half_block_size));
+		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z - half_block_size));
+		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z - half_block_size));
+		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z + half_block_size));
+
+		this.AddQuadTriangles();
+
+		
+		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z - half_block_size));
+		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z + half_block_size));
+		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z + half_block_size));
+		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z - half_block_size));
+
+		this.AddQuadTriangles();
+
+		// add normals 
+		Vector3 n1 = new Vector3(-1f, 0, 1f);
+		this.normals.Add (n1);
+		this.normals.Add (n1);
+		this.normals.Add (n1);
+		this.normals.Add (n1);
+		
+		Vector3 n2 = new Vector3(1f, 0, -1f);
+		this.normals.Add (n2);
+		this.normals.Add (n2);
+		this.normals.Add (n2);
+		this.normals.Add (n2);
+
+		SpriteData spriteData = ((Plant)block).getSpriteDate();
+		Vector2 _00 = spriteData._00;
+		Vector2 _10 = spriteData._10;
+		Vector2 _01 = spriteData._01;
+		Vector2 _11 = spriteData._11;
+
+		this.uvs.Add (_11);
+		this.uvs.Add (_01);
+		this.uvs.Add (_00);
+		this.uvs.Add (_10);
+
+		this.uvs.Add (_11);
+		this.uvs.Add (_01);
+		this.uvs.Add (_00);
+		this.uvs.Add (_10);
+
+		this.useRenderDataForCollision = useCollision;
+	}
+
+	/*
+	 *      \
+	*/ 
+	public void FaceDataDiag2(Block block, Vector3 pos) {
+		bool useCollision = this.useRenderDataForCollision; 
+		this.useRenderDataForCollision = false; 
+
+		float half_block_size = 0.5f;
+		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z + half_block_size));
+		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z - half_block_size));
+		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z - half_block_size));
+		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z + half_block_size));
+
+		this.AddQuadTriangles();
+
+		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y + half_block_size, pos.z - half_block_size));
+		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y + half_block_size, pos.z + half_block_size));
+		this.AddVertex(new Vector3(pos.x - half_block_size, pos.y - half_block_size, pos.z + half_block_size));
+		this.AddVertex(new Vector3(pos.x + half_block_size, pos.y - half_block_size, pos.z - half_block_size));
+
+		this.AddQuadTriangles();
+
+		// add normals 
+		Vector3 n1 = new Vector3(-1f, 0, -1f);
+		this.normals.Add (n1);
+		this.normals.Add (n1);
+		this.normals.Add (n1);
+		this.normals.Add (n1);
+
+		Vector3 n2 = new Vector3(1f, 0, 1f);
+		this.normals.Add (n2);
+		this.normals.Add (n2);
+		this.normals.Add (n2);
+		this.normals.Add (n2);
+
+		SpriteData spriteData = ((Plant)block).getSpriteDate();
+		Vector2 _00 = spriteData._00;
+		Vector2 _10 = spriteData._10;
+		Vector2 _01 = spriteData._01;
+		Vector2 _11 = spriteData._11;
+		this.uvs.Add (_11);
+		this.uvs.Add (_01);
+		this.uvs.Add (_00);
+		this.uvs.Add (_10);
+
+		this.uvs.Add (_11);
+		this.uvs.Add (_01);
+		this.uvs.Add (_00);
+		this.uvs.Add (_10);
+
+		this.useRenderDataForCollision = useCollision;
 	}
 
 	public void AddVertex(Vector3 vertex){

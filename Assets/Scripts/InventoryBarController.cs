@@ -54,7 +54,7 @@ public class InventoryBarController : MonoBehaviour {
 	}
 
 	public void setItem(Item item, int slotIndex) {
-		if (item.itemType == ItemType.BLOCK) {
+		if (item.itemType == ItemType.CUBE_BLOCK) {
 			Texture2D tex = ((Block)item).getTexture ();
 			Sprite s = Sprite.Create (tex, new Rect (0f, 0f, tex.width, tex.height), new Vector2 (0.5f, 0.5f));
 			this.slots [slotIndex].sprite = s;

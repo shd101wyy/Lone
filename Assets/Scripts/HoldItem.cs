@@ -14,8 +14,8 @@ public class HoldItem : MonoBehaviour {
 	}
 
 	public void generate3DMesh(Item item) {
-		if (item.itemType == ItemType.BLOCK) {
-			generate3DMeshFromBlock ((Block)item);
+		if (item.itemType == ItemType.CUBE_BLOCK) {
+			generate3DMeshFromCubeBlock ((CubeBlock)item);
 			transform.localScale = new Vector3 (0.6f, 0.6f, 0.6f);
 		} else {
 			generate3DMeshFromTexture (item.getTexture ());
@@ -23,7 +23,7 @@ public class HoldItem : MonoBehaviour {
 		}
 	}
 
-	public void generate3DMeshFromBlock(Block block) {
+	public void generate3DMeshFromCubeBlock(CubeBlock block) {
 		meshData = new MeshData ();
 		block.generateMesh (meshData, Vector3.zero, null, false, true);
 

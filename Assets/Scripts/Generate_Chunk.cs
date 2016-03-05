@@ -24,7 +24,15 @@ public class Generate_Chunk : MonoBehaviour {
 
 	void drawBlock(Vector3 blockPos) {
 		Block block = chunk.getBlock(blockPos);
-		block.generateMesh (meshData, blockPos, world);
+
+		if (block is CubeBlock) {
+			((CubeBlock)block).generateMesh (meshData, blockPos, world);
+		} else if (block is Plant) {
+			// GameObject clone = (GameObject)Instantiate (((Plant)block).getGameObject(), blockPos, Quaternion.identity);
+			((Plant)block).generateMesh(meshData, blockPos, world);
+		} else {
+			Debug.Log ("Error drawBlock");
+		}
 	}
 
 	public void renderChunk() {
@@ -41,7 +49,7 @@ public class Generate_Chunk : MonoBehaviour {
 		mesh.vertices = meshData.vertices.ToArray();
 		mesh.triangles = meshData.triangles.ToArray();
 
-		// mesh.normals = meshData.normals.ToArray ();
+		mesh.normals = meshData.normals.ToArray ();
 		mesh.uv = meshData.uvs.ToArray();
 
 		mesh.RecalculateBounds();
@@ -65,85 +73,6 @@ public class Generate_Chunk : MonoBehaviour {
 		if (chunk != null && chunk.needRender) {
 			renderChunk ();
 			chunk.needRender = false;
-
-			/*
-			if (chunk.water != null) {
-				Water water = chunk.water;
-				chunk.water = null;
-
-				// StartCoroutine(spreadWater (water));
-			}
-			*/
 		}
 	}
-	/*
-	IEnumerator spreadWater(Water water) {
-		World world = this.heightMap.chunk.world;
-		Vector3 pos = water.pos;
-		if (water.energy - 1 == 0 && world.getBlock(pos + new Vector3(0, -1, 0)) != null)
-			yield break;
-		int energy = water.energy;
-
-		Vector3 frontDir = new Vector3 ((int)pos.x, (int)pos.y, (int)pos.z - 1);
-		Vector3 backDir = new Vector3 ((int)pos.x, (int)pos.y, (int)pos.z + 1);
-		Vector3 leftDir = new Vector3 ((int)pos.x - 1, (int)pos.y, (int)pos.z);
-		Vector3 rightDir = new Vector3 ((int)pos.x + 1, (int)pos.y, (int)pos.z);
-		Vector3 bottomDir = new Vector3 ((int)pos.x, (int)pos.y - 1, (int)pos.z);
-
-		Block front = world.getBlock (frontDir);
-		Block back = world.getBlock (backDir);
-		Block left = world.getBlock (leftDir);
-		Block right = world.getBlock (rightDir);
-		Block bottom = world.getBlock (bottomDir);
-
-		float seconds = 1f;
-
-		ArrayList spread = new ArrayList();
-
-		if (energy > 1 && (!(front != null && front is CubeBlock)) && bottom != null) {
-			yield return new WaitForSeconds (seconds);
-
-			Water w = new Water (energy - 1);
-			world.addBlock (frontDir, w, true);
-
-			spread.Add(w);
-		}
-
-		if (energy > 1 && (!(back != null && back is CubeBlock)) && bottom != null) {
-			yield return new WaitForSeconds (seconds);
-
-			Water w = new Water (energy - 1);
-			world.addBlock (backDir, w, true);
-
-			spread.Add(w);
-		}
-
-		if (energy > 1 && (!(left != null && left is CubeBlock)) && bottom != null) {
-			yield return new WaitForSeconds (seconds);
-
-			Water w = new Water (energy - 1);
-			world.addBlock (leftDir, w, true);
-
-			spread.Add(w);
-		}
-
-		if (energy > 1 && (!(right != null && right is CubeBlock)) && bottom != null) {
-			yield return new WaitForSeconds (seconds);
-
-			Water w = new Water (energy - 1);
-			world.addBlock (rightDir, w, true);
-
-			spread.Add(w);
-		}
-
-		if (bottom == null) {
-			Water w = new Water (energy - 1);
-			world.addBlock (bottomDir, w, true);
-
-			spread.Add(w);
-		}
-
-		
-	}
-*/
 }

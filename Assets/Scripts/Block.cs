@@ -1,41 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System;
 
 
 public enum BlockType {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE, PLANKS_JUNGLE, LOG_OAK, PLANKS_OAK};
 
+/*
+ * Only Block type object can be put on chunk 
+ */
 [Serializable]
 public abstract class Block : Item {
-	public BlockType blockType;
 	public Chunk chunk;
 
-	public float blockSize = 1f;
-
-	public Block(BlockType blockType, string blockName) : base(blockName, ItemType.BLOCK, 64) {
-		this.blockType = blockType;
+	public Block(string blockName, ItemType itemType, int maxStack=64) : base(blockName, itemType, maxStack) {
 		this.chunk = null;
 	}
-
-	public abstract void generateMesh (MeshData meshData, Vector3 pos, World world, bool collidable = true, bool dropItem = false);
-
-	public abstract BlockTile getDropBlockTile(); // DropItem BlockTile
-
-	public abstract BlockTile getBlockTile ();
-
+		
 	public override Texture2D getTexture () {
 		throw new NotImplementedException ();
 	}
 }
 
 [Serializable]
-public class CubeBlock: Block {
-	public CubeBlock(BlockType blockType, string blockName) : base(blockType, blockName) {
-	}
+public abstract class CubeBlock: Block {
+	public BlockType blockType;
+	public float blockSize = 1f;
 
-	public override void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = true, bool dropItem = false) {
+	public CubeBlock(BlockType blockType, string blockName) : base(blockName, ItemType.CUBE_BLOCK, 64) {
+		this.blockType = blockType;
+	}
+		
+	public abstract BlockTile getBlockTile ();
+
+	public void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = true, bool dropItem = false) {
 
 		bool col = meshData.useRenderDataForCollision;
 		meshData.useRenderDataForCollision = collidable;
@@ -80,36 +78,10 @@ public class CubeBlock: Block {
 		throw new NotImplementedException ();
 	}
 
-	public override BlockTile getBlockTile () {
-		throw new NotImplementedException ();
-	}
-
-	public override BlockTile getDropBlockTile () {
+	public virtual BlockTile getDropBlockTile () {  // DropItem BlockTile
 		return getBlockTile ();
 	}
 }
-
-/*
-public class Fern: Block {
-	public Fern() : base(BlockType.PLANT_FERN) {
-	}
-
-	public override void generateMesh (MeshData meshData, bool collidable = false) {
-		// nothing happened
-		return;
-	}
-}
-
-public class Rose: Block {
-	public Rose() : base(BlockType.PLANT_FERN) {
-	}
-
-	public override void generateMesh (MeshData meshData, bool collidable = false) {
-		// nothing happened
-		return;
-	}
-}
-*/
 
 [Serializable]
 public class Grass: CubeBlock {
@@ -241,6 +213,7 @@ public class PlanksOak: CubeBlock {
 }
 
 // TODO: the water below is super bad
+/*
 public class Water: Block {
 	public int energy;
 	public Water(int energy = 5) : base(BlockType.WATER, "water") {
@@ -304,3 +277,4 @@ public class Water: Block {
 		throw new NotImplementedException ();
 	}
 }
+*/
