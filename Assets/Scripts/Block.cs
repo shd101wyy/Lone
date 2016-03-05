@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 
 
-public enum BlockType {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE, PLANKS_JUNGLE, LOG_OAK, PLANKS_OAK};
+public enum BlockType {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE, PLANKS_JUNGLE, LOG_OAK, PLANKS_OAK, TNT, STONE, BEDROCK};
 
 /*
  * Only Block type object can be put on chunk 
@@ -208,6 +208,53 @@ public class PlanksOak: CubeBlock {
 
 	public override BlockTile getBlockTile () {
 		SpriteData side = Game.textures ["planks_oak"];
+		return new BlockTile (side, side, side, side, side, side);
+	}
+}
+
+[Serializable]
+public class TNT: CubeBlock {
+	public TNT() : base(BlockType.TNT, "tnt") {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["tnt_side"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile () {
+		SpriteData side = Game.textures ["tnt_side"];
+		SpriteData top = Game.textures ["tnt_top"];
+		SpriteData bottom = Game.textures ["tnt_bottom"];
+		return new BlockTile (side, side, top, bottom, side, side);
+	}
+}
+
+[Serializable]
+public class Stone: CubeBlock {
+	public Stone() : base(BlockType.STONE, "stone") {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["stone"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile () {
+		SpriteData side = Game.textures ["stone"];
+		return new BlockTile (side, side, side, side, side, side);
+	}
+}
+
+[Serializable]
+public class BedRock: CubeBlock {
+	public BedRock() : base(BlockType.BEDROCK, "bedrock") {
+	}
+
+	public override Texture2D getTexture () {
+		return Game.textures ["bedrock"].texture_2d;
+	}
+
+	public override BlockTile getBlockTile () {
+		SpriteData side = Game.textures ["bedrock"];
 		return new BlockTile (side, side, side, side, side, side);
 	}
 }

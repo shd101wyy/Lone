@@ -3,6 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using SimplexNoise;
+
+
 [Serializable]
 public class Chunk {
 	public Dictionary<BlockPos, Block> blocks;
@@ -23,6 +26,10 @@ public class Chunk {
 		needRender = false;
 		changed = false;
 		rendered = false; 
+	}
+
+	public static int GetNoise(int x, int y, int z, float scale, int max) {
+		return Mathf.FloorToInt( (Noise.Generate(x * scale, y * scale, z * scale) + 1f) * (max/2f));
 	}
 
 	public void addBlock(Vector3 pos, Block block) {
@@ -69,6 +76,7 @@ public class Chunk {
 		int startX = width * chunkX;
 		int startZ = depth * chunkZ;
 
+		/*
 		int seed = world.worldData.seed;
 
 		for (int z = 0; z < depth; z++) {
@@ -90,8 +98,73 @@ public class Chunk {
 				}
 			}
 		}
+		*/
+		for (int z = 0; z < depth; z++) {
+			for (int x = 0; x < width; x++) {
+				generateColumn (x + startX, z + startZ);
+			}
+		}
 
 		changed = false; // this chunk hasn't been changed by player...
+	}
+
+	void generateColumn(int x, int z) {
+		float stoneBaseHeight = 32;
+		float stoneBaseNoise = 0.05f;
+		float stoneBaseNoiseHeight = 4;
+
+		float stoneMountainHeight = 48;
+		float stoneMountainFrequency = 0.008f;
+		float stoneMinHeight = -12;
+
+		float dirtBaseHeight = 1;
+		float dirtNoise = 0.04f;
+		float dirtNoiseHeight = 3;
+
+		int stoneHeight = Mathf.FloorToInt(stoneBaseHeight);
+		stoneHeight += GetNoise(x, 32, z, stoneMountainFrequency, Mathf.FloorToInt(stoneMountainHeight));
+
+		if (stoneHeight < stoneMinHeight)
+			stoneHeight = Mathf.FloorToInt(stoneMinHeight);
+
+		stoneHeight += GetNoise(x, 32, z, stoneBaseNoise, Mathf.FloorToInt(stoneBaseNoiseHeight));
+
+		int dirtHeight = stoneHeight + Mathf.FloorToInt(dirtBaseHeight);
+		dirtHeight += GetNoise(x, 64, z, dirtNoise, Mathf.FloorToInt(dirtNoiseHeight));
+
+
+		Block topBlock = null;
+		Vector3 topBlockPos = Vector3.zero;
+		for (int y = 0; y < Generate_Landscape.chunkHeight; y++) {
+			Vector3 blockPos = new Vector3 (x, y, z);
+			if (y == 0) {
+				// addBlock(blockPos, new BedRock());
+				topBlock = new Grass();
+				topBlockPos = blockPos;
+				addBlock (blockPos, topBlock);
+			} else if (y <= stoneHeight) {
+				topBlock = new Stone ();
+				addBlock (blockPos, topBlock);
+			} else if (y <= dirtHeight) {
+				if (y == dirtHeight) {
+					topBlock = new Grass ();
+					topBlockPos = blockPos;
+					addBlock (blockPos, topBlock);
+				} else {
+					topBlock = new Dirt ();
+					addBlock (blockPos, topBlock);
+				}
+			} else {
+			}
+		}
+
+		if (topBlock is Grass) {
+			if (UnityEngine.Random.Range (0, 10) <= 2) {
+				addBlock (topBlockPos + new Vector3 (0, 1, 0), new Fern ());
+			} else if (UnityEngine.Random.Range (0, 50) <= 2) {
+				addBlock (topBlockPos + new Vector3 (0, 1, 0), new Rose ());
+			}
+		}
 	}
 
 	void createBlock(Vector3 blockPos, bool isTop) {
@@ -107,17 +180,6 @@ public class Chunk {
 			} else if (UnityEngine.Random.Range (0, 50) <= 2) {
 				addBlock (blockPos + new Vector3 (0, 1, 0), new Rose ());
 			}
-			/*		 
-			if (this.rnd.Next(0, 10) <= 2) { // FERN
-				Vector3 pos = blockPos + new Vector3 (0, 1, 0);
-				Block fern = new Fern(true, pos);
-				chunk.Add(pos, fern);
-			} else if (this.rnd.Next(0, 50) <= 5) {
-				Vector3 pos = blockPos + new Vector3 (0, 1, 0);
-				Block rose = new Rose(true, pos);
-				chunk.Add(pos, rose);
-			}
-			*/
 		} else if (y > 5) {
 			block = new Dirt ();
 		} else {

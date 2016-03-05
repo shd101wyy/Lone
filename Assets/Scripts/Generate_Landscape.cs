@@ -20,7 +20,7 @@ public class Generate_Landscape : MonoBehaviour {
 
 	public static int chunkWidth = 16;
 	public static int chunkDepth = 16;
-	public static int chunkHeight = 128;
+	public static int chunkHeight = 64;
 
 	// private int planeSize = 6;
 	// private int planeSize = 6; // 2; // 4; /*6;*/ /*20;*/
@@ -156,7 +156,6 @@ public class Generate_Landscape : MonoBehaviour {
 						return;
 
 					Block block = world.getBlock (blockPos);
-					Debug.Log (block);
 					if (block != null) { // draw small one 
 						DropItem dropItem = (new GameObject ()).AddComponent<DropItem> () as DropItem;
 						dropItem.generate3DMesh (block, blockPos);
