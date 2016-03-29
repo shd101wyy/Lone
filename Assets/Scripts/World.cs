@@ -111,13 +111,10 @@ public class World {
 	}
 
 	// add/set block
-	public void addBlock(Vector3 blockPos, Block block, bool needRender = false) {
+	public void addBlock(Vector3 blockPos, Block block, bool needRender = false) {		
 		Vector3 chunkPos = new Vector3 (Mathf.Floor (blockPos.x / Chunk.width),
 			Mathf.Floor (blockPos.y / Chunk.height),
 			Mathf.Floor (blockPos.z / Chunk.depth));
-
-		if (blockPos.y > 128) // max 128
-			return;
 
 		Chunk chunk = chunks [chunkPos];
 		if (chunk.getBlock (blockPos) == null /* is Air */) {

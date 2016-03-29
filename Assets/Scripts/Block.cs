@@ -46,10 +46,10 @@ public abstract class CubeBlock: Block {
 	public abstract BlockTile getBlockTile ();
 
 	public void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = true, bool dropItem = false) {
-		if (world == null) {
+		/*if (world == null) {
 			Debug.Log (pos);
 			Debug.Log ("Is Null");
-		}
+		}*/
 			
 		bool col = meshData.useRenderDataForCollision;
 		meshData.useRenderDataForCollision = collidable;

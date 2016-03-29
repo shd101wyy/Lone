@@ -23,7 +23,7 @@ public class Generate_Landscape : MonoBehaviour {
 	public int selectedBlock = 1;
 
 	public List<Vector3> buildList = new List<Vector3>();
-	public List<Chunk> renderList = new List<Chunk>(); // Chunk need to be rendered.
+	public List<Vector3> renderList = new List<Vector3>(); // Chunk need to be rendered.
 	public Dictionary<Vector3, GameObject> chunkObjects = new Dictionary<Vector3, GameObject>();
 	public static int halfPlaneSize = 4;
 	int timer = 0;
@@ -145,7 +145,8 @@ public class Generate_Landscape : MonoBehaviour {
 					Vector3 hit3 = mesh.vertices[mesh.triangles[index + 2]];
 
 					Vector3 blockPos =  getHitObjectPos(hit1, hit2, hit3, hit.normal);
-					if (blockPos.y == 0)
+
+					if (blockPos.y <= -128)
 						return;
 
 					Block block = world.getBlock (blockPos);
@@ -188,6 +189,9 @@ public class Generate_Landscape : MonoBehaviour {
 						// Debug.Log ("Inside");
 						return;
 					}
+
+					if (newPos.y >= 128)
+						return;
 
 					Item item = inventoryBarController.getSelectedItem ();
 					if (item != null && item.itemType == ItemType.CUBE_BLOCK) {
@@ -244,22 +248,28 @@ public class Generate_Landscape : MonoBehaviour {
 
 	void FindChunksToLoad() {
 		int playerChunkX = (int)(player.transform.position.x / Chunk.width);
-		int playerChunkY = (int)(player.transform.position.y / Chunk.height);
 		int playerChunkZ = (int)(player.transform.position.z / Chunk.depth);
 	
 
-		//if (buildList.Count == 0) {
+		// if (buildList.Count == 0) {
 		if (renderList.Count == 0) {
 			for (int i = 0; i < chunkPositions.Length; i++) {
 				Vector3 chunkPos = new Vector3 (playerChunkX + chunkPositions[i].x, /*playerChunkY + chunkPositions[i].y*/ 0, playerChunkZ + chunkPositions[i].z);
 				Chunk newChunk = world.getChunk (chunkPos);
 
-				if (newChunk != null && (newChunk.rendered || renderList.Contains (newChunk)))
+				if (newChunk != null && (newChunk.rendered || renderList.Contains (chunkPos)))
 					continue;
 
 				// load a column of chunks 
-				for (int y = -8; y < 8; y++) {
-					buildList.Add (chunkPos + new Vector3(0, y, 0)); // TODO add something
+				for (int y = -4; y <= 4; y++) {
+					// add surrounding area
+					for (int x = -1; x <= 1; x++) {
+						for (int z = -1; z <= 1; z++) {
+							buildList.Add (chunkPos + new Vector3(x, y, z)); // TODO add something
+						}
+					}
+
+					renderList.Add (new Vector3 (chunkPos.x, y, chunkPos.z));
 				}
 
 				return;
@@ -268,37 +278,36 @@ public class Generate_Landscape : MonoBehaviour {
 	}
 
 	void BuildChunk(Vector3 chunkPos) {
-		//Debug.Log ("build: " + chunkPos);
-		if (world.hasChunkAtPosition (chunkPos)) {
-			return;
-		} else {
-			Chunk chunk = world.CreateChunk (chunkPos);
-			renderList.Add (chunk);
+		if (world.getChunk (chunkPos) == null) {
+			world.CreateChunk (chunkPos);
 		}
 	}
 
 	void LoadAndRenderChunks() {
-		for (int i = 0; i < 8; i++) {  // render 8 chunks per frame
-			if (buildList.Count != 0) {
-				BuildChunk (buildList [0]);
-				buildList.RemoveAt (0);
-			} else {
-				break;
+		if (buildList.Count != 0) {
+			for (int i = 0; i < 8; i++) {  // render 8 chunks per frame
+				if (buildList.Count != 0) {
+					BuildChunk (buildList [0]);
+					buildList.RemoveAt (0);
+				} else {
+					break;
+				}
 			}
+			return;
 		}
 
 
 		if (renderList.Count != 0) {
-			Chunk chunk = renderList [0];
+			Chunk chunk = world.getChunk( new Vector3(renderList [0].x, renderList [0].y, renderList [0].z));
 			if (!chunk.rendered) {
 				chunk.needRender = true;
 
 				Vector3 chunkPos = new Vector3 (chunk.chunkX, chunk.chunkY, chunk.chunkZ);
 
 				// don't render chunk below 0 (sea level) - 1
-				if (chunkPos.y <= -2) {
-					chunk.needRender = false;
-				}
+				//if (chunkPos.y <= -2) {
+				//	chunk.needRender = false;
+				//}
 
 				//Debug.Log ("Render: " + chunkPos);
 

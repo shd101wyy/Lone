@@ -27,7 +27,7 @@ public class Chunk {
 
 	// sea level is at 0
 	public static int width = 16;
-	public static int height = 16;
+	public static int height = 32;
 	public static int depth = 16;
 
 	//public World world;  // 这个其实没有必要， world 就只有一个，就是现在游戏中的 world

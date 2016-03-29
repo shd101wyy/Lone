@@ -13,3 +13,8 @@
 /Users/wangyiyi/百度云同步盘/Github/Lone/Temp/bin/Debug/Unity.CecilTools.dll
 /Users/wangyiyi/百度云同步盘/Github/Lone/Temp/bin/Debug/Mono.Cecil.Pdb.dll
 /Users/wangyiyi/百度云同步盘/Github/Lone/Temp/bin/Debug/Mono.Cecil.Mdb.dll
+/Users/wangyiyi/百度云同步盘/Github/Lone/Temp/bin/Debug/Assembly-CSharp.dll.mdb
+/Users/wangyiyi/百度云同步盘/Github/Lone/Temp/bin/Debug/Assembly-CSharp.dll
+/Users/wangyiyi/百度云同步盘/Github/Lone/obj/Debug/Assembly-CSharp.dll
+/Users/wangyiyi/百度云同步盘/Github/Lone/obj/Debug/Assembly-CSharp.dll.mdb
+/Users/wangyiyi/百度云同步盘/Github/Lone/Temp/bin/Debug/LitJson.dll
