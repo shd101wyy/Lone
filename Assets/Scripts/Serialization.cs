@@ -52,7 +52,7 @@ public static class Serialization {
 		FileStream stream = new FileStream (saveFile, FileMode.Open);
 
 		Chunk chunk = new Chunk ((int)chunkPos.x, (int)chunkPos.y, (int)chunkPos.z);
-		chunk.blocks = formatter.Deserialize (stream) as Block[,,]; // Dictionary<BlockPos, Block>;
+		chunk.blocks = formatter.Deserialize (stream) /*as Block[,,];*/ as Dictionary<BlockPos, Block>;
 		chunk.needRender = true;
 		stream.Close ();
 		return chunk;

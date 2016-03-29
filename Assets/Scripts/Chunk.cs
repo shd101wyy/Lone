@@ -8,8 +8,8 @@ using SimplexNoise;
 
 [Serializable]
 public class Chunk {
-	// public Dictionary<BlockPos, Block> blocks;
-	public Block[,,] blocks;
+	public Dictionary<BlockPos, Block> blocks;
+	// public Block[,,] blocks;
 	public bool needRender; // if == true, then the chunk will be renered
 
 	// eg: (0, 0, 0) (1, 0, 0)
@@ -27,16 +27,15 @@ public class Chunk {
 
 	// sea level is at 0
 	public static int width = 16;
-	public static int height = 32;
+	public static int height = 16;
 	public static int depth = 16;
-
-	public int airNum = 0;
 
 	//public World world;  // 这个其实没有必要， world 就只有一个，就是现在游戏中的 world
 	//public Water water;
 
 	public Chunk(int chunkX, int chunkY, int chunkZ) {
-		// blocks = new Dictionary<BlockPos, Block> ();
+		blocks = new Dictionary<BlockPos, Block> ();
+		/*
 		blocks = new Block[Chunk.width, Chunk.height, Chunk.depth];
 		for (int x = 0; x < Chunk.width; x++) {
 			for (int y = 0; y < Chunk.height; y++) {
@@ -45,6 +44,7 @@ public class Chunk {
 				}
 			}
 		}
+		*/
 
 		this.chunkX = chunkX;
 		this.chunkY = chunkY;
@@ -64,26 +64,35 @@ public class Chunk {
 	}
 
 	public void addBlock(Vector3 pos, Block block) {
-		blocks[(int)pos.x - x, (int)pos.y - y, (int)pos.z - z] = block;
+		/*
+		if (blocks [(int)pos.x - x, (int)pos.y - y, (int)pos.z - z] is Air) {
+			blocks [(int)pos.x - x, (int)pos.y - y, (int)pos.z - z] = block;
+			block.chunk = this;
+			changed = true; 
+		}
+		*/
+
+		blocks.Add (new BlockPos(pos), block);
 		block.chunk = this;
 		changed = true; 
-		airNum -= 1;
 	}
 
 	public Block getBlock(Vector3 pos) {
+		/*
 		return blocks [(int)pos.x - x, (int)pos.y - y, (int)pos.z - z];
+		*/
+
+		if (!blocks.ContainsKey (new BlockPos(pos)))
+			return null;
+		return blocks [new BlockPos(pos)];
 	}
 
 	public void removeBlock(Vector3 pos) {
-		// blocks.Remove (new BlockPos(pos));
+		blocks.Remove (new BlockPos(pos));
+		/*
 		blocks[(int)pos.x - x, (int)pos.y - y, (int)pos.z - z] = new Air();
-		airNum += 1;
-
+		*/
 		changed = true;
-	}
-
-	public bool isAllAir() {
-		return airNum == Chunk.width * Chunk.height * Chunk.depth;
 	}
 
 	// TODO: move this to terrain generation in the future.
@@ -133,14 +142,9 @@ public class Chunk {
 
 		for (int z = 0; z < depth; z++) {
 			for (int x = 0; x < width; x++) {
-				int y = 15;
-				//Vector3 blockPos = new Vector3 (x+startX, y+startY, z+startZ);
-				//createBlock (blockPos, false);
-				while (y >= 0) {
-					// y--;
+				for (int y = 0; y < height; y++) {
 					Vector3 blockPos = new Vector3 (x+startX, y+startY, z+startZ);
 					createBlock (blockPos, false);
-					y--;
 				}
 			}
 		}
@@ -157,8 +161,7 @@ public class Chunk {
 		Block block;
 
 		if (y > 42) {
-			block = new Air ();
-			airNum += 1;
+			return; // air
 		} else if (y > 38) {
 			block = new Snow ();
 		} else if (isTop && y > 5) {

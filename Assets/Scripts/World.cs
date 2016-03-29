@@ -116,8 +116,11 @@ public class World {
 			Mathf.Floor (blockPos.y / Chunk.height),
 			Mathf.Floor (blockPos.z / Chunk.depth));
 
+		if (blockPos.y > 128) // max 128
+			return;
+
 		Chunk chunk = chunks [chunkPos];
-		if (chunk.getBlock (blockPos) is Air) {
+		if (chunk.getBlock (blockPos) == null /* is Air */) {
 			chunk.addBlock (blockPos, block);
 			chunk.needRender = needRender;
 		}

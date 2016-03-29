@@ -84,7 +84,7 @@ public class Generate_Landscape : MonoBehaviour {
 		player.transform.localEulerAngles = new Vector3 (world.worldData.playerRX, world.worldData.playerRY, world.worldData.playerRZ);
 
 		// generate 4 blocks around player
-		// InitiateWorld();
+		//InitiateWorld();
 
 		inventoryBarController = inventoryBar.GetComponent<InventoryBarController> () as InventoryBarController;
 	}
@@ -242,24 +242,6 @@ public class Generate_Landscape : MonoBehaviour {
 		LoadAndRenderChunks ();
 	}
 
-	void InitiateWorld() {
-		int playerChunkX = (int)(player.transform.position.x / Chunk.width);
-		int playerChunkY = (int)(player.transform.position.y / Chunk.height);
-		int playerChunkZ = (int)(player.transform.position.z / Chunk.depth);
-
-		for (int x = -1; x < 1; x++) {
-			for (int y = -1; y < 1; y++) {
-				for (int z = -1; z < 1; z++) {
-					BuildChunk (new Vector3 (playerChunkX + x,  y, playerChunkZ + z));
-				}
-			}
-		}
-
-		//BuildChunk (new Vector3 (0, 0, 0));
-
-		LoadAndRenderChunks ();
-	}
-
 	void FindChunksToLoad() {
 		int playerChunkX = (int)(player.transform.position.x / Chunk.width);
 		int playerChunkY = (int)(player.transform.position.y / Chunk.height);
@@ -275,7 +257,7 @@ public class Generate_Landscape : MonoBehaviour {
 					continue;
 
 				// load a column of chunks 
-				for (int y = -4; y <= 4; y++) {
+				for (int y = -8; y < 1; y++) {
 					buildList.Add (chunkPos + new Vector3(0, y, 0)); // TODO add something
 				}
 
@@ -285,15 +267,11 @@ public class Generate_Landscape : MonoBehaviour {
 	}
 
 	void BuildChunk(Vector3 chunkPos) {
+		//Debug.Log ("build: " + chunkPos);
 		if (world.hasChunkAtPosition (chunkPos))
 			return;
 		else {
 			Chunk chunk = world.CreateChunk (chunkPos);
-			GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, Vector3.zero, Quaternion.identity);
-			chunkClone.GetComponent<Generate_Chunk> ().bindChunk (chunk, world);
-			chunkClone.name = "chunk_" + chunkPos;
-			chunkObjects.Add (chunkPos, chunkClone);
-
 			renderList.Add (chunk);
 		}
 	}
@@ -307,11 +285,24 @@ public class Generate_Landscape : MonoBehaviour {
 		}
 
 		for (int i = 0; i < renderList.Count; i++) {
-			Chunk chunk = renderList [0];
-			if (!chunk.rendered)
+			//Chunk chunk = renderList [0];
+			Chunk chunk = renderList[i];
+			if (!chunk.rendered) {
 				chunk.needRender = true;
-			renderList.RemoveAt (0);
+			
+				Vector3 chunkPos = new Vector3 (chunk.chunkX, chunk.chunkY, chunk.chunkZ);
+
+				//Debug.Log ("Render: " + chunkPos);
+
+				GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, Vector3.zero, Quaternion.identity);
+				chunkClone.GetComponent<Generate_Chunk> ().bindChunk (chunk, world);
+				chunkClone.name = "chunk_" + chunkPos;
+				chunkObjects.Add (chunkPos, chunkClone);
+			}
+			//renderList.RemoveAt (0);
 		}
+
+		renderList = new List<Chunk>();
 	}
 
 	bool DeleteChunks() {

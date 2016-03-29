@@ -22,6 +22,7 @@ public abstract class Block : Item {
 	}
 }
 
+/*
 [Serializable]
 public class Air : Block {
 	public Air() : base("air", ItemType.AIR, 0) {
@@ -31,6 +32,7 @@ public class Air : Block {
 		return null;
 	}
 }
+*/
 
 [Serializable]
 public abstract class CubeBlock: Block {
@@ -59,33 +61,25 @@ public abstract class CubeBlock: Block {
 		Vector3 topDir = new Vector3 ((int)pos.x, (int)pos.y + 1, (int)pos.z);
 		Vector3 bottomDir = new Vector3 ((int)pos.x, (int)pos.y - 1, (int)pos.z);
 
-
-		Block front = world == null ? null : world.getBlock (frontDir);
-		Block back = world == null ? null :  world.getBlock (backDir);
-		Block left = world == null ? null :  world.getBlock (leftDir);
-		Block right = world == null ? null :  world.getBlock (rightDir);
-		Block top = world == null ? null :  world.getBlock (topDir);
-		Block bottom = world == null ? null :  world.getBlock (bottomDir);
-
-		if (front is Air || world == null) {
+		if (world == null || world.getBlock(frontDir) == null) {
 			meshData.FaceDataZPositive (this, pos, dropItem);
 		}
-		if (back is Air || world == null) {
+		if (world == null || world.getBlock(backDir) == null) {
 			meshData.FaceDataZNegative (this, pos, dropItem);
 		}
-		if (right is Air || world == null) {
+		if (world == null || world.getBlock(rightDir) == null) {
 			meshData.FaceDataXPositive (this, pos, dropItem);
 		}
-		if (left is Air || world == null) {
+		if (world == null || world.getBlock(leftDir) == null) {
 			meshData.FaceDataXNegative (this, pos, dropItem);
 		}
-		if (bottom is Air || world == null) {
+		if (world == null || world.getBlock(bottomDir) == null) {
 			meshData.FaceDataYNegative (this, pos, dropItem);
 		}
-		if (top is Air || world == null) {
+		if (world == null || world.getBlock(topDir) == null) {
 			meshData.FaceDataYPositive (this, pos, dropItem);
 		}
-
+			
 		meshData.useRenderDataForCollision = col;
 	}
 

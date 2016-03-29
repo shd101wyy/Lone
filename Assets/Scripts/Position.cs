@@ -74,6 +74,7 @@ public class BlockPos: System.Object {
 	}
 }
 
+/*
 [Serializable]
 public class ChunkPos: System.Object {
 	public int x;
@@ -134,4 +135,4 @@ public class ChunkPos: System.Object {
 		return !(a == b);
 	}
 }
-
+*/
