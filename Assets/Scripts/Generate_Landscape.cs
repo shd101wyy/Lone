@@ -261,7 +261,7 @@ public class Generate_Landscape : MonoBehaviour {
 					continue;
 
 				// load a column of chunks 
-				for (int y = -4; y <= 4; y++) {
+				for (int y = -8; y <= 8; y++) {
 					// add surrounding area
 					for (int x = -1; x <= 1; x++) {
 						for (int z = -1; z <= 1; z++) {
@@ -285,7 +285,7 @@ public class Generate_Landscape : MonoBehaviour {
 
 	void LoadAndRenderChunks() {
 		if (buildList.Count != 0) {
-			for (int i = 0; i < 8; i++) {  // render 8 chunks per frame
+			for (int i = 0; i < 16; i++) {  // render 16 chunks per frame
 				if (buildList.Count != 0) {
 					BuildChunk (buildList [0]);
 					buildList.RemoveAt (0);
