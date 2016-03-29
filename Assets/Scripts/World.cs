@@ -24,7 +24,7 @@ public class WorldData {
 	public WorldData(int seed) {
 		this.seed = seed;
 		this.playerX = 0;
-		this.playerY = 60;
+		this.playerY = 120;
 		this.playerZ = 0;
 
 		playerRX = 0;
@@ -35,7 +35,7 @@ public class WorldData {
 	public WorldData() {
 		this.seed = (int)System.DateTime.Now.Millisecond * 1000;
 		this.playerX = 0;
-		this.playerY = 60;
+		this.playerY = 120;
 		this.playerZ = 0;
 
 		playerRX = 0;
@@ -58,13 +58,13 @@ public class WorldData {
 }
 
 public class World {
-	public Dictionary<Vector2, Chunk> chunks;
+	public Dictionary<Vector3, Chunk> chunks;
 	public string name;
 	public WorldData worldData;
 
 	public World(string worldName) {
 		this.name = worldName;
-		chunks = new Dictionary<Vector2, Chunk> ();
+		chunks = new Dictionary<Vector3, Chunk> ();
 
 		// load WorldData
 		worldData = Serialization.LoadWorldData(this);
@@ -75,7 +75,7 @@ public class World {
 
 	public World(string worldName, int seed) {
 		this.name = worldName;
-		chunks = new Dictionary<Vector2, Chunk> ();
+		chunks = new Dictionary<Vector3, Chunk> ();
 
 		// load WorldData
 		worldData = Serialization.LoadWorldData(this);
@@ -84,26 +84,27 @@ public class World {
 		}
 	}
 
-	public void addChunk(Vector2 chunkPos, Chunk chunk) {
+	public void addChunk(Vector3 chunkPos, Chunk chunk) {
 		chunks.Add (chunkPos, chunk);
 	}
 
-	// chunkPos like (0, 0), (0, 1), (1, 1)...
-	public Chunk getChunk(Vector2 chunkPos) {
+	// chunkPos like (0, 0, 0), (0, 0, 1), (1, 0, 1)...
+	public Chunk getChunk(Vector3 chunkPos) {
 		if (chunks.ContainsKey (chunkPos))
 			return chunks [chunkPos];
 		else
 			return null;
 	}
 
-	public bool hasChunkAtPosition(Vector2 chunkPos) {
+	public bool hasChunkAtPosition(Vector3 chunkPos) {
 		return chunks.ContainsKey (chunkPos);
 	}
 
 	// get block
 	public Block getBlock(Vector3 blockPos) {
-		Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / Generate_Landscape.chunkWidth),
-			Mathf.Floor (blockPos.z / Generate_Landscape.chunkDepth));
+		Vector3 chunkPos = new Vector3 (Mathf.Floor (blockPos.x / Chunk.width),
+			Mathf.Floor (blockPos.y / Chunk.height),
+			Mathf.Floor (blockPos.z / Chunk.depth));
 		if (!chunks.ContainsKey (chunkPos))
 			return null;
 		return chunks[chunkPos].getBlock (blockPos);
@@ -111,58 +112,77 @@ public class World {
 
 	// add/set block
 	public void addBlock(Vector3 blockPos, Block block, bool needRender = false) {
-		Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / Generate_Landscape.chunkWidth),
-			Mathf.Floor (blockPos.z / Generate_Landscape.chunkDepth));
+		Vector3 chunkPos = new Vector3 (Mathf.Floor (blockPos.x / Chunk.width),
+			Mathf.Floor (blockPos.y / Chunk.height),
+			Mathf.Floor (blockPos.z / Chunk.depth));
 
 		Chunk chunk = chunks [chunkPos];
-		if (chunk.hasBlockAtPosition (blockPos))
-			return;
-		chunk.addBlock (blockPos, block);
-		chunk.needRender = needRender;
+		if (chunk.getBlock (blockPos) is Air) {
+			chunk.addBlock (blockPos, block);
+			chunk.needRender = needRender;
+		}
 	}
 
 	// remove block
 	public void removeBlock(Vector3 blockPos, bool needRender = false) {
-		Vector2 chunkPos = new Vector2 (Mathf.Floor (blockPos.x / Generate_Landscape.chunkWidth),
-			Mathf.Floor (blockPos.z / Generate_Landscape.chunkDepth));
+		Vector3 chunkPos = new Vector3 (Mathf.Floor (blockPos.x / Chunk.width),
+			Mathf.Floor (blockPos.y / Chunk.height),
+			Mathf.Floor (blockPos.z / Chunk.depth));
+		
 		Chunk chunk = chunks [chunkPos];
 		chunk.removeBlock (blockPos);
 		chunk.needRender = needRender;
 
-		int chunkWidth = Generate_Landscape.chunkWidth;
-		int chunkDepth = Generate_Landscape.chunkDepth;
+		int chunkWidth = Chunk.width;
+		int chunkDepth = Chunk.depth;
+		int chunkHeight = Chunk.height;
 
 		//Debug.Log (blockPos);
 		//Debug.Log (chunkPos);
 		// render left chunk
 		if (Mathf.Floor((blockPos.x-1)/chunkWidth) != chunkPos.x  && 
-			chunks.ContainsKey(chunkPos + new Vector2(-1, 0)) && 
+			chunks.ContainsKey(chunkPos + new Vector3(-1, 0, 0)) && 
 			this.getBlock(blockPos + new Vector3(-1, 0, 0)) != null) {
 
 			//Debug.Log ("left");
-			chunks [chunkPos + new Vector2 (-1, 0)].needRender = true;
+			chunks [chunkPos + new Vector3 (-1, 0, 0)].needRender = true;
 
 		} else if (Mathf.Floor((blockPos.x+1)/chunkWidth) != chunkPos.x && 
-			chunks.ContainsKey(chunkPos + new Vector2(1, 0)) && 
+			chunks.ContainsKey(chunkPos + new Vector3(1, 0, 0)) && 
 			this.getBlock(blockPos + new Vector3(1, 0, 0)) != null) {
 
 			//Debug.Log ("right");
-			chunks [chunkPos + new Vector2 (1, 0)].needRender = true;
+			chunks [chunkPos + new Vector3 (1, 0, 0)].needRender = true;
 		}
 
-		if (Mathf.Floor((blockPos.z-1)/chunkDepth) != chunkPos.y && 
-			chunks.ContainsKey(chunkPos + new Vector2(0, -1)) && 
+		if (Mathf.Floor((blockPos.z-1)/chunkDepth) != chunkPos.z && 
+			chunks.ContainsKey(chunkPos + new Vector3(0, 0, -1)) && 
 			this.getBlock(blockPos + new Vector3(0, 0, -1)) != null) {
 
 			//Debug.Log ("front");
-			chunks [chunkPos + new Vector2 (0, -1)].needRender = true;
+			chunks [chunkPos + new Vector3 (0, 0, -1)].needRender = true;
 
-		} else if (Mathf.Floor((blockPos.z+1)/chunkDepth) != chunkPos.y && 
-			chunks.ContainsKey(chunkPos + new Vector2(0, 1)) && 
+		} else if (Mathf.Floor((blockPos.z+1)/chunkDepth) != chunkPos.z && 
+			chunks.ContainsKey(chunkPos + new Vector3(0, 0, 1)) && 
 			this.getBlock(blockPos + new Vector3(0, 0, 1)) != null) {
 
 			//Debug.Log ("back");
-			chunks [chunkPos + new Vector2 (0, 1)].needRender = true;
+			chunks [chunkPos + new Vector3 (0, 0, 1)].needRender = true;
+		}
+
+		if (Mathf.Floor((blockPos.y-1)/chunkHeight) != chunkPos.y && 
+			chunks.ContainsKey(chunkPos + new Vector3(0, -1, 0)) && 
+			this.getBlock(blockPos + new Vector3(0, -1, 0)) != null) {
+
+			//Debug.Log ("bottom");
+			chunks [chunkPos + new Vector3 (0, -1, 0)].needRender = true;
+
+		} else if (Mathf.Floor((blockPos.y+1)/chunkHeight) != chunkPos.y && 
+			chunks.ContainsKey(chunkPos + new Vector3(0, 1, 0)) && 
+			this.getBlock(blockPos + new Vector3(0, 1, 0)) != null) {
+
+			//Debug.Log ("back");
+			chunks [chunkPos + new Vector3 (0, 1, 0)].needRender = true;
 		}
 	}
 
@@ -181,7 +201,7 @@ public class World {
 		Debug.Log ("Done");
 	}
 
-	public void saveChunk(Vector2 chunkPos) {
+	public void saveChunk(Vector3 chunkPos) {
 		Chunk chunk = chunks [chunkPos];
 		if (chunk.changed) {
 			Debug.Log ("Save chunk");
@@ -196,14 +216,14 @@ public class World {
 	//
 	// }
 
-	public Chunk CreateChunk(Vector2 chunkPos) {
+	public Chunk CreateChunk(Vector3 chunkPos) {
 		if (hasChunkAtPosition (chunkPos) == false) {
 			Chunk chunk = Serialization.LoadChunk (chunkPos, this);
 			if (chunk != null) { // loaded chunk from disk 
 				// chunk.changed = false; // 存的时候应该就是 false
 				// do nothing
 			} else {
-				chunk = new Chunk ((int)chunkPos.x, (int)chunkPos.y);
+				chunk = new Chunk ((int)chunkPos.x, (int)chunkPos.y, (int)chunkPos.z);
 				chunk.generateHeightMap (this);
 			}
 			addChunk (chunkPos, chunk);
@@ -213,7 +233,7 @@ public class World {
 		}
 	}
 
-	public void RemoveChunk(Vector2 chunkPos) {
+	public void RemoveChunk(Vector3 chunkPos) {
 		chunks.Remove (chunkPos);
 	}
 }

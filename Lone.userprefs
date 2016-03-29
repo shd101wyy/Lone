@@ -1,23 +1,13 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/MeshData.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Generate_Landscape.cs">
     <Files>
-      <File FileName="Assets/Scripts/Generate_Landscape.cs" Line="158" Column="42" />
-      <File FileName="Assets/Scripts/Chunk.cs" Line="106" Column="5" />
-      <File FileName="Assets/Scripts/Block.cs" Line="22" Column="3" />
-      <File FileName="Assets/Scripts/DropItem.cs" Line="33" Column="46" />
-      <File FileName="Assets/Scripts/Generate_Chunk.cs" Line="16" Column="17" />
-      <File FileName="Assets/Scripts/Plant.cs" Line="20" Column="38" />
-      <File FileName="Assets/Scripts/MeshData.cs" Line="316" Column="49" />
-      <File FileName="Assets/Scripts/Serialization.cs" Line="18" Column="45" />
-      <File FileName="Assets/Scripts/Game.cs" Line="12" Column="21" />
-      <File FileName="Assets/Scripts/PlayerController.cs" Line="17" Column="18" />
-      <File FileName="Assets/Scripts/ExtrudeSprite.cs" Line="89" Column="23" />
-      <File FileName="Assets/Scripts/HoldItem.cs" Line="18" Column="31" />
-      <File FileName="Assets/Scripts/InventoryBarController.cs" Line="57" Column="43" />
-      <File FileName="Assets/Scripts/Item.cs" Line="4" Column="33" />
-      <File FileName="Assets/Scripts/Tool.cs" Line="19" Column="3" />
-      <File FileName="Assets/Scripts/Tile.cs" Line="27" Column="26" />
+      <File FileName="Assets/Scripts/Generate_Landscape.cs" Line="285" Column="17" />
+      <File FileName="Assets/Scripts/World.cs" Line="219" Column="23" />
+      <File FileName="Assets/Scripts/Chunk.cs" Line="105" Column="5" />
+      <File FileName="Assets/Scripts/Serialization.cs" Line="58" Column="16" />
+      <File FileName="Assets/Scripts/Generate_Chunk.cs" Line="35" Column="11" />
+      <File FileName="Assets/Scripts/Block.cs" Line="72" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

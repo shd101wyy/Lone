@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum ItemType {CUBE_BLOCK, TOOL, PLANT};
+public enum ItemType {CUBE_BLOCK, TOOL, PLANT, AIR};
 
 [System.Serializable]
 public abstract class Item {

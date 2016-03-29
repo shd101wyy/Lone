@@ -18,20 +18,13 @@ public class Generate_Landscape : MonoBehaviour {
 	public GameObject chunkPrefab;
 	public GameObject inventoryBar;
 
-	public static int chunkWidth = 16;
-	public static int chunkDepth = 16;
-	public static int chunkHeight = 64;
-
-	// private int planeSize = 6;
-	// private int planeSize = 6; // 2; // 4; /*6;*/ /*20;*/
-
 	public World world;
 
 	public int selectedBlock = 1;
 
-	public List<Vector2> buildList = new List<Vector2>();
+	public List<Vector3> buildList = new List<Vector3>();
 	public List<Chunk> renderList = new List<Chunk>(); // Chunk need to be rendered.
-	public Dictionary<Vector2, GameObject> chunkObjects = new Dictionary<Vector2, GameObject>();
+	public Dictionary<Vector3, GameObject> chunkObjects = new Dictionary<Vector3, GameObject>();
 	public static int halfPlaneSize = 4;
 	int timer = 0;
 
@@ -91,7 +84,7 @@ public class Generate_Landscape : MonoBehaviour {
 		player.transform.localEulerAngles = new Vector3 (world.worldData.playerRX, world.worldData.playerRY, world.worldData.playerRZ);
 
 		// generate 4 blocks around player
-		InitiateWorld();
+		// InitiateWorld();
 
 		inventoryBarController = inventoryBar.GetComponent<InventoryBarController> () as InventoryBarController;
 	}
@@ -230,9 +223,11 @@ public class Generate_Landscape : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		/*
 		if (player != null) {
 			world.worldData.updatePlayerTransformationData (player);
 		}
+		*/
 
 		CheckLeftClick ();
 		CheckRightClick ();
@@ -240,45 +235,56 @@ public class Generate_Landscape : MonoBehaviour {
 
 		AutoSave ();
 
-
-		DeleteChunks ();
+		if (DeleteChunks ()) //Check to see if a delete happened, if so return early.
+			return;
+		
 		FindChunksToLoad ();
 		LoadAndRenderChunks ();
-
 	}
 
 	void InitiateWorld() {
-		int playerChunkX = (int)(player.transform.position.x / chunkWidth);
-		int playerChunkZ = (int)(player.transform.position.z / chunkDepth);
+		int playerChunkX = (int)(player.transform.position.x / Chunk.width);
+		int playerChunkY = (int)(player.transform.position.y / Chunk.height);
+		int playerChunkZ = (int)(player.transform.position.z / Chunk.depth);
+
 		for (int x = -1; x < 1; x++) {
-			for (int z = -1; z < 1; z++) {
-				BuildChunk (new Vector2 (playerChunkX + x, playerChunkZ + z));
+			for (int y = -1; y < 1; y++) {
+				for (int z = -1; z < 1; z++) {
+					BuildChunk (new Vector3 (playerChunkX + x,  y, playerChunkZ + z));
+				}
 			}
 		}
+
+		//BuildChunk (new Vector3 (0, 0, 0));
 
 		LoadAndRenderChunks ();
 	}
 
 	void FindChunksToLoad() {
-		int playerChunkX = (int)(player.transform.position.x / chunkWidth);
-		int playerChunkZ = (int)(player.transform.position.z / chunkDepth);
+		int playerChunkX = (int)(player.transform.position.x / Chunk.width);
+		int playerChunkY = (int)(player.transform.position.y / Chunk.height);
+		int playerChunkZ = (int)(player.transform.position.z / Chunk.depth);
+	
 
 		if (buildList.Count == 0) {
 			for (int i = 0; i < chunkPositions.Length; i++) {
-				Vector3 chunkPos = new Vector2 (playerChunkX + chunkPositions[i].x, playerChunkZ + chunkPositions[i].z);
+				Vector3 chunkPos = new Vector3 (playerChunkX + chunkPositions[i].x, /*playerChunkY + chunkPositions[i].y*/ 0, playerChunkZ + chunkPositions[i].z);
 				Chunk newChunk = world.getChunk (chunkPos);
 
 				if (newChunk != null && (newChunk.rendered || renderList.Contains (newChunk)))
 					continue;
-				else
-					buildList.Add (chunkPos); // TODO add something
+
+				// load a column of chunks 
+				for (int y = -4; y <= 4; y++) {
+					buildList.Add (chunkPos + new Vector3(0, y, 0)); // TODO add something
+				}
 
 				return;
 			}
 		}
 	}
 
-	void BuildChunk(Vector2 chunkPos) {
+	void BuildChunk(Vector3 chunkPos) {
 		if (world.hasChunkAtPosition (chunkPos))
 			return;
 		else {
@@ -308,21 +314,21 @@ public class Generate_Landscape : MonoBehaviour {
 		}
 	}
 
-	void DeleteChunks() {
+	bool DeleteChunks() {
 		if (timer == 10) {
-			var chunksToDelete = new List<Vector2> ();
+			var chunksToDelete = new List<Vector3> ();
 			foreach (var item in world.chunks) {
 				Chunk chunk = item.Value;
 				float distance = Vector3.Distance (
 					new Vector3(player.transform.position.x, 0, player.transform.position.z),
-					new Vector3(chunk.chunkX * chunkWidth, 0, chunk.chunkZ * chunkDepth)
+					new Vector3(chunk.x, 0, chunk.z)
 				);
 
 				if (distance > 256) {
 					chunksToDelete.Add (item.Key);
 				}
 			}
-
+				
 			for (int i = 0; i < chunksToDelete.Count; i++) {
 				world.RemoveChunk (chunksToDelete [i]);
 				Destroy (chunkObjects [chunksToDelete [i]]);
@@ -330,7 +336,10 @@ public class Generate_Landscape : MonoBehaviour {
 			}
 
 			timer = 0;
+			return true;
 		}
+
 		timer++;
+		return false;
 	}
 }

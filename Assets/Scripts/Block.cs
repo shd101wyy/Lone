@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 
 
-public enum BlockType {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE, PLANKS_JUNGLE, LOG_OAK, PLANKS_OAK, TNT, STONE, BEDROCK};
+public enum BlockType {GRASS, SAND, SNOW, DIRT, PLANT_FERN, WATER, LOG_JUNGLE, PLANKS_JUNGLE, LOG_OAK, PLANKS_OAK, TNT, STONE, BEDROCK, AIR};
 
 /*
  * Only Block type object can be put on chunk 
@@ -23,6 +23,16 @@ public abstract class Block : Item {
 }
 
 [Serializable]
+public class Air : Block {
+	public Air() : base("air", ItemType.AIR, 0) {
+	}
+
+	public override Texture2D getTexture () {
+		return null;
+	}
+}
+
+[Serializable]
 public abstract class CubeBlock: Block {
 	public BlockType blockType;
 	public float blockSize = 1f;
@@ -34,7 +44,11 @@ public abstract class CubeBlock: Block {
 	public abstract BlockTile getBlockTile ();
 
 	public void generateMesh(MeshData meshData, Vector3 pos, World world, bool collidable = true, bool dropItem = false) {
-
+		if (world == null) {
+			Debug.Log (pos);
+			Debug.Log ("Is Null");
+		}
+			
 		bool col = meshData.useRenderDataForCollision;
 		meshData.useRenderDataForCollision = collidable;
 
@@ -45,6 +59,7 @@ public abstract class CubeBlock: Block {
 		Vector3 topDir = new Vector3 ((int)pos.x, (int)pos.y + 1, (int)pos.z);
 		Vector3 bottomDir = new Vector3 ((int)pos.x, (int)pos.y - 1, (int)pos.z);
 
+
 		Block front = world == null ? null : world.getBlock (frontDir);
 		Block back = world == null ? null :  world.getBlock (backDir);
 		Block left = world == null ? null :  world.getBlock (leftDir);
@@ -52,22 +67,22 @@ public abstract class CubeBlock: Block {
 		Block top = world == null ? null :  world.getBlock (topDir);
 		Block bottom = world == null ? null :  world.getBlock (bottomDir);
 
-		if (!(front != null && front is CubeBlock)) {
+		if (front is Air || world == null) {
 			meshData.FaceDataZPositive (this, pos, dropItem);
 		}
-		if (!(back != null && back is CubeBlock)) {
+		if (back is Air || world == null) {
 			meshData.FaceDataZNegative (this, pos, dropItem);
 		}
-		if (!(right != null && right is CubeBlock)) {
+		if (right is Air || world == null) {
 			meshData.FaceDataXPositive (this, pos, dropItem);
 		}
-		if (!(left != null && left is CubeBlock)) {
+		if (left is Air || world == null) {
 			meshData.FaceDataXNegative (this, pos, dropItem);
 		}
-		if (!(bottom != null && bottom is CubeBlock)) {
+		if (bottom is Air || world == null) {
 			meshData.FaceDataYNegative (this, pos, dropItem);
 		}
-		if (!(top != null && top is CubeBlock)) {
+		if (top is Air || world == null) {
 			meshData.FaceDataYPositive (this, pos, dropItem);
 		}
 

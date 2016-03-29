@@ -8,49 +8,82 @@ using SimplexNoise;
 
 [Serializable]
 public class Chunk {
-	public Dictionary<BlockPos, Block> blocks;
+	// public Dictionary<BlockPos, Block> blocks;
+	public Block[,,] blocks;
 	public bool needRender; // if == true, then the chunk will be renered
+
+	// eg: (0, 0, 0) (1, 0, 0)
 	public int chunkX;
+	public int chunkY;
 	public int chunkZ;
+
+	// in world coord
+	public int x;
+	public int y;
+	public int z;
+
 	public bool changed;  // 如果有改变了的话，Serialization 才会存
 	public bool rendered;
+
+	// sea level is at 0
+	public static int width = 16;
+	public static int height = 32;
+	public static int depth = 16;
+
+	public int airNum = 0;
 
 	//public World world;  // 这个其实没有必要， world 就只有一个，就是现在游戏中的 world
 	//public Water water;
 
-	public Chunk(int chunkX, int chunkZ) {
-		blocks = new Dictionary<BlockPos, Block> ();
+	public Chunk(int chunkX, int chunkY, int chunkZ) {
+		// blocks = new Dictionary<BlockPos, Block> ();
+		blocks = new Block[Chunk.width, Chunk.height, Chunk.depth];
+		for (int x = 0; x < Chunk.width; x++) {
+			for (int y = 0; y < Chunk.height; y++) {
+				for (int z = 0; z < Chunk.depth; z++) {
+					blocks [x, y, z] = new Air ();
+				}
+			}
+		}
+
 		this.chunkX = chunkX;
+		this.chunkY = chunkY;
 		this.chunkZ = chunkZ;
+
+		this.x = chunkX * Chunk.width;
+		this.y = chunkY * Chunk.height;
+		this.z = chunkZ * Chunk.depth;
 
 		needRender = false;
 		changed = false;
 		rendered = false; 
 	}
-
+		
 	public static int GetNoise(int x, int y, int z, float scale, int max) {
 		return Mathf.FloorToInt( (Noise.Generate(x * scale, y * scale, z * scale) + 1f) * (max/2f));
 	}
 
 	public void addBlock(Vector3 pos, Block block) {
-		blocks.Add (new BlockPos(pos), block);
+		blocks[(int)pos.x - x, (int)pos.y - y, (int)pos.z - z] = block;
 		block.chunk = this;
 		changed = true; 
+		airNum -= 1;
 	}
 
 	public Block getBlock(Vector3 pos) {
-		if (!blocks.ContainsKey (new BlockPos(pos)))
-			return null;
-		return blocks [new BlockPos(pos)];
+		return blocks [(int)pos.x - x, (int)pos.y - y, (int)pos.z - z];
 	}
 
 	public void removeBlock(Vector3 pos) {
-		blocks.Remove (new BlockPos(pos));
+		// blocks.Remove (new BlockPos(pos));
+		blocks[(int)pos.x - x, (int)pos.y - y, (int)pos.z - z] = new Air();
+		airNum += 1;
+
 		changed = true;
 	}
 
-	public bool hasBlockAtPosition(Vector3 pos) {
-		return blocks.ContainsKey (new BlockPos(pos));
+	public bool isAllAir() {
+		return airNum == Chunk.width * Chunk.height * Chunk.depth;
 	}
 
 	// TODO: move this to terrain generation in the future.
@@ -70,10 +103,8 @@ public class Chunk {
 		int heightScale = 20; // 40+
 		float detailScale = 70.0f;
 
-		int width = Generate_Landscape.chunkWidth; 
-		int depth = Generate_Landscape.chunkDepth;
-
 		int startX = width * chunkX;
+		int startY = height * chunkY;
 		int startZ = depth * chunkZ;
 
 		/*
@@ -99,97 +130,54 @@ public class Chunk {
 			}
 		}
 		*/
+
 		for (int z = 0; z < depth; z++) {
 			for (int x = 0; x < width; x++) {
-				generateColumn (x + startX, z + startZ);
+				int y = 15;
+				//Vector3 blockPos = new Vector3 (x+startX, y+startY, z+startZ);
+				//createBlock (blockPos, false);
+				while (y >= 0) {
+					// y--;
+					Vector3 blockPos = new Vector3 (x+startX, y+startY, z+startZ);
+					createBlock (blockPos, false);
+					y--;
+				}
 			}
 		}
-
+						
 		changed = false; // this chunk hasn't been changed by player...
 	}
-
-	void generateColumn(int x, int z) {
-		float stoneBaseHeight = 32;
-		float stoneBaseNoise = 0.05f;
-		float stoneBaseNoiseHeight = 4;
-
-		float stoneMountainHeight = 48;
-		float stoneMountainFrequency = 0.008f;
-		float stoneMinHeight = -12;
-
-		float dirtBaseHeight = 1;
-		float dirtNoise = 0.04f;
-		float dirtNoiseHeight = 3;
-
-		int stoneHeight = Mathf.FloorToInt(stoneBaseHeight);
-		stoneHeight += GetNoise(x, 32, z, stoneMountainFrequency, Mathf.FloorToInt(stoneMountainHeight));
-
-		if (stoneHeight < stoneMinHeight)
-			stoneHeight = Mathf.FloorToInt(stoneMinHeight);
-
-		stoneHeight += GetNoise(x, 32, z, stoneBaseNoise, Mathf.FloorToInt(stoneBaseNoiseHeight));
-
-		int dirtHeight = stoneHeight + Mathf.FloorToInt(dirtBaseHeight);
-		dirtHeight += GetNoise(x, 64, z, dirtNoise, Mathf.FloorToInt(dirtNoiseHeight));
-
-
-		Block topBlock = null;
-		Vector3 topBlockPos = Vector3.zero;
-		for (int y = 0; y < Generate_Landscape.chunkHeight; y++) {
-			Vector3 blockPos = new Vector3 (x, y, z);
-			if (y == 0) {
-				// addBlock(blockPos, new BedRock());
-				topBlock = new Grass();
-				topBlockPos = blockPos;
-				addBlock (blockPos, topBlock);
-			} else if (y <= stoneHeight) {
-				topBlock = new Stone ();
-				addBlock (blockPos, topBlock);
-			} else if (y <= dirtHeight) {
-				if (y == dirtHeight) {
-					topBlock = new Grass ();
-					topBlockPos = blockPos;
-					addBlock (blockPos, topBlock);
-				} else {
-					topBlock = new Dirt ();
-					addBlock (blockPos, topBlock);
-				}
-			} else {
-			}
-		}
-
-		if (topBlock is Grass) {
-			if (UnityEngine.Random.Range (0, 10) <= 2) {
-				addBlock (topBlockPos + new Vector3 (0, 1, 0), new Fern ());
-			} else if (UnityEngine.Random.Range (0, 50) <= 2) {
-				addBlock (topBlockPos + new Vector3 (0, 1, 0), new Rose ());
-			}
-		}
-	}
+		
 
 	void createBlock(Vector3 blockPos, bool isTop) {
 		int y = (int)blockPos.y;
+		if (y < -128)
+			return;
+		
 		Block block;
 
-		if (y > 38) {
+		if (y > 42) {
+			block = new Air ();
+			airNum += 1;
+		} else if (y > 38) {
 			block = new Snow ();
 		} else if (isTop && y > 5) {
 			block = new Grass ();
+			/*
 			if (UnityEngine.Random.Range (0, 10) <= 2) {
 				addBlock (blockPos + new Vector3 (0, 1, 0), new Fern ());
 			} else if (UnityEngine.Random.Range (0, 50) <= 2) {
 				addBlock (blockPos + new Vector3 (0, 1, 0), new Rose ());
 			}
+			*/
 		} else if (y > 5) {
 			block = new Dirt ();
+		} else if (y == -128) {
+			block = new BedRock ();
 		} else {
 			block = new Sand ();
 		}
-
+			
 		addBlock(blockPos, block);
-	}
-
-	public Vector3 ToWorldCoordinate() {
-		return new Vector3 (chunkX * Generate_Landscape.chunkWidth, 0, chunkZ * Generate_Landscape.chunkDepth);
 	}
 }

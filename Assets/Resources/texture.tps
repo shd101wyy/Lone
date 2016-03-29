@@ -221,6 +221,11 @@
             <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/snow.png</filename>
             <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/snow_side.png</filename>
             <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/grass_top.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/tnt_bottom.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/tnt_side.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/tnt_top.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/stone.png</filename>
+            <filename>../Textures/PIXIE_1/assets/minecraft/textures/blocks/bedrock.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

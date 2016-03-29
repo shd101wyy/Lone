@@ -22,12 +22,12 @@ public static class Serialization {
 	}
 
 	public static string FileName(Chunk chunk) {
-		string fileName = chunk.chunkX + "," + chunk.chunkZ + ".bin";
+		string fileName = chunk.chunkX + "," + chunk.chunkY + "," + chunk.chunkZ + ".bin";
 		return fileName;
 	}
 
-	public static string FileName(Vector2 chunkPos) {
-		string fileName = chunkPos.x + "," + chunkPos.y + ".bin";
+	public static string FileName(Vector3 chunkPos) {
+		string fileName = chunkPos.x + "," + chunkPos.y + "," + chunkPos.z + ".bin";
 		return fileName;
 	}
 
@@ -41,7 +41,7 @@ public static class Serialization {
 		stream.Close ();
 	}
 		
-	public static Chunk LoadChunk(Vector2 chunkPos, World world) {
+	public static Chunk LoadChunk(Vector3 chunkPos, World world) {
 		string saveFile = SaveLocation (world);
 		saveFile = saveFile + FileName (chunkPos);
 
@@ -51,8 +51,8 @@ public static class Serialization {
 		IFormatter formatter = new BinaryFormatter ();
 		FileStream stream = new FileStream (saveFile, FileMode.Open);
 
-		Chunk chunk = new Chunk ((int)chunkPos.x, (int)chunkPos.y);
-		chunk.blocks = formatter.Deserialize (stream) as Dictionary<BlockPos, Block>;
+		Chunk chunk = new Chunk ((int)chunkPos.x, (int)chunkPos.y, (int)chunkPos.z);
+		chunk.blocks = formatter.Deserialize (stream) as Block[,,]; // Dictionary<BlockPos, Block>;
 		chunk.needRender = true;
 		stream.Close ();
 		return chunk;

@@ -13,6 +13,7 @@ public class Generate_Chunk : MonoBehaviour {
 	private MeshData cubeBlockMeshData = null;
 	private MeshData plantsMeshData = null;
 	private World world = null;
+	private bool needRender = false;
 
 	// Use this for initialization
 	void Start () {
@@ -27,7 +28,9 @@ public class Generate_Chunk : MonoBehaviour {
 	void drawBlock(Vector3 blockPos) {
 		Block block = chunk.getBlock(blockPos);
 
-		if (block is CubeBlock) {
+		if (block is Air) {
+			return;
+		} else if (block is CubeBlock) {
 			((CubeBlock)block).generateMesh (cubeBlockMeshData, blockPos, world);
 		} else if (block is Plant) {
 			// GameObject clone = (GameObject)Instantiate (((Plant)block).getGameObject(), blockPos, Quaternion.identity);
@@ -41,10 +44,25 @@ public class Generate_Chunk : MonoBehaviour {
 		cubeBlockMeshData = new MeshData ();
 		plantsMeshData = new MeshData ();
 
+		// chunk.updateChunksMask (world);
+		/*
 		foreach (var blockPos in chunk.blocks.Keys) {
 			drawBlock (blockPos.ToVector3());
 		}
+		*/
 
+		if (chunk.isAllAir()) {
+			chunk.rendered = true;
+			return;
+		}
+
+		for (int x = 0; x < Chunk.width; x++) {
+			for (int y = 0; y < Chunk.height; y++) {
+				for (int z = 0; z < Chunk.depth; z++) {
+					drawBlock (new Vector3 (x + chunk.x, y + chunk.y, z + chunk.z));
+				}
+			}
+		}
 		// Cubeblock
 		MeshFilter filter = transform.GetComponent< MeshFilter >();
 		Mesh mesh = filter.mesh;
