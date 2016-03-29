@@ -73,7 +73,7 @@ public abstract class CubeBlock: Block {
 		if (world == null || world.getBlock(leftDir) == null) {
 			meshData.FaceDataXNegative (this, pos, dropItem);
 		}
-		if (world == null || world.getBlock(bottomDir) == null) {
+		if (world == null || world.getBlock(bottomDir) == null && pos.y > -128) {
 			meshData.FaceDataYNegative (this, pos, dropItem);
 		}
 		if (world == null || world.getBlock(topDir) == null) {

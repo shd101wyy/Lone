@@ -296,27 +296,28 @@ public class Generate_Landscape : MonoBehaviour {
 			return;
 		}
 
+		for (int i = 0; i < 2; i++) {
+			if (renderList.Count != 0) {
+				Chunk chunk = world.getChunk (new Vector3 (renderList [0].x, renderList [0].y, renderList [0].z));
+				if (!chunk.rendered) {
+					chunk.needRender = true;
 
-		if (renderList.Count != 0) {
-			Chunk chunk = world.getChunk( new Vector3(renderList [0].x, renderList [0].y, renderList [0].z));
-			if (!chunk.rendered) {
-				chunk.needRender = true;
+					Vector3 chunkPos = new Vector3 (chunk.chunkX, chunk.chunkY, chunk.chunkZ);
 
-				Vector3 chunkPos = new Vector3 (chunk.chunkX, chunk.chunkY, chunk.chunkZ);
+					// don't render chunk below 0 (sea level) - 1
+					//if (chunkPos.y <= -2) {
+					//	chunk.needRender = false;
+					//}
 
-				// don't render chunk below 0 (sea level) - 1
-				//if (chunkPos.y <= -2) {
-				//	chunk.needRender = false;
-				//}
+					//Debug.Log ("Render: " + chunkPos);
 
-				//Debug.Log ("Render: " + chunkPos);
-
-				GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, Vector3.zero, Quaternion.identity);
-				chunkClone.GetComponent<Generate_Chunk> ().bindChunk (chunk, world);
-				chunkClone.name = "chunk_" + chunkPos;
-				chunkObjects.Add (chunkPos, chunkClone);
+					GameObject chunkClone = (GameObject)Instantiate (chunkPrefab, Vector3.zero, Quaternion.identity);
+					chunkClone.GetComponent<Generate_Chunk> ().bindChunk (chunk, world);
+					chunkClone.name = "chunk_" + chunkPos;
+					chunkObjects.Add (chunkPos, chunkClone);
+				}
+				renderList.RemoveAt (0);
 			}
-			renderList.RemoveAt (0);
 		}
 	}
 
