@@ -248,7 +248,8 @@ public class Generate_Landscape : MonoBehaviour {
 		int playerChunkZ = (int)(player.transform.position.z / Chunk.depth);
 	
 
-		if (buildList.Count == 0) {
+		//if (buildList.Count == 0) {
+		if (renderList.Count == 0) {
 			for (int i = 0; i < chunkPositions.Length; i++) {
 				Vector3 chunkPos = new Vector3 (playerChunkX + chunkPositions[i].x, /*playerChunkY + chunkPositions[i].y*/ 0, playerChunkZ + chunkPositions[i].z);
 				Chunk newChunk = world.getChunk (chunkPos);
@@ -268,28 +269,30 @@ public class Generate_Landscape : MonoBehaviour {
 
 	void BuildChunk(Vector3 chunkPos) {
 		//Debug.Log ("build: " + chunkPos);
-		if (world.hasChunkAtPosition (chunkPos))
+		if (world.hasChunkAtPosition (chunkPos)) {
 			return;
-		else {
+		} else {
 			Chunk chunk = world.CreateChunk (chunkPos);
 			renderList.Add (chunk);
 		}
 	}
 
 	void LoadAndRenderChunks() {
-		for (int i = 0; i < 4; i++) {  // render 4 chunks per frame
+		for (int i = 0; i < 8; i++) {  // render 8 chunks per frame
 			if (buildList.Count != 0) {
 				BuildChunk (buildList [0]);
 				buildList.RemoveAt (0);
+			} else {
+				break;
 			}
 		}
 
-		for (int i = 0; i < renderList.Count; i++) {
-			//Chunk chunk = renderList [0];
-			Chunk chunk = renderList[i];
+
+		if (renderList.Count != 0) {
+			Chunk chunk = renderList [0];
 			if (!chunk.rendered) {
 				chunk.needRender = true;
-			
+
 				Vector3 chunkPos = new Vector3 (chunk.chunkX, chunk.chunkY, chunk.chunkZ);
 
 				// don't render chunk below 0 (sea level) - 1
@@ -304,10 +307,8 @@ public class Generate_Landscape : MonoBehaviour {
 				chunkClone.name = "chunk_" + chunkPos;
 				chunkObjects.Add (chunkPos, chunkClone);
 			}
-			//renderList.RemoveAt (0);
+			renderList.RemoveAt (0);
 		}
-
-		renderList = new List<Chunk>();
 	}
 
 	bool DeleteChunks() {
