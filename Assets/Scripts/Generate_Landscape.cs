@@ -257,7 +257,7 @@ public class Generate_Landscape : MonoBehaviour {
 					continue;
 
 				// load a column of chunks 
-				for (int y = -8; y < 1; y++) {
+				for (int y = -8; y < 8; y++) {
 					buildList.Add (chunkPos + new Vector3(0, y, 0)); // TODO add something
 				}
 
@@ -291,6 +291,11 @@ public class Generate_Landscape : MonoBehaviour {
 				chunk.needRender = true;
 			
 				Vector3 chunkPos = new Vector3 (chunk.chunkX, chunk.chunkY, chunk.chunkZ);
+
+				// don't render chunk below 0 (sea level) - 1
+				if (chunkPos.y <= -2) {
+					chunk.needRender = false;
+				}
 
 				//Debug.Log ("Render: " + chunkPos);
 
