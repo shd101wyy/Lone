@@ -30,6 +30,8 @@ public class Chunk {
 	public static int height = 32;
 	public static int depth = 16;
 
+	int seed = 0;
+
 	//public World world;  // 这个其实没有必要， world 就只有一个，就是现在游戏中的 world
 	//public Water water;
 
@@ -108,13 +110,6 @@ public class Chunk {
 		//public int heightScale = 40; // 40+
 		//public float detailScale = 60.0f;
 
-		// plain 2
-		int heightScale = 20; // 40+
-		float detailScale = 70.0f;
-
-		int startX = width * chunkX;
-		int startY = height * chunkY;
-		int startZ = depth * chunkZ;
 
 		/*
 		int seed = world.worldData.seed;
@@ -140,11 +135,13 @@ public class Chunk {
 		}
 		*/
 
+		this.seed = world.worldData.seed;
+
 		for (int z = 0; z < depth; z++) {
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
-					Vector3 blockPos = new Vector3 (x+startX, y+startY, z+startZ);
-					createBlock (blockPos, false);
+					Vector3 blockPos = new Vector3 (x+this.x, y+this.y, z+this.z);
+					createBlock (blockPos);
 				}
 			}
 		}
@@ -153,18 +150,23 @@ public class Chunk {
 	}
 		
 
-	void createBlock(Vector3 blockPos, bool isTop) {
+	void createBlock(Vector3 blockPos) {
 		int y = (int)blockPos.y;
 		if (y < -128)
 			return;
+
+		// plain 2
+		int heightScale = 20; // 40+
+		float detailScale = 70.0f;
+		int p_y = (int)(Mathf.PerlinNoise ((blockPos.x + this.seed)/detailScale, (blockPos.z + this.seed)/detailScale) * heightScale); 
 		
 		Block block;
 
-		if (y > 42) {
+		if (y > p_y /*42*/) {
 			return; // air
 		} else if (y > 38) {
 			block = new Snow ();
-		} else if (isTop && y > 5) {
+		} else if (y > 5 && y == p_y) {
 			block = new Grass ();
 			/*
 			if (UnityEngine.Random.Range (0, 10) <= 2) {

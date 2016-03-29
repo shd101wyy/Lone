@@ -13,7 +13,6 @@ public class Generate_Chunk : MonoBehaviour {
 	private MeshData cubeBlockMeshData = null;
 	private MeshData plantsMeshData = null;
 	private World world = null;
-	private bool needRender = false;
 
 	// Use this for initialization
 	void Start () {
@@ -41,6 +40,9 @@ public class Generate_Chunk : MonoBehaviour {
 	}
 
 	public void renderChunk() {
+		if (chunk.blocks.Count == 0)
+			return;
+
 		cubeBlockMeshData = new MeshData ();
 		plantsMeshData = new MeshData ();
 
